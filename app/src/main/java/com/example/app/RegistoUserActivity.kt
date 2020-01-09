@@ -99,7 +99,7 @@ class RegistoUserActivity : AppCompatActivity() {
 
     }
 
-
+ 
 
 
    private  fun register (name: String, email: String){
