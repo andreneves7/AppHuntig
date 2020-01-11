@@ -36,8 +36,17 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:16.0.5'
     implementation 'com.google.firebase:firebase-firestore:17.1.2'
     implementation 'com.google.firebase:firebase-storage:16.0.4'
-
     implementation 'de.hdodenhof:circleimageview:3.0.1'
+
+
+//    implementation'com.android.support.constraint:constraint-layout:1.1.2'
+//    testImplementation'jumit:junit:4.12'
+//    androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.2',{
+//        exclude group:'com.android.support', module:'support-annotations'
+//    })
+//
+//    implementation"org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.0'

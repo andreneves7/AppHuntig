@@ -18,8 +18,10 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_profile.*
 import kotlinx.android.synthetic.main.activity_registo_user.*
+import kotlinx.android.synthetic.main.email_custom_view.view.*
+import kotlinx.android.synthetic.main.pass_custom_view.view.showPass
 import kotlinx.android.synthetic.main.custom_view.view.*
-import kotlinx.android.synthetic.main.custom_view.view.showPass
+import kotlinx.android.synthetic.main.pass_custom_view.*
 import kotlinx.android.synthetic.main.pass_custom_view.view.*
 import java.util.*
 
@@ -35,11 +37,15 @@ class ProfileActivity : AppCompatActivity() {
         setContentView(R.layout.activity_profile)
 
         val editar = bEdit
+        val editarPass = bEditPass
 
+        editarPass.setOnClickListener{
+            showAlertPass()
+        }
 
 
         editar.setOnClickListener(View.OnClickListener{
-            view -> showAlertLogin()
+           showAlertEmail()
 
         })
 
@@ -57,12 +63,12 @@ class ProfileActivity : AppCompatActivity() {
 
     }
 
-    private fun showAlertNew(){
+    private fun showAlertLogin(){
         val inflater = layoutInflater
-        val inflate_view = inflater.inflate(R.layout.home_custom_view,null)
+        val inflate_view = inflater.inflate(R.layout.custom_view,null)
 
-        val userEmailEdt = inflate_view.userNewEmail
-        val userPassEdt = inflate_view.userNewPass
+        val userEmailEdt = inflate_view.userEmail
+        val userPassEdt = inflate_view.userPass
 
         val checkBoxTooggle = inflate_view.showPass
 
@@ -88,16 +94,15 @@ class ProfileActivity : AppCompatActivity() {
         alertDialog.setPositiveButton("Done"){
                 dialog, which ->
 
-            val userNewEmail = userEmailEdt.text.toString()
-            val userPassword = userPassEdt.text.toString()
+            val email = userEmailEdt.text.toString()
+            val password = userPassEdt.text.toString()
 
-            Auth.signInWithEmailAndPassword(userNewEmail, userPassword)
+            Auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task4 ->
                     if (task4.isSuccessful) {
                         Toast.makeText(this, "Successfully Re-Logged :)", Toast.LENGTH_LONG).show()
                         Log.d("Profile", "user re-logged  ${Auth.currentUser?.uid}")
                     }
-                    Toast.makeText(this, "Done", Toast.LENGTH_LONG).show()
                     Log.d("Profile", "done botao")
                 }
 
@@ -113,26 +118,15 @@ class ProfileActivity : AppCompatActivity() {
 
 
 
-    private fun showAlertLogin(){
+    private fun showAlertEmail(){
         val inflater = layoutInflater
-        val inflate_view = inflater.inflate(R.layout.pass_custom_view,null)
+        val inflate_view = inflater.inflate(R.layout.email_custom_view,null)
 
-        val userEmailEdt = inflate_view.userEmail
-        val userPassEdt = inflate_view.userPass
+        val userEmailEdt = inflate_view.userNewEmail
 
-        val checkBoxTooggle = inflate_view.showPass
-
-        checkBoxTooggle.setOnCheckedChangeListener{buttonView, isChecked ->
-            if (!isChecked){
-                userPassEdt.transformationMethod = PasswordTransformationMethod.getInstance()
-            }
-            else{
-                userPassEdt.transformationMethod = null
-            }
-        }
 
         val alertDialog = AlertDialog.Builder(this)
-        alertDialog.setTitle("atualizar")
+        alertDialog.setTitle("New Email")
         alertDialog.setView(inflate_view)
         alertDialog.setCancelable(false)
 
@@ -145,43 +139,100 @@ class ProfileActivity : AppCompatActivity() {
             dialog, which ->
 
             val user = FirebaseAuth.getInstance().currentUser
-            val userNewEmail = userEmailEdt.text.toString()
-            val userPassword = userPassEdt.text.toString()
+            val userEmail = userEmailEdt.text.toString()
 
+            if (user != null) {
+                if (!userEmail.isEmpty()) {
 
-            if (!userNewEmail.isEmpty() && userPassword.isEmpty()) {
+                    user?.updateEmail(userEmail)?.addOnCompleteListener { task2 ->
+                        if (task2.isSuccessful) {
+                            val pessoa = HashMap<String, Any>()
+                            pessoa["email"] = userEmail
+                            mAuth.collection("Users").document(user.uid).update(pessoa)
+                            Toast.makeText(this, "Update email Success", Toast.LENGTH_LONG).show()
+                            Log.d("Profile", "email update auth")
+                            showAlertLogin()
 
-                user?.updateEmail(userNewEmail)?.addOnCompleteListener { task2 ->
-                    if (task2.isSuccessful) {
-                        Toast.makeText(this, "Update email Success", Toast.LENGTH_LONG).show()
-                        Log.d("Profile","email update auth")
-                        showAlertNew()
-
-                    }else {
-                        Toast.makeText(this, "Error email Update", Toast.LENGTH_LONG).show()
-                        Log.d("Profile","email erro auth")
-                        showAlertNew()
+                        } else {
+                            Toast.makeText(this, "Error email Update", Toast.LENGTH_LONG).show()
+                            Log.d("Profile", "email erro auth")
+                            showAlertLogin()
+                        }
                     }
                 }
-            }else if (userNewEmail.isEmpty() && !userPassword.isEmpty()){
-                user?.updatePassword(userPassword)?.addOnCompleteListener { task3 ->
-                    if (task3.isSuccessful) {
-                        Toast.makeText(this, "Update password Success", Toast.LENGTH_LONG).show()
-                        Log.d("Profile","password erro auth")
-                        showAlertNew()
-
-                    }else {
-                        Toast.makeText(this, "Error password Update", Toast.LENGTH_LONG).show()
-                        showAlertNew()
-                    }
-                }
-            }else{
-                Toast.makeText(this, "so pode mudar um de cada vez", Toast.LENGTH_LONG).show()
-                Log.d("Profile","dois preenchidos")
             }
 
-            Toast.makeText(this, "Done", Toast.LENGTH_LONG).show()
              Log.d("Profile", "done botao")
+        }
+
+        val dialog = alertDialog.create()
+        dialog.show()
+    }
+
+
+
+    private fun showAlertPass(){
+        val inflater = layoutInflater
+        val inflate_view = inflater.inflate(R.layout.pass_custom_view,null)
+
+        val userPassEdt = inflate_view.userNewPass
+        val userConfPassEdt = inflate_view.userConfPass
+
+
+        val checkBoxTooggle = inflate_view.showPass
+
+        checkBoxTooggle.setOnCheckedChangeListener{buttonView, isChecked ->
+            if (!isChecked){
+                userPassEdt.transformationMethod = PasswordTransformationMethod.getInstance()
+                userConfPassEdt.transformationMethod = PasswordTransformationMethod.getInstance()
+            }
+            else{
+                userPassEdt.transformationMethod = null
+                userConfPassEdt.transformationMethod = null
+            }
+        }
+
+        val alertDialog = AlertDialog.Builder(this)
+        alertDialog.setTitle("New Password")
+        alertDialog.setView(inflate_view)
+        alertDialog.setCancelable(false)
+
+        alertDialog.setNegativeButton("Cancel"){
+                dialog, which ->
+            Toast.makeText(this,"Cancel" , Toast.LENGTH_LONG).show()
+        }
+
+        alertDialog.setPositiveButton("Done"){
+                dialog, which ->
+
+            val user = FirebaseAuth.getInstance().currentUser
+            val userPassword = userPassEdt.text.toString()
+            val userConf = userConfPassEdt.text.toString()
+
+            if (!userPassword.isEmpty() && !userConf.isEmpty()) {
+                if (userConf == userPassword) {
+                    user?.updatePassword(userPassword)?.addOnCompleteListener { task3 ->
+                        if (task3.isSuccessful) {
+                            Toast.makeText(this, "Update password Success", Toast.LENGTH_LONG)
+                                .show()
+                            Log.d("Profile", "password auth")
+                            showAlertLogin()
+
+                        } else {
+                            Toast.makeText(this, "Error password Update", Toast.LENGTH_LONG).show()
+                           showAlertLogin()
+                        }
+                    }
+                }else {
+                    Toast.makeText(this, "Password nao coincidem", Toast.LENGTH_LONG).show()
+                    showAlertPass()
+                }
+            }else {
+                Toast.makeText(this, "Campos nao preenchidos", Toast.LENGTH_LONG).show()
+                showAlertPass()
+            }
+
+            Log.d("Profile", "done botao")
         }
 
         val dialog = alertDialog.create()
@@ -216,15 +267,24 @@ class ProfileActivity : AppCompatActivity() {
 
         val filename = UUID.randomUUID().toString()
         val ref = mStorage.getReference("/images/$filename")
+        val user = Auth.currentUser
+
+
 
             ref.putFile(selectedPhotoUri!!)
                 .addOnSuccessListener {
                     Log.d("Profile", "Successfully upload image: ${it.metadata?.path}")
 
-
-
                     ref.downloadUrl.addOnSuccessListener {
                         Log.d("Profile", "File localition: $it")
+
+                        val p = it.toString()
+
+                        if (user != null){
+                            val pessoa = HashMap<String, Any>()
+                            pessoa["Photo"] = p
+                            mAuth.collection("Users").document(user.uid).update(pessoa)
+                        }
 
                     }
                 }
@@ -232,35 +292,6 @@ class ProfileActivity : AppCompatActivity() {
     }
 
 
-
-
-
-
-
-//    private fun editar(){
-//
-//        val user = FirebaseAuth.getInstance().currentUser
-//        var newPass = edPass.text.toString()
-//
-//
-//        if (!newPass.isEmpty()) {
-//
-//            user?.updatePassword(newPass)?.addOnCompleteListener { task2 ->
-//                if (task2.isSuccessful) {
-//
-//
-//                    Toast.makeText(this, "Update pass Success", Toast.LENGTH_LONG).show()
-//                    Log.d("Profile","email update auth")
-//
-//
-//
-//                }else {
-//                    Toast.makeText(this, "Error email Update", Toast.LENGTH_LONG).show()
-//                }
-//            }
-//        }
-//
-//    }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater

@@ -4,26 +4,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ProfileActivity">
+    tools:context=".ProfileActivity"
+    >
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical" android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+
+
         <EditText
-            android:id="@+id/userEmail"
+            android:id="@+id/userNewPass"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:hint="Enter Email"
-            android:inputType="text"
+            android:hint="Enter new Password"
+            android:inputType="textPassword"
             android:padding="20dp" />
 
         <EditText
-            android:id="@+id/userPass"
+            android:id="@+id/userConfPass"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:hint="Enter Password"
+            android:hint="Confirm new Password"
             android:inputType="textPassword"
             android:padding="20dp" />
 

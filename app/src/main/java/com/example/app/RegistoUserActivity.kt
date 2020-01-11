@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -35,7 +36,6 @@ class RegistoUserActivity : AppCompatActivity() {
 
 
         regBtn.setOnClickListener {
-            //uploadImageToFirebaseStorage()
 
             val email = addEmail.text.toString()
             val password = addPass.text.toString()
@@ -43,31 +43,7 @@ class RegistoUserActivity : AppCompatActivity() {
 
             registoAuth(password, email, name)
 
-            /*if (!password.isEmpty() && !email.isEmpty() && !name.isEmpty())  {
-                Auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { it ->
-
-                    if (!it.isSuccessful) return@addOnCompleteListener
-
-                    Log.d( "RegistoUser", "user auth com uid: ${it.result?.user?.uid}")
-                    uploadImageToFirebaseStorage()
-                    //Toast.makeText(this, "Successfully signed in", Toast.LENGTH_LONG).show()
-
-                }.addOnFailureListener { exception: Exception ->
-                    Toast.makeText(this, exception.toString(), Toast.LENGTH_LONG).show()
-                }
-
-            }
-
-            else {
-                Toast.makeText(this, "Please", Toast.LENGTH_LONG).show()
-                Log.d( "RegistoUser", "nao registo")
-            }*/
-
         }
-
-
-
-
 
     }
 
@@ -83,7 +59,7 @@ class RegistoUserActivity : AppCompatActivity() {
                 if (!it.isSuccessful) return@addOnCompleteListener
 
                 Log.d( "RegistoUser", "user auth com uid: ${it.result?.user?.uid}")
-                //Toast.makeText(this, "Successfully signed in", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Successfully signed in", Toast.LENGTH_LONG).show()
                 register(name, email)
 
             }.addOnFailureListener { exception: Exception ->
@@ -107,11 +83,14 @@ class RegistoUserActivity : AppCompatActivity() {
        val uid = Auth.uid ?:""
        val ref = mAuth.document("$uid")
 
-       val user = User(uid,addNome.text.toString(),addEmail.text.toString())
+       val pessoa = HashMap<String, Any>()
+       pessoa["name"] = name
+       pessoa["email"] = email
+       pessoa["grupos"] = ArrayList<String>()
+       //pessoa["lastLocation"] = Timestamp.now()
+       ref.set(pessoa)
+       Log.d("RegistoUser","user firestore registo")
 
-       ref.set(user).addOnSuccessListener{
-           Log.d("RegistoUser","user firestore registo")
-       }
 
        clearInputs()
        val intent = Intent(this, LoginActivity :: class.java )
@@ -120,7 +99,6 @@ class RegistoUserActivity : AppCompatActivity() {
 
    }
 
-    class  User(val uid: String, val name: String, val email: String)
 
 
 
