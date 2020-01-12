@@ -72,6 +72,8 @@ class ProfileActivity : AppCompatActivity() {
         val show = textView
         val user = Auth.currentUser
         val userEmail = Auth.currentUser?.email
+
+        // buscar nome ao firestore do user
         if (user != null){
             val mail = mAuth.collection("Users").document(user.uid)
             mail.get().addOnSuccessListener{
