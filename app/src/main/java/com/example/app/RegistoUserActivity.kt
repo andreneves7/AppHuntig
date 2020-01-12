@@ -80,10 +80,11 @@ class RegistoUserActivity : AppCompatActivity() {
 
    private  fun register (name: String, email: String){
 
-       val uid = Auth.uid ?:""
+       val uid = Auth?.uid.toString()
        val ref = mAuth.document("$uid")
 
        val pessoa = HashMap<String, Any>()
+       pessoa["uid"] = uid
        pessoa["name"] = name
        pessoa["email"] = email
        pessoa["grupos"] = ArrayList<String>()

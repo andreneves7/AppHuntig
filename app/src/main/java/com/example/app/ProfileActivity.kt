@@ -23,6 +23,7 @@ import kotlinx.android.synthetic.main.pass_custom_view.view.showPass
 import kotlinx.android.synthetic.main.custom_view.view.*
 import kotlinx.android.synthetic.main.pass_custom_view.*
 import kotlinx.android.synthetic.main.pass_custom_view.view.*
+import org.jetbrains.anko.email
 import java.util.*
 
 class ProfileActivity : AppCompatActivity() {
@@ -38,6 +39,7 @@ class ProfileActivity : AppCompatActivity() {
 
         val editar = bEdit
         val editarPass = bEditPass
+
 
         editarPass.setOnClickListener{
             showAlertPass()
@@ -61,6 +63,31 @@ class ProfileActivity : AppCompatActivity() {
             startActivityForResult(intent, 0 )
         }
 
+       old()
+
+
+    }
+
+    private fun old(){
+        val show = textView
+        val user = Auth.currentUser
+        val userEmail = Auth.currentUser?.email
+        if (user != null){
+            val mail = mAuth.collection("Users").document(user.uid)
+            mail.get().addOnSuccessListener{
+                document->
+                if (document != null){
+                    val nome = document.data?.get("name")
+                    show.setText("email: " + userEmail + "\n"+ "name: " + nome)
+
+                    Log.d("Profile", "DocumentSnapshot data: ${document.data?.get("name")}")
+                } else {
+                    Log.d("Profile", "No such document")
+                }
+            }
+            //show.setText("email: "+ userEmail)
+            Log.d("Profile", "show email")
+        }
     }
 
     private fun showAlertLogin(){
@@ -102,6 +129,9 @@ class ProfileActivity : AppCompatActivity() {
                     if (task4.isSuccessful) {
                         Toast.makeText(this, "Successfully Re-Logged :)", Toast.LENGTH_LONG).show()
                         Log.d("Profile", "user re-logged  ${Auth.currentUser?.uid}")
+                    }else{
+                        Toast.makeText(this, "Erro Re-Logged :)", Toast.LENGTH_LONG).show()
+                        showAlertLogin()
                     }
                     Log.d("Profile", "done botao")
                 }
@@ -151,10 +181,11 @@ class ProfileActivity : AppCompatActivity() {
                             mAuth.collection("Users").document(user.uid).update(pessoa)
                             Toast.makeText(this, "Update email Success", Toast.LENGTH_LONG).show()
                             Log.d("Profile", "email update auth")
+                            old()
                             showAlertLogin()
 
                         } else {
-                            Toast.makeText(this, "Error email Update", Toast.LENGTH_LONG).show()
+                            Toast.makeText(this, "Error email Update re-loggin try aggain", Toast.LENGTH_LONG).show()
                             Log.d("Profile", "email erro auth")
                             showAlertLogin()
                         }
@@ -304,6 +335,17 @@ class ProfileActivity : AppCompatActivity() {
             Auth.signOut()
             startActivity(Intent(this, LoginActivity::class.java))
         }
+
+        if (item!!.itemId == R.id.profile){
+
+            startActivity(Intent (this, ProfileActivity :: class.java ))
+        }
+
+        if (item!!.itemId == R.id.grupo){
+
+            startActivity(Intent (this, GrupoActivity :: class.java ))
+        }
+
         return super.onOptionsItemSelected(item)
     }
 
