@@ -47,7 +47,7 @@ class HomeActivity : AppCompatActivity() {
 
         if (item!!.itemId == R.id.grupo){
 
-            startActivity(Intent (this, GrupoActivity :: class.java ))
+            startActivity(Intent (this, CriarGrupoActivity :: class.java ))
         }
         return super.onOptionsItemSelected(item)
     }

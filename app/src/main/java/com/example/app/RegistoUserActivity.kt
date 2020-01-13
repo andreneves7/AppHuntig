@@ -87,8 +87,7 @@ class RegistoUserActivity : AppCompatActivity() {
        pessoa["uid"] = uid
        pessoa["name"] = name
        pessoa["email"] = email
-//       pessoa["grupos"] = ArrayList<String>()
-//       pessoa["lastLocation"] = Timestamp.now()
+       pessoa["grupo"] = ArrayList<String>()
        ref.set(pessoa)
        Log.d("RegistoUser","user firestore registo")
 

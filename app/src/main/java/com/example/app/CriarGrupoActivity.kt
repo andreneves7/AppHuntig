@@ -1,6 +1,5 @@
 package com.example.app
 
-
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -9,37 +8,42 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.android.synthetic.main.activity_criar_grupo.*
 import kotlinx.android.synthetic.main.activity_evento.*
-import java.util.*
+import java.lang.reflect.Field
+import java.util.HashMap
 
-
-class EventoActivity : AppCompatActivity() {
+class CriarGrupoActivity : AppCompatActivity() {
 
     val Auth = FirebaseAuth.getInstance()
     val mAuth = FirebaseFirestore.getInstance()
-    val gAuth = FirebaseFirestore.getInstance().collection("Grupo")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_evento)
+        setContentView(R.layout.activity_criar_grupo)
 
-        val guardarEvento = bEvento
+        val criarGrupo = bCriaGrupo
+        val verGrupo = bVerGrupos
 
 
-        guardarEvento.setOnClickListener {
-            evento()
+        criarGrupo.setOnClickListener {
+            criar()
         }
+
+        verGrupo.setOnClickListener {
+            startActivity(Intent (this, VerGrupoActivity :: class.java ))
+        }
+
 
     }
 
-    private fun evento(){
+    private fun criar(){
 
-        val nome = edNome
-        val horas = edTime
-        val data = edData
-        val local = edLocal
+//        val ednome = edName
 
+        val nome = edName.text.toString()
         val documentId = mAuth.collection("Users").document().id
         val user = Auth.currentUser
 
@@ -48,35 +52,33 @@ class EventoActivity : AppCompatActivity() {
             mail.get().addOnSuccessListener { document ->
                 if (document != null) {
 
-                    val name = document.data?.get("name")
-//                    val grupo = mAuth.collection("Grupo").
 
-                    val grupo = HashMap<String, Any>()
-                    grupo["nome"] = nome.text.toString()
-                    grupo["pessoas"] = arrayListOf(name)
-                    grupo["data"] = data.text.toString()
-                    grupo["horas"] = horas.text.toString()
-                    grupo["local"] = local.text.toString()
-//                    grupo["grupo"] =
-                    mAuth.collection("Eventos").document(documentId)
-                        .set(grupo)
-//                    mAuth.collection("Users").document(user.uid)
-//                        .update(grupo)
-                    Toast.makeText(this, "evento criado", Toast.LENGTH_SHORT).show()
+                        val name = document.data?.get("name")
+
+                        val grupo = HashMap<String, Any>()
+                        grupo["nome"] = nome
+                        grupo["membros"] = arrayListOf(name)
+                        grupo["admin"] = arrayListOf(name)
+                        mAuth.collection("Grupos").document(documentId).set(grupo)
 
 
-                    val intent = Intent(this,  GrupoActivity:: class.java )
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    startActivity(intent)
+                        val up = HashMap<String, Any>()
+                        up["grupo"] = arrayListOf(nome)
+                        mAuth.collection("Users").document(user.uid).update("grupo", FieldValue.arrayUnion(nome))
 
-                    Log.d("evento","DocumentSnapshot data: ${document.data?.get("name")}"
-                    )
-                } else {
-                    Log.d("evento", "No such document")
+                    Toast.makeText(this, "grupo criado", Toast.LENGTH_SHORT).show()
+
+
+                    startActivity(Intent (this, CriarGrupoActivity :: class.java ))
+
+                    Log.d("criar","DocumentSnapshot data: ${document.data?.get("name")}")
                 }
             }
         }
     }
+
+
+
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
@@ -104,6 +106,5 @@ class EventoActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
-
 }
 
