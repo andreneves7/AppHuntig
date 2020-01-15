@@ -11,10 +11,10 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.core.view.isVisible
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_grupo.*
-import kotlinx.android.synthetic.main.activity_ver_grupo.*
 
 class VariaveisGlobais : Application() {
     var Evento: String =""
@@ -37,9 +37,12 @@ class GrupoActivity : AppCompatActivity() {
 
         val lista = ListView3
 
+        val semEventos = tNaoEventos
 
 
 
+
+        desativar()
 
 
 
@@ -64,12 +67,16 @@ class GrupoActivity : AppCompatActivity() {
                             "Grupo",
                             " sem grupos deste user"
                         )
+
+                        semEventos.isVisible = true
+
                     } else {
                         Log.d(
                             "Grupo",
                             " grupos deste user"
                         )
 
+                        semEventos.isVisible = false
 
                         for (evento in refe) {
                             Log.d(
@@ -140,6 +147,40 @@ class GrupoActivity : AppCompatActivity() {
         }
 
 
+
+    }
+
+    public fun desativar() {
+
+        val evento = bEvento
+
+        val user = Auth.currentUser
+        if (user != null) {
+            val mail = mAuth.collection("Grupos").document(gv.Evento)
+            mail.get().addOnSuccessListener { document ->
+                if (document != null) {
+
+                    val admin = document.data?.get("admin").toString()
+
+                    val buscarEvento = mAuth.collection("Users").document(user?.uid)
+                    buscarEvento.get().addOnSuccessListener { document ->
+                        if (document != null) {
+
+                            val nameUser = document.data?.get("name")
+                            if (admin != nameUser) {
+                                evento.isVisible = false
+                            }
+                        }
+                    }
+
+                    Log.d(
+                        "evento", "DocumentSnapshot data: ${document.data?.get("admin")} "
+                    )
+                } else {
+                    Log.d("evento", "No such document")
+                }
+            }
+        }
 
     }
 

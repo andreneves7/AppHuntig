@@ -10,8 +10,10 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.core.view.isVisible
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.android.synthetic.main.activity_grupo.*
 import kotlinx.android.synthetic.main.activity_ver_grupo.*
 
 
@@ -35,6 +37,7 @@ class VerGrupoActivity : AppCompatActivity() {
 
 
 
+        val semGrupos = tNaoGrupos
         val list = ListView2
 
         val user = Auth.currentUser
@@ -45,6 +48,8 @@ class VerGrupoActivity : AppCompatActivity() {
 
 
                     val values = ArrayList<String>()
+
+
 
 
                     val ref = document.data?.get("grupo") as List<String>
@@ -58,11 +63,16 @@ class VerGrupoActivity : AppCompatActivity() {
                             "VerGrupo",
                             " sem grupos deste user"
                         )
+
+                        semGrupos.isVisible = true
+
                     } else {
                         Log.d(
                             "VerGrupo",
                             " grupos deste user"
                         )
+
+                        semGrupos.isVisible = false
 
                         gv = getApplication() as VariaveisGlobais
                         for (grupo in ref) {

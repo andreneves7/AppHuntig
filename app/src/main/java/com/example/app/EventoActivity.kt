@@ -108,6 +108,10 @@ class EventoActivity : AppCompatActivity() {
 
             startActivity(Intent (this, CriarGrupoActivity :: class.java ))
         }
+        if (item!!.itemId == R.id.home) {
+
+            startActivity(Intent(this, HomeActivity::class.java))
+        }
         return super.onOptionsItemSelected(item)
     }
 

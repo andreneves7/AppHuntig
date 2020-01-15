@@ -37,9 +37,6 @@ class HomeActivity : AppCompatActivity() {
         val lista = ListView4
 
 
-
-
-
         var d = mAuth.collection("Grupos")
         d.get().addOnSuccessListener { result ->
             if (result != null) {
@@ -53,7 +50,6 @@ class HomeActivity : AppCompatActivity() {
                 Log.d("home", "$values")
 
 
-
                 val adapter = ArrayAdapter(this, R.layout.listview_item, values)
 
                 lista.setAdapter(adapter)
@@ -62,42 +58,46 @@ class HomeActivity : AppCompatActivity() {
                 lista.onItemClickListener = object : AdapterView.OnItemClickListener {
 
 
-                    override fun onItemClick( parent: AdapterView<*>, view: View,position: Int, id: Long) {
+                    override fun onItemClick(
+                        parent: AdapterView<*>,
+                        view: View,
+                        position: Int,
+                        id: Long
+                    ) {
 
 
                         val itemValue = lista.getItemAtPosition(position) as String
-
+                        Log.d("home", "grupoID to search: $itemValue")
                         gv.entrar = itemValue
-                        val verificar = Auth.currentUser?.uid
-                        var b   = mAuth.collection("Grupos")
-                        d.get().addOnSuccessListener { result ->
+                        val uid = Auth.currentUser?.uid
+                        var b = mAuth.collection("Grupos").document(itemValue)
+                        b.get().addOnSuccessListener { result ->
                             if (result != null) {
-                                val teste = ArrayList<String>()
-                                val frist = ArrayList<String>()
-                                for (grupo in result) {
 
+                                var membersList = result.get("membros") as List<String>
+                                Log.d("home", "membros: " + membersList.toString())
+//                                    teste.clear()
+                                /* for (f in a){
+                                     teste.add(f)
 
-                                    var a = grupo.get("membros") as List<String>
-                                    for (f in a){
-                                        teste.add(f)
-
-                                    }
-                                    if(teste.contains(verificar) ){
-                                        startActivity(Intent (view.context, VerGrupoActivity :: class.java ))
-                                        Log.d("home","$verificar, $teste, $frist")
-                                    }else{
-                                        startActivity(Intent (view.context, AdesaoActivity :: class.java ))
-                                        Log.d("home","$verificar, $teste, $frist")
-
-                                    }
-
+                                 }*/
+                                if (membersList.contains(uid)) {
+                                    startActivity(
+                                        Intent(
+                                            view.context,
+                                            VerGrupoActivity::class.java
+                                        )
+                                    )
+                                    Log.d("home", "$uid, $membersList")
+                                } else {
+                                    startActivity(Intent(view.context, AdesaoActivity::class.java))
+                                    Log.d("home", "$uid, $membersList")
 
                                 }
 
+
                             }
                         }
-
-
 
 
                         Toast.makeText(
@@ -114,12 +114,6 @@ class HomeActivity : AppCompatActivity() {
         }
 
     }
-
-
-
-
-
-
 
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -146,6 +140,10 @@ class HomeActivity : AppCompatActivity() {
         if (item!!.itemId == R.id.grupo) {
 
             startActivity(Intent(this, CriarGrupoActivity::class.java))
+        }
+        if (item!!.itemId == R.id.home) {
+
+            startActivity(Intent(this, HomeActivity::class.java))
         }
         return super.onOptionsItemSelected(item)
     }

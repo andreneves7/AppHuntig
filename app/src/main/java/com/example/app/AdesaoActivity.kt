@@ -82,6 +82,10 @@ class AdesaoActivity : AppCompatActivity() {
                     mAuth.collection("Users").document(use!!.uid)
                         .update("grupo", FieldValue.arrayUnion(gv.entrar))
 
+                    val intent = Intent(this, VerGrupoActivity :: class.java )
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(intent)
+
 
                 }
                 Log.d("adesao", "DocumentSnapshot data: ${gv.entrar} ")
@@ -101,7 +105,9 @@ class AdesaoActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item!!.itemId == R.id.signOut) {
             Auth.signOut()
-            startActivity(Intent(this, LoginActivity::class.java))
+            val intent = Intent(this, LoginActivity :: class.java )
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
         }
 
         if (item!!.itemId == R.id.profile) {
