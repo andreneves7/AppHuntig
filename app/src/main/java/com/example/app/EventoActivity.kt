@@ -9,6 +9,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_evento.*
 import java.util.*
@@ -19,9 +20,11 @@ class EventoActivity : AppCompatActivity() {
     val Auth = FirebaseAuth.getInstance()
     val mAuth = FirebaseFirestore.getInstance()
     val gAuth = FirebaseFirestore.getInstance().collection("Grupo")
+    lateinit var gv: VariaveisGlobais
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        gv = getApplication() as VariaveisGlobais
         setContentView(R.layout.activity_evento)
 
         val guardarEvento = bEvento
@@ -35,7 +38,7 @@ class EventoActivity : AppCompatActivity() {
 
     private fun evento(){
 
-        val nome = edNome
+        val nome = edNome.text.toString()
         val horas = edTime
         val data = edData
         val local = edLocal
@@ -51,17 +54,20 @@ class EventoActivity : AppCompatActivity() {
                     val name = document.data?.get("name")
 //                    val grupo = mAuth.collection("Grupo").
 
-                    val grupo = HashMap<String, Any>()
-                    grupo["nome"] = nome.text.toString()
-                    grupo["pessoas"] = arrayListOf(name)
-                    grupo["data"] = data.text.toString()
-                    grupo["horas"] = horas.text.toString()
-                    grupo["local"] = local.text.toString()
-//                    grupo["grupo"] =
-                    mAuth.collection("Eventos").document(documentId)
-                        .set(grupo)
-//                    mAuth.collection("Users").document(user.uid)
-//                        .update(grupo)
+                    val evento = HashMap<String, Any>()
+                    evento["nome"] = nome
+                    evento["Presenças"] = arrayListOf(name)
+                    evento["data"] = data.text.toString()
+                    evento["horas"] = horas.text.toString()
+                    evento["local"] = local.text.toString()
+                    mAuth.collection("Eventos").document(nome)
+                        .set(evento)
+
+                    val up = HashMap<String, Any>()
+                    up["Eventos"] = arrayListOf(nome)
+                    mAuth.collection("Grupos").document(gv.Evento)
+                        .update("Eventos", FieldValue.arrayUnion(nome))
+
                     Toast.makeText(this, "evento criado", Toast.LENGTH_SHORT).show()
 
 

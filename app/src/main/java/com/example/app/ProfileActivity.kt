@@ -184,7 +184,6 @@ class ProfileActivity : AppCompatActivity() {
                             Toast.makeText(this, "Update email Success", Toast.LENGTH_LONG).show()
                             Log.d("Profile", "email update auth")
                             old()
-                            showAlertLogin()
 
                         } else {
                             Toast.makeText(this, "Error email Update re-loggin try aggain", Toast.LENGTH_LONG).show()
@@ -249,7 +248,7 @@ class ProfileActivity : AppCompatActivity() {
                             Toast.makeText(this, "Update password Success", Toast.LENGTH_LONG)
                                 .show()
                             Log.d("Profile", "password auth")
-                            showAlertLogin()
+
 
                         } else {
                             Toast.makeText(this, "Error password Update", Toast.LENGTH_LONG).show()
@@ -346,6 +345,11 @@ class ProfileActivity : AppCompatActivity() {
         if (item!!.itemId == R.id.grupo){
 
             startActivity(Intent (this, CriarGrupoActivity :: class.java ))
+        }
+
+        if (item!!.itemId == R.id.home) {
+
+            startActivity(Intent(this, HomeActivity::class.java))
         }
 
         return super.onOptionsItemSelected(item)
