@@ -45,7 +45,6 @@ class CriarGrupoActivity : AppCompatActivity() {
     private fun criar() {
 
 
-
         val nome = edName.text.toString()
         val cod = edCodigo.text.toString()
         val documentId = mAuth.collection("Users").document().id
@@ -59,30 +58,35 @@ class CriarGrupoActivity : AppCompatActivity() {
 
                     val name = document.data?.get("name")
                     val uid = document.data?.get("uid")
-
-                    val grupo = HashMap<String, Any>()
-                    grupo["nome"] = nome
-                    grupo["membros"] = arrayListOf(uid)
-                    grupo["admin"] = arrayListOf(name)
-                    grupo["Eventos"] = ArrayList<String>()
-                    grupo["Codigo"] = cod
-                    mAuth.collection("Grupos").document(nome).set(grupo)
-
-
-                    val up = HashMap<String, Any>()
-                    up["grupo"] = arrayListOf(nome)
-                    mAuth.collection("Users").document(user.uid)
-                        .update("grupo", FieldValue.arrayUnion(nome))
-
-                    Toast.makeText(this, "grupo criado", Toast.LENGTH_SHORT).show()
-
-                    val intent = Intent(this, VerGrupoActivity :: class.java )
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    startActivity(intent)
+                    if (!nome.isEmpty() && !cod.isEmpty()) {
+                        val grup = HashMap<String, Any>()
+                        grup["nome"] = nome
+                        grup["membros"] = arrayListOf(uid)
+                        grup["admin"] = arrayListOf(name)
+                        grup["Eventos"] = ArrayList<String>()
+                        grup["Codigo"] = cod
+                        mAuth.collection("Grupos").document(nome).set(grup)
 
 
+                        val up = HashMap<String, Any>()
+                        up["grupo"] = arrayListOf(nome)
+                        mAuth.collection("Users").document(user.uid)
+                            .update("grupo", FieldValue.arrayUnion(nome))
 
-                    Log.d("criar", "DocumentSnapshot data: ${document.data?.get("name")}")
+                        Toast.makeText(this, "grupo criado", Toast.LENGTH_SHORT).show()
+
+                        val intent = Intent(this, VerGrupoActivity::class.java)
+                        intent.flags =
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        startActivity(intent)
+
+
+
+                        Log.d("criar", "DocumentSnapshot data: ${document.data?.get("name")}")
+                    }else{
+                        Toast.makeText(this, "Preencha os campos", Toast.LENGTH_SHORT).show()
+                    }
+
                 }
             }
         }
@@ -122,7 +126,7 @@ class CriarGrupoActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun clearInputs(){
+    private fun clearInputs() {
         addNome.text.clear()
         addEmail.text.clear()
         addPass.text.clear()

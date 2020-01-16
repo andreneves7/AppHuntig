@@ -362,7 +362,6 @@ class ProfileActivity : AppCompatActivity() {
                         pessoa["Photo"] = p
                         mAuth.collection("Users").document(user.uid).update(pessoa)
                         Toast.makeText(this, "Imagem guardada", Toast.LENGTH_LONG).show()
-
                         verImagem()
                     }
 

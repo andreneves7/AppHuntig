@@ -32,6 +32,7 @@ class DetalhesEventoActivity : AppCompatActivity() {
 
         marcar.setOnClickListener {
             marcarPresença()
+            startActivity(Intent(this, GrupoActivity::class.java))
         }
 
         val user = Auth.currentUser
