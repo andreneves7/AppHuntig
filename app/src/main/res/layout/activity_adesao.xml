@@ -7,6 +7,7 @@
     tools:context=".AdesaoActivity">
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="333dp"
         android:layout_height="179dp"
         android:orientation="vertical"
@@ -33,19 +34,21 @@
         android:id="@+id/bEntrar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Entrar"
         android:background="@drawable/botoes"
+        android:text="Entrar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.529"
+        app:layout_constraintHorizontal_bias="0.391"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.699" />
+        app:layout_constraintVertical_bias="0.685" />
 
     <TextView
         android:id="@+id/tInfo"
         android:layout_width="342dp"
         android:layout_height="111dp"
+        android:textColor="#000000"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.42"

@@ -8,10 +8,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.widget.ImageView
 import android.widget.Toast
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.auth.User
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_registo_user.*
 import java.lang.Exception
@@ -21,7 +23,7 @@ class RegistoUserActivity : AppCompatActivity() {
 
     val mAuth = FirebaseFirestore.getInstance().collection("Users")
     val Auth = FirebaseAuth.getInstance()
-    val mStorage = FirebaseStorage.getInstance()
+    val mStorage = FirebaseStorage.getInstance().reference
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,8 +32,8 @@ class RegistoUserActivity : AppCompatActivity() {
 
         val regBtn = bSingUp
 
-
-
+//        val imageView =findViewById<ImageView>(R.id.imageView)
+//        Glide.with(this/*context*/).load(mStorage).into()
 
 
 

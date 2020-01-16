@@ -10,6 +10,8 @@
         android:id="@+id/tShowDetalhes"
         android:layout_width="369dp"
         android:layout_height="221dp"
+        android:textColor="#000000"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.376"
