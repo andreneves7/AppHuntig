@@ -32,6 +32,7 @@ class VerGrupoActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        gv = getApplication() as VariaveisGlobais
         setContentView(R.layout.activity_ver_grupo)
 
 
@@ -91,6 +92,8 @@ class VerGrupoActivity : AppCompatActivity() {
                             val adapter = ArrayAdapter(this,R.layout.listview_item, values)
 
                             list.setAdapter(adapter)
+                           Log.d("VerGrupo",
+                                "Position :$adapter")
 
                             
                             list.onItemClickListener = object : AdapterView.OnItemClickListener {
@@ -104,6 +107,7 @@ class VerGrupoActivity : AppCompatActivity() {
                                     val itemValue = list.getItemAtPosition(position) as String
 
                                     gv.Evento = itemValue
+                                    gv.ver = itemValue
 
 
                                     startActivity(Intent (view.context, GrupoActivity :: class.java ))
@@ -111,6 +115,8 @@ class VerGrupoActivity : AppCompatActivity() {
                                     Toast.makeText(applicationContext,
                                         "Position :$position\nItem Value : $itemValue", Toast.LENGTH_LONG)
                                         .show()
+                                    Log.d("VerGrupo",
+                                        "Positionffff :$list")
 
 
                                 }

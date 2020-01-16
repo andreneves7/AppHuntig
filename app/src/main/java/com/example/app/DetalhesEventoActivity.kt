@@ -75,15 +75,23 @@ class DetalhesEventoActivity : AppCompatActivity() {
             mail.get().addOnSuccessListener { document ->
                 if (document != null) {
 
-                    val admin = document.data?.get("Presenças") as List<String>
+                    val pre = document.data?.get("Presenças") as List<String>
 
                         val buscarNome = mAuth.collection("Users").document(user?.uid)
                         buscarNome.get().addOnSuccessListener { document ->
                             if (document != null) {
 
                                 val nameUser = document.data?.get("name")
-                                if (admin.contains(nameUser)) {
+                                if (pre.contains(nameUser)) {
+
                                     marcar.isVisible = false
+                                    Log.d("detalhes", "detalhe: $pre" +
+                                            "ffff: $nameUser"+ "\n" + "false")
+                                }else{
+
+                                    marcar.isVisible = true
+                                    Log.d("detalhes", "detalhe: $pre" +
+                                            "ffff: $nameUser"+ "\n" + "true")
                                 }
                             }
                         }
@@ -112,11 +120,12 @@ class DetalhesEventoActivity : AppCompatActivity() {
                     buscarNome.get().addOnSuccessListener { document ->
                         if (document != null) {
 
-                            val nameUser = document.data?.get("name").toString()
-                            val pessoa = HashMap<String, Any>()
-                            pessoa["Presenças"] = nameUser
+                            val nameUser = document.data?.get("name")
+                            val update = HashMap<String, Any>()
+                            update["Presenças"] = arrayListOf(nameUser)
 
-                            mAuth.collection("Eventos").document(gv.detalhes).update("Presenças", FieldValue.arrayUnion(pessoa))
+                            mAuth.collection("Eventos").document(gv.detalhes)
+                                .update("Presenças", FieldValue.arrayUnion(nameUser))
 
                         }
                     }

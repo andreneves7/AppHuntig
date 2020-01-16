@@ -39,6 +39,7 @@ class EventoActivity : AppCompatActivity() {
     private fun evento(){
 
         val nome = edNome.text.toString()
+        gv.nome = nome
         val horas = edTime
         val data = edData
         val local = edLocal
@@ -56,7 +57,7 @@ class EventoActivity : AppCompatActivity() {
 
                     val evento = HashMap<String, Any>()
                     evento["nome"] = nome
-                    evento["Presenças"] = arrayListOf(name)
+                    evento["Presenças"] = ArrayList<String>()
                     evento["data"] = data.text.toString()
                     evento["horas"] = horas.text.toString()
                     evento["local"] = local.text.toString()
@@ -67,6 +68,12 @@ class EventoActivity : AppCompatActivity() {
                     up["Eventos"] = arrayListOf(nome)
                     mAuth.collection("Grupos").document(gv.Evento)
                         .update("Eventos", FieldValue.arrayUnion(nome))
+
+
+                    val upd = HashMap<String, Any>()
+                    upd["Presenças"] = arrayListOf(name)
+                    mAuth.collection("Eventos").document(gv.nome)
+                        .update("Presenças", FieldValue.arrayUnion(name))
 
                     Toast.makeText(this, "evento criado", Toast.LENGTH_SHORT).show()
 

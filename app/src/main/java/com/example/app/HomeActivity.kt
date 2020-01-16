@@ -81,6 +81,8 @@ class HomeActivity : AppCompatActivity() {
                                      teste.add(f)
 
                                  }*/
+                                Log.d("home", "aaaa: $membersList" +
+                                        "ffff: $uid")
                                 if (membersList.contains(uid)) {
                                     startActivity(
                                         Intent(

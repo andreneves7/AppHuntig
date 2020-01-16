@@ -20,6 +20,8 @@ class VariaveisGlobais : Application() {
     var Evento: String =""
     var detalhes: String=""
     var entrar: String=""
+    var ver :String=""
+    var nome : String=""
 
 }
 
@@ -39,14 +41,53 @@ class GrupoActivity : AppCompatActivity() {
 
         val semEventos = tNaoEventos
 
+        val evento = bEvento
 
-
-
-        desativar()
 
 
 
         val user = Auth.currentUser
+
+        val mail = mAuth.collection("Grupos").document(gv.ver)
+        mail.get().addOnSuccessListener { document ->
+            if (document != null) {
+
+                val admin = document.data?.get("admin")as List<String>
+
+                val buscarEvento = mAuth.collection("Users").document(user?.uid.toString())
+                buscarEvento.get().addOnSuccessListener { document ->
+                    if (document != null) {
+
+                        val nameUser = document.data?.get("name")
+                        Log.d("grupo", "aaaa: $admin" +
+                                "ffff: $nameUser")
+                        if (admin.contains(nameUser) ) {
+                            evento.isVisible = true
+
+                            Log.d("grupo", "aaaa: $admin" +
+                                    "ffff: $nameUser"+ "\n" + "true")
+                        }else{
+                            evento.isVisible = false
+                            Log.d("grupo", "aaaa: $admin" +
+                                    "ffff: $nameUser"+ "\n" + "false")
+                        }
+                    }
+                }
+
+                Log.d(
+                    "evento", "DocumentSnapshot data: ${document.data?.get("admin")} "
+                )
+            } else {
+                Log.d("evento", "No such document")
+            }
+        }
+
+
+
+
+
+
+
         if (user != null) {
             val mail = mAuth.collection("Grupos").document(gv.Evento)
             mail.get().addOnSuccessListener { document ->
@@ -70,6 +111,8 @@ class GrupoActivity : AppCompatActivity() {
 
                         semEventos.isVisible = true
 
+
+
                     } else {
                         Log.d(
                             "Grupo",
@@ -77,6 +120,8 @@ class GrupoActivity : AppCompatActivity() {
                         )
 
                         semEventos.isVisible = false
+
+
 
                         for (evento in refe) {
                             Log.d(
@@ -104,6 +149,8 @@ class GrupoActivity : AppCompatActivity() {
 
                                     val itemValue = lista.getItemAtPosition(position) as String
                                     gv.detalhes = itemValue
+                                    Log.d("Grupo",
+                                        "ffff :$itemValue")
 
                                     startActivity(Intent (view.context, DetalhesEventoActivity :: class.java ))
 
@@ -140,7 +187,7 @@ class GrupoActivity : AppCompatActivity() {
 
 
 
-        val evento = bEvento
+
 
         evento.setOnClickListener{
             startActivity(Intent (this, EventoActivity :: class.java ))
@@ -150,39 +197,7 @@ class GrupoActivity : AppCompatActivity() {
 
     }
 
-    public fun desativar() {
 
-        val evento = bEvento
-
-        val user = Auth.currentUser
-        if (user != null) {
-            val mail = mAuth.collection("Grupos").document(gv.Evento)
-            mail.get().addOnSuccessListener { document ->
-                if (document != null) {
-
-                    val admin = document.data?.get("admin").toString()
-
-                    val buscarEvento = mAuth.collection("Users").document(user?.uid)
-                    buscarEvento.get().addOnSuccessListener { document ->
-                        if (document != null) {
-
-                            val nameUser = document.data?.get("name")
-                            if (admin != nameUser) {
-                                evento.isVisible = false
-                            }
-                        }
-                    }
-
-                    Log.d(
-                        "evento", "DocumentSnapshot data: ${document.data?.get("admin")} "
-                    )
-                } else {
-                    Log.d("evento", "No such document")
-                }
-            }
-        }
-
-    }
 
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

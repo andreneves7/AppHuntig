@@ -21,19 +21,20 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val loginBtn = bLogin
-        val regTxt =  bRegisto
 
-        loginBtn.setOnClickListener(View.OnClickListener {
-            view -> login()
+        val loginBtn = bLogin
+        val regTxt = bRegisto
+
+        loginBtn.setOnClickListener(View.OnClickListener { view ->
+            login()
         })
 
-        regTxt.setOnClickListener(View.OnClickListener {
-            view -> register()
+        regTxt.setOnClickListener(View.OnClickListener { view ->
+            register()
         })
     }
 
-    private fun login(){
+    private fun login() {
         val emailTxt = idEmail
         val passwordTxt = idPassword
 
@@ -41,33 +42,37 @@ class LoginActivity : AppCompatActivity() {
         var password = passwordTxt.text.toString()
 
 
-        if(!email.isEmpty() && !password.isEmpty()){
+        if (!email.isEmpty() && !password.isEmpty()) {
             Auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    val intent = Intent(this,  HomeActivity:: class.java )
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    startActivity(intent)
-                    //startActivity(Intent(this, home::class.java))
-                    Toast.makeText(this, "Successfully Logged in :)", Toast.LENGTH_LONG).show()
-                    Log.d("Login", "user ${Auth.currentUser?.uid}")
+                    if (Auth.currentUser!!.isEmailVerified) {
+                        val intent = Intent(this, HomeActivity::class.java)
+                        intent.flags =
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        startActivity(intent)
+                        //startActivity(Intent(this, home::class.java))
+                        Toast.makeText(this, "Successfully Logged in :)", Toast.LENGTH_LONG).show()
+                        Log.d("Login", "user ${Auth.currentUser?.uid}")
+                    } else {
+                        Toast.makeText(this, "verifique email", Toast.LENGTH_SHORT).show()
+                    }
                 } else {
                     Toast.makeText(this, "Error Logging in :(", Toast.LENGTH_SHORT).show()
                 }
             }
-        } else{
+        } else {
             Toast.makeText(this, "Please fill up the credetianls", Toast.LENGTH_LONG).show()
         }
     }
 
-    private fun register () {
+    private fun register() {
 
-        val intent = Intent(this, RegistoUserActivity :: class.java )
+        val intent = Intent(this, RegistoUserActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
     }
 
-   /* private fun updateCurrentUser(){
-        val currentUser =Auth.currentUser
 
-    }*/
+
+
 }

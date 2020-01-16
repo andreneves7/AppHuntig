@@ -1,6 +1,7 @@
 package com.example.app
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -21,7 +22,6 @@ class RegistoUserActivity : AppCompatActivity() {
     val mAuth = FirebaseFirestore.getInstance().collection("Users")
     val Auth = FirebaseAuth.getInstance()
     val mStorage = FirebaseStorage.getInstance()
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,29 +48,36 @@ class RegistoUserActivity : AppCompatActivity() {
     }
 
 
+    private fun registoAuth(password: String, email: String, name: String) {
 
-
-
-   private fun registoAuth(password: String, email: String, name: String){
-
-        if (!password.isEmpty() && !email.isEmpty() && !name.isEmpty())  {
+        if (!password.isEmpty() && !email.isEmpty() && !name.isEmpty()) {
             Auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { it ->
 
                 if (!it.isSuccessful) return@addOnCompleteListener
 
-                Log.d( "RegistoUser", "user auth com uid: ${it.result?.user?.uid}")
-                Toast.makeText(this, "Successfully signed in", Toast.LENGTH_LONG).show()
+                Log.d("RegistoUser", "user auth com uid: ${it.result?.user?.uid}")
                 register(name, email)
+                when {
+                    it.isSuccessful -> {
+                        Toast.makeText(this, "Registo COM sucesso", Toast.LENGTH_SHORT).show()
+                        Auth.signOut()
+                    }
+                    else -> {
+                        Toast.makeText(this, "Registo sem sucesso", Toast.LENGTH_SHORT).show()
+                    }
+                }
 
-            }.addOnFailureListener { exception: Exception ->
-                Toast.makeText(this, exception.toString(), Toast.LENGTH_LONG).show()
+
             }
 
-        }
 
-        else {
+                .addOnFailureListener { exception: Exception ->
+                    Toast.makeText(this, exception.toString(), Toast.LENGTH_LONG).show()
+                }
+        }else
+        {
             Toast.makeText(this, "Please", Toast.LENGTH_LONG).show()
-            Log.d( "RegistoUser", "nao registo")
+            Log.d("RegistoUser", "nao registo")
         }
 
     }
@@ -78,52 +85,55 @@ class RegistoUserActivity : AppCompatActivity() {
 
 
 
-   private  fun register (name: String, email: String){
+private fun register(name: String, email: String) {
 
-       val uid = Auth?.uid.toString()
-       val ref = mAuth.document("$uid")
+    val uid = Auth?.uid.toString()
+    val ref = mAuth.document("$uid")
 
-       val pessoa = HashMap<String, Any>()
-       pessoa["uid"] = uid
-       pessoa["name"] = name
-       pessoa["email"] = email
-       pessoa["grupo"] = ArrayList<String>()
-       ref.set(pessoa)
-       Log.d("RegistoUser","user firestore registo")
-
-
-       clearInputs()
-       val intent = Intent(this, LoginActivity :: class.java )
-       intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-       startActivity(intent)
-
-   }
+    val pessoa = HashMap<String, Any>()
+    pessoa["uid"] = uid
+    pessoa["name"] = name
+    pessoa["email"] = email
+    pessoa["grupo"] = ArrayList<String>()
+    ref.set(pessoa)
+    Log.d("RegistoUser", "user firestore registo")
 
 
+    sendEmailVerification()
+    Log.d("RegistoUser", "email enviado")
+    clearInputs()
+    val intent = Intent(this, LoginActivity::class.java)
+    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+    startActivity(intent)
 
 
-    /*private fun sendEmailVerification(){
-        val user = Auth.currentUser
-        user?.sendEmailVerification()?.addOnCompleteListener{
+}
 
-            val builder = AlertDialog.Builder(this)
-            builder.setTitle("Email Verfication")
-            builder.setMessage("Please confirm email")
-            //builder.setPositiveButton("OK", DialogInterface.OnClickListener(function = x))
 
-            builder.setPositiveButton(android.R.string.yes) { dialog, which ->
-                Toast.makeText(applicationContext,
-                    android.R.string.yes, Toast.LENGTH_SHORT)
-                startActivity(Intent (this, MainActivity :: class.java ))
-            }
-            builder.show()
+private fun sendEmailVerification() {
+    val user = Auth.currentUser
+    user?.sendEmailVerification()?.addOnCompleteListener {
+
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Email Verfication")
+        builder.setMessage("Please confirm email")
+        //builder.setPositiveButton("OK", DialogInterface.OnClickListener(function = x))
+
+        builder.setPositiveButton(android.R.string.yes) { dialog, which ->
+            Toast.makeText(
+                applicationContext,
+                android.R.string.yes, Toast.LENGTH_SHORT
+            )
+            startActivity(Intent(this, LoginActivity::class.java))
         }
-    }*/
-
-    private fun clearInputs(){
-        addNome.text.clear()
-        addEmail.text.clear()
-        addPass.text.clear()
     }
+}
+
+
+private fun clearInputs() {
+    addNome.text.clear()
+    addEmail.text.clear()
+    addPass.text.clear()
+}
 }
 

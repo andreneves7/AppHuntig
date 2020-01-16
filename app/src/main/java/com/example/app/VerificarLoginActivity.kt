@@ -11,10 +11,11 @@ class VerificarLoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (FirebaseAuth.getInstance().currentUser == null)
+        if (FirebaseAuth.getInstance().currentUser == null) {
             startActivity<LoginActivity>()
-        else
+        } else {
             startActivity<HomeActivity>()
+        }
         finish()
     }
 }
