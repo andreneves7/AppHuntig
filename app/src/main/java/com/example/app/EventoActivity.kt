@@ -8,15 +8,10 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.gms.common.internal.Constants
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_evento.*
-import java.text.ParseException
-import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import java.util.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -48,7 +43,7 @@ class EventoActivity : AppCompatActivity() {
         val nome = edNome.text.toString()
         gv.nome = nome
         val horas = edTime.text.toString()
-        val data = edData.text.toString()
+        val data = edAno.text.toString()
         val local = edLocal.text.toString()
 
 
@@ -64,19 +59,19 @@ class EventoActivity : AppCompatActivity() {
 //                    val grupo = mAuth.collection("Grupo").
 
 
-                    var formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
-                    val f = formatter.format(LocalDate.parse(data, formatter))
-                    Log.d(
-                        "evento",
-                        "dados: $f, $formatter"
-                    )
+//                    var formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+//                    val f = formatter.format(LocalDate.parse(data, formatter))
+//                    Log.d(
+//                        "evento",
+//                        "dados: $f, $formatter"
+//                    )
                     if (!nome.isEmpty() && !data.isEmpty() && isTimeValid(horas) && !local.isEmpty()) {
 
 
                         val evento = HashMap<String, Any>()
                         evento["nome"] = nome
                         evento["Presenças"] = ArrayList<String>()
-                        evento["data"] = f
+                        evento["data"] = data
                         evento["horas"] = horas
                         evento["local"] = local
                         mAuth.collection("Eventos").document(nome)
@@ -93,11 +88,11 @@ class EventoActivity : AppCompatActivity() {
                         mAuth.collection("Eventos").document(gv.nome)
                             .update("Presenças", FieldValue.arrayUnion(name))
 
-                        Toast.makeText(this, "evento criado", Toast.LENGTH_SHORT).show()
-                        Log.d(
-                            "evento",
-                            "dados: $nome ,$f,  ${isTimeValid(horas)} , $local"
-                        )
+                                             Toast.makeText(this, "evento criado", Toast.LENGTH_SHORT).show()
+//                        Log.d(
+//                            "evento",
+//                            "dados: $nome ,$f,  ${isTimeValid(horas)} , $local"
+//                        )
 
 
                         val intent = Intent(this, GrupoActivity::class.java)
@@ -105,10 +100,10 @@ class EventoActivity : AppCompatActivity() {
                             Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
                         startActivity(intent)
                     } else {
-                        Log.d(
-                            "evento",
-                            "dados: $nome ,$f,  ${isTimeValid(horas)} , $local"
-                        )
+//                        Log.d(
+//                            "evento",
+//                            "dados: $nome ,$f,  ${isTimeValid(horas)} , $local"
+//                        )
                         Toast.makeText(this, "Preencha campos", Toast.LENGTH_SHORT).show()
 
 

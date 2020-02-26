@@ -180,6 +180,8 @@ class ProfileActivity : AppCompatActivity() {
             val email = userEmailEdt.text.toString()
             val password = userPassEdt.text.toString()
 
+            if (Auth.currentUser!!.isEmailVerified) {
+
             Auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task4 ->
                     if (task4.isSuccessful) {
@@ -191,6 +193,7 @@ class ProfileActivity : AppCompatActivity() {
                     }
                     Log.d("Profile", "done botao")
                 }
+            }
 
 
         }
@@ -233,6 +236,7 @@ class ProfileActivity : AppCompatActivity() {
                             Log.d("Profile", "email update auth")
                             old()
 
+
                         } else {
                             Toast.makeText(
                                 this,
@@ -242,6 +246,7 @@ class ProfileActivity : AppCompatActivity() {
                             Log.d("Profile", "email erro auth")
                             showAlertLogin()
                         }
+                        sendEmailVerification()
                     }
                 }
             }
@@ -402,6 +407,25 @@ class ProfileActivity : AppCompatActivity() {
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun sendEmailVerification() {
+        val user = Auth.currentUser
+        user?.sendEmailVerification()?.addOnCompleteListener {
+
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("Email Verfication")
+            builder.setMessage("Please confirm email")
+            //builder.setPositiveButton("OK", DialogInterface.OnClickListener(function = x))
+
+            builder.setPositiveButton(android.R.string.yes) { dialog, which ->
+                Toast.makeText(
+                    applicationContext,
+                    android.R.string.yes, Toast.LENGTH_SHORT
+                )
+                startActivity(Intent(this, LoginActivity::class.java))
+            }
+        }
     }
 
 }

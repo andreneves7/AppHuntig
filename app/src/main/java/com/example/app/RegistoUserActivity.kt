@@ -78,7 +78,7 @@ class RegistoUserActivity : AppCompatActivity() {
                 }
         }else
         {
-            Toast.makeText(this, "Please", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Preencha todos os campos", Toast.LENGTH_LONG).show()
             Log.d("RegistoUser", "nao registo")
         }
 
