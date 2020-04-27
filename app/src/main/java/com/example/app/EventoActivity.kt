@@ -6,6 +6,9 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.ArrayAdapter
+import android.widget.DatePicker
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
@@ -15,6 +18,7 @@ import kotlinx.android.synthetic.main.activity_evento.*
 import java.util.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
+import kotlin.collections.ArrayList
 
 
 class EventoActivity : AppCompatActivity() {
@@ -29,7 +33,54 @@ class EventoActivity : AppCompatActivity() {
         gv = getApplication() as VariaveisGlobais
         setContentView(R.layout.activity_evento)
 
+        val datePicker = findViewById<DatePicker>(R.id.datePicker1)
+        val today = Calendar.getInstance()
+        datePicker.init(today.get(Calendar.YEAR), today.get(Calendar.MONTH),
+            today.get(Calendar.DAY_OF_MONTH)
+
+        ) { view, year, month, day ->
+            val month = month + 1
+            val anooo = year
+            val msg = "You Selected: $day/$month/$year"
+            Toast.makeText(this@EventoActivity , msg +  anooo, Toast.LENGTH_SHORT).show()
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         val guardarEvento = bEvento
+//        val smes = edMes
+//
+//
+//        //Spinner mes  preenchimento dele
+//        ArrayAdapter.createFromResource(
+//            this,
+//            R.array.mes_array,
+//            android.R.layout.simple_spinner_item
+//        ).also { adapter ->
+//            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+//            smes.adapter = adapter
+//        }
+//        ArrayAdapter.createFromResource(
+//            this,
+//            R.array.dia_array,
+//            android.R.layout.simple_spinner_item
+//        ).also { adapter ->
+//            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+//            dia.adapter = adapter
+//        }
 
 
         guardarEvento.setOnClickListener {
@@ -44,12 +95,17 @@ class EventoActivity : AppCompatActivity() {
         gv.nome = nome
         val horas = edTime.text.toString()
         val ano = edAno.text.toString()
-        val mes = edMes.text.toString()
-        val dia = edDia.text.toString()
+
+       // val dia = edDia.text.toString()
         val local = edLocal.text.toString()
 
 
-        val documentId = mAuth.collection("Users").document().id
+
+
+        //val mes = edMes.selectedItem.toString()
+
+
+        //val documentId = mAuth.collection("Users").document().id
         val user = Auth.currentUser
 
         if (user != null) {
@@ -61,27 +117,29 @@ class EventoActivity : AppCompatActivity() {
 //                    val grupo = mAuth.collection("Grupo").
 
 
-//                    var formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-//                    val f = formatter.format(LocalDate.parse(data, formatter))
-//                    Log.d(
-//                        "evento",
-//                        "dados: $f, $formatter"
-//                    )
-                    if (!nome.isEmpty() && ValidarData(
-                            ano,
-                            mes,
-                            dia
-                        )   /*!dia.isEmpty() && !mes.isEmpty() && !ano.isEmpty() */ && isTimeValid(
-                            horas
-                        ) && !local.isEmpty()
+
+                    if (!nome.isEmpty() &&
+                        /*!dia.isEmpty() && !mes.isEmpty() && */!ano.isEmpty() && !horas.isEmpty()
+                        && !local.isEmpty()
                     ) {
+
+
+
+//                        Log.d(
+//                        "evento",
+//                        "dados: $mes , ${mes}"
+//                    )
+
+                        isTimeValid(
+                            horas
+                        )
 
 
                         val evento = HashMap<String, Any>()
                         evento["nome"] = nome
                         evento["Presenças"] = ArrayList<String>()
-                        evento["Dia"] = dia
-                        evento["Mes"] = mes
+                        //evento["Dia"] = dia
+                        //evento["Mes"] = mes
                         evento["Ano"] = ano
                         evento["horas"] = horas
                         evento["local"] = local
@@ -100,10 +158,7 @@ class EventoActivity : AppCompatActivity() {
                             .update("Presenças", FieldValue.arrayUnion(name))
 
                         Toast.makeText(this, "evento criado", Toast.LENGTH_SHORT).show()
-//                        Log.d(
-//                            "evento",
-//                            "dados: $nome ,$f,  ${isTimeValid(horas)} , $local"
-//                        )
+
 
 
                         val intent = Intent(this, GrupoActivity::class.java)
@@ -111,10 +166,7 @@ class EventoActivity : AppCompatActivity() {
                             Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
                         startActivity(intent)
                     } else {
-//                        Log.d(
-//                            "evento",
-//                            "dados: $nome ,$f,  ${isTimeValid(horas)} , $local"
-//                        )
+
                         Toast.makeText(this, "Preencha campos", Toast.LENGTH_SHORT).show()
 
 
@@ -175,138 +227,136 @@ class EventoActivity : AppCompatActivity() {
     }
 
 
-    fun ValidarData(ano: String, mes: String, dia: String): Boolean {
-
-//        val ano = edAno.text.toString()
-//        val mes = edMes.text.toString()
-//        val dia = edDia.text.toString()
-        var isValid = false
-        val a = 1
-        val b = 12
-        val c = 29
-        val d = 30
-        val e = 31
-        val feb = 2
-        val meses = 1 or 3 or 5 or 7 or 8 or 10 or 12
-
-        if (ano.toInt() % 4 == 0) {
-            if ( mes.compareTo(a.toString()) >= 0  && mes.compareTo(b.toString()) <= 13) {
-                if (mes == feb.toString()) {
-                    if (dia >= 1.toString() && dia <= 29.toString()) {
-                        isValid = true
-                    } else {
-                        Toast.makeText(
-                            this,
-                            "introduzir dia so pode ir de 1 ate 29",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        Log.d(
-                            "evento",
-                            "dia fail para mes 2"
-                        )
-                    }
-
-                } else if (meses.equals(mes)) {
-                    if (dia >= 1.toString() && dia <= 31.toString()) {
-                        isValid = true
-                    } else {
-                        Toast.makeText(
-                            this,
-                            "introduzir dia so pode ir de 1 ate 31",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        Log.d(
-                            "evento",
-                            "dia fail para meses"
-                        )
-                    }
-                } else {
-                    if (dia >= 1.toString() && dia <= 30.toString()) {
-                        isValid = true
-                    } else {
-                        Toast.makeText(
-                            this,
-                            "introduzir dia so pode ir de 1 ate 30",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        Log.d(
-                            "evento",
-                            "dia fail para mes "
-                        )
-                    }
-
-
-                }
-            }
-            Log.d(
-                "evento",
-                "ano  bisexto"
-            )
-
-
-        } else {
-            if (1 <= mes.toInt() && 12 <= mes.toInt()) {
-                if (mes.toInt() == feb) {
-                    if (dia >= 1.toString() && dia <= 28.toString()) {
-                        isValid = true
-                    } else {
-                        Toast.makeText(
-                            this,
-                            "introduzir dia so pode ir de 1 ate 28",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        Log.d(
-                            "evento",
-                            "dia fail para mes 2"
-                        )
-                    }
-
-
-
-                } else if (meses.equals(mes)) {
-                    if ( dia >= 1.toString() && dia <= 31.toString()) {
-                        isValid = true
-                    } else {
-                        Toast.makeText(
-                            this,
-                            "introduzir dia so pode ir de 1 ate 31",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        Log.d(
-                            "evento",
-                            "dia fail para meses"
-                        )
-                    }
-
-
-
-                } else {
-                    if (dia >= 1.toString() && dia <= 30.toString()) {
-                    } else {
-                        Toast.makeText(
-                            this,
-                            "introduzir dia so pode ir de 1 ate 30",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        Log.d(
-                            "evento",
-                            "dia fail para mes"
-                        )
-                    }
-
-                    isValid = true
-
-                }
-            }
-                Log.d(
-                    "evento",
-                    "ano nao bisexto"
-                )
-        }
-
-        return isValid
-
-    }
+//    fun ValidarData(ano: Int, mes: String, dia: Int): Boolean {
+//
+////        val ano = edAno.text.toString()
+////        val mes = edMes.text.toString()
+////        val dia = edDia.text.toString()
+//        var isValid = false
+//        val a = 1
+//        val b = 12
+//        val c = 29
+//        val d = 30
+//        val e = 31
+//        val feb = 2
+//        val meses = 1 or 3 or 5 or 7 or 8 or 10 or 12
+//
+//        if (ano % 4 == 0) {
+//            if (mes.toInt() in 0..13) {
+//                if (mes == feb.toString()) {
+//                    if (dia in 1..29) {
+//                        isValid = true
+//                    } else {
+//                        Toast.makeText(
+//                            this,
+//                            "introduzir dia so pode ir de 1 ate 29",
+//                            Toast.LENGTH_SHORT
+//                        ).show()
+//                        Log.d(
+//                            "evento",
+//                            "dia fail para mes 2"
+//                        )
+//                    }
+//
+//                } else if (meses == mes.toInt()) {
+//                    if (dia in 1..31) {
+//                        isValid = true
+//                    } else {
+//                        Toast.makeText(
+//                            this,
+//                            "introduzir dia so pode ir de 1 ate 31",
+//                            Toast.LENGTH_SHORT
+//                        ).show()
+//                        Log.d(
+//                            "evento",
+//                            "dia fail para meses"
+//                        )
+//                    }
+//                } else {
+//                    if (dia in 1..30) {
+//                        isValid = true
+//                    } else {
+//                        Toast.makeText(
+//                            this,
+//                            "introduzir dia so pode ir de 1 ate 30",
+//                            Toast.LENGTH_SHORT
+//                        ).show()
+//                        Log.d(
+//                            "evento",
+//                            "dia fail para mes "
+//                        )
+//                    }
+//
+//
+//                }
+//            }
+//            Log.d(
+//                "evento ",
+//                "ano  bisexto"
+//            )
+//
+//
+//        } else {
+//            if (mes.toInt() in 1..12) {
+//                if (mes == feb.toString()) {
+//                    if (dia in 1..28) {
+//                        isValid = true
+//                    } else {
+//                        Toast.makeText(
+//                            this,
+//                            "introduzir dia so pode ir de 1 ate 28",
+//                            Toast.LENGTH_SHORT
+//                        ).show()
+//                        Log.d(
+//                            "evento",
+//                            "dia fail para mes 2"
+//                        )
+//                    }
+//
+//
+//                } else if (meses == mes.toInt()) {
+//                    if (dia in 1..31) {
+//                        isValid = true
+//                    } else {
+//                        Toast.makeText(
+//                            this,
+//                            "introduzir dia so pode ir de 1 ate 31",
+//                            Toast.LENGTH_SHORT
+//                        ).show()
+//                        Log.d(
+//                            "evento",
+//                            "dia fail para meses"
+//                        )
+//                    }
+//
+//
+//                } else {
+//                    if (dia in 1..30) {
+//                    } else {
+//                        Toast.makeText(
+//                            this,
+//                            "introduzir dia so pode ir de 1 ate 30",
+//                            Toast.LENGTH_SHORT
+//                        ).show()
+//                        Log.d(
+//                            "evento",
+//                            "dia fail para mes"
+//                        )
+//                    }
+//
+//                    isValid = true
+//
+//                }
+//            }
+//            Log.d(
+//                "evento",
+//                "ano nao bisexto"
+//            )
+//        }
+//
+//        return isValid
+//
+//    }
 
 
 }
