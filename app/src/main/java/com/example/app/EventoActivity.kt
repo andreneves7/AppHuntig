@@ -30,7 +30,7 @@ class EventoActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        gv = getApplication() as VariaveisGlobais
+        gv = application as VariaveisGlobais
         setContentView(R.layout.activity_evento)
 
         val datePicker = findViewById<DatePicker>(R.id.datePicker1)
@@ -44,18 +44,6 @@ class EventoActivity : AppCompatActivity() {
             val msg = "You Selected: $day/$month/$year"
             Toast.makeText(this@EventoActivity , msg +  anooo, Toast.LENGTH_SHORT).show()
         }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -198,16 +186,16 @@ class EventoActivity : AppCompatActivity() {
             //startActivity(Intent (this, MainActivity :: class.java ))
         }
 
-        if (item!!.itemId == R.id.profile) {
+        if (item.itemId == R.id.profile) {
 
             startActivity(Intent(this, ProfileActivity::class.java))
         }
 
-        if (item!!.itemId == R.id.grupo) {
+        if (item.itemId == R.id.grupo) {
 
             startActivity(Intent(this, CriarGrupoActivity::class.java))
         }
-        if (item!!.itemId == R.id.home) {
+        if (item.itemId == R.id.home) {
 
             startActivity(Intent(this, HomeActivity::class.java))
         }

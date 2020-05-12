@@ -34,7 +34,7 @@ class GrupoActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        gv = getApplication() as VariaveisGlobais
+        gv = application as VariaveisGlobais
         setContentView(R.layout.activity_grupo)
 
         val lista = ListView3
@@ -138,7 +138,7 @@ class GrupoActivity : AppCompatActivity() {
 
                             val adapter = ArrayAdapter(this,R.layout.listview_item, valu)
 
-                            lista.setAdapter(adapter)
+                            lista.adapter = adapter
 
                             lista.onItemClickListener = object : AdapterView.OnItemClickListener {
 
@@ -215,17 +215,17 @@ class GrupoActivity : AppCompatActivity() {
             //startActivity(Intent (this, MainActivity :: class.java ))
         }
 
-        if (item!!.itemId == R.id.profile){
+        if (item.itemId == R.id.profile){
 
             startActivity(Intent (this, ProfileActivity :: class.java ))
         }
 
-        if (item!!.itemId == R.id.grupo){
+        if (item.itemId == R.id.grupo){
 
             startActivity(Intent (this, CriarGrupoActivity :: class.java ))
         }
 
-        if (item!!.itemId == R.id.home) {
+        if (item.itemId == R.id.home) {
 
             startActivity(Intent(this, HomeActivity::class.java))
         }

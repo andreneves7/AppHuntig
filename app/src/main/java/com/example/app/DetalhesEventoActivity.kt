@@ -7,12 +7,12 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
-import androidx.core.view.isVisible
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_detalhes_evento.*
 import java.util.HashMap
+import androidx.core.view.isVisible as isVisible
 
 class DetalhesEventoActivity : AppCompatActivity() {
 
@@ -22,7 +22,7 @@ class DetalhesEventoActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        gv = getApplication() as VariaveisGlobais
+        gv = application as VariaveisGlobais
         setContentView(R.layout.activity_detalhes_evento)
 
         val showDetalhe = tShowDetalhes
@@ -49,7 +49,7 @@ class DetalhesEventoActivity : AppCompatActivity() {
 
 
 
-                    showDetalhe.setText("nome: " + name + "\n" + "data: " + date + "\n" + "horas: " + time + "\n" + "local: " + place + "\n")
+                    showDetalhe.text = "nome: " + name + "\n" + "data: " + date + "\n" + "horas: " + time + "\n" + "local: " + place + "\n"
 
                     Log.d(
                         "evento",
@@ -66,7 +66,7 @@ class DetalhesEventoActivity : AppCompatActivity() {
 
     }
 
-    public fun desativar() {
+    fun desativar() {
 
         val marcar = bPresença
 
@@ -78,7 +78,7 @@ class DetalhesEventoActivity : AppCompatActivity() {
 
                     val pre = document.data?.get("Presenças") as List<String>
 
-                        val buscarNome = mAuth.collection("Users").document(user?.uid)
+                        val buscarNome = mAuth.collection("Users").document(user.uid)
                         buscarNome.get().addOnSuccessListener { document ->
                             if (document != null) {
 
@@ -109,7 +109,7 @@ class DetalhesEventoActivity : AppCompatActivity() {
     }
 
 
-    public fun marcarPresença(){
+    fun marcarPresença(){
 
         val user = Auth.currentUser
         if (user != null) {
@@ -117,7 +117,7 @@ class DetalhesEventoActivity : AppCompatActivity() {
             mail.get().addOnSuccessListener { document ->
                 if (document != null) {
 
-                    val buscarNome = mAuth.collection("Users").document(user?.uid)
+                    val buscarNome = mAuth.collection("Users").document(user.uid)
                     buscarNome.get().addOnSuccessListener { document ->
                         if (document != null) {
 
@@ -155,17 +155,17 @@ class DetalhesEventoActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        if (item!!.itemId == R.id.profile) {
+        if (item.itemId == R.id.profile) {
 
             startActivity(Intent(this, ProfileActivity::class.java))
         }
 
-        if (item!!.itemId == R.id.grupo) {
+        if (item.itemId == R.id.grupo) {
 
             startActivity(Intent(this, CriarGrupoActivity::class.java))
         }
 
-        if (item!!.itemId == R.id.home) {
+        if (item.itemId == R.id.home) {
 
             startActivity(Intent(this, HomeActivity::class.java))
         }

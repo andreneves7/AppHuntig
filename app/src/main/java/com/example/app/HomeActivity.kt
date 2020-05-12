@@ -31,7 +31,7 @@ class HomeActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        gv = getApplication() as VariaveisGlobais
+        gv = application as VariaveisGlobais
         setContentView(R.layout.activity_home)
 
         val lista = ListView4
@@ -52,7 +52,7 @@ class HomeActivity : AppCompatActivity() {
 
                 val adapter = ArrayAdapter(this, R.layout.listview_item, values)
 
-                lista.setAdapter(adapter)
+                lista.adapter = adapter
 
 
                 lista.onItemClickListener = object : AdapterView.OnItemClickListener {
@@ -134,22 +134,22 @@ class HomeActivity : AppCompatActivity() {
             //startActivity(Intent (this, MainActivity :: class.java ))
         }
 
-        if (item!!.itemId == R.id.profile) {
+        if (item.itemId == R.id.profile) {
 
             startActivity(Intent(this, ProfileActivity::class.java))
         }
 
-        if (item!!.itemId == R.id.grupo) {
+        if (item.itemId == R.id.grupo) {
 
             startActivity(Intent(this, CriarGrupoActivity::class.java))
         }
 
-        if (item!!.itemId == R.id.mapa) {
+        if (item.itemId == R.id.mapa) {
 
             startActivity(Intent(this, MapsActivity::class.java))
         }
 
-        if (item!!.itemId == R.id.home) {
+        if (item.itemId == R.id.home) {
 
             val intent = Intent(this, HomeActivity::class.java)
             intent.flags =

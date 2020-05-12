@@ -25,7 +25,7 @@ class AdesaoActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        gv = getApplication() as VariaveisGlobais
+        gv = application as VariaveisGlobais
         setContentView(R.layout.activity_adesao)
 
         val texto = tInfo
@@ -43,7 +43,7 @@ class AdesaoActivity : AppCompatActivity() {
 
 
 
-                    texto.setText("nome: " + name)
+                    texto.text = "nome: " + name
 
                     Log.d(
                         "adesao", "DocumentSnapshot data: ${document.data?.get("nome")} }"
@@ -110,17 +110,17 @@ class AdesaoActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        if (item!!.itemId == R.id.profile) {
+        if (item.itemId == R.id.profile) {
 
             startActivity(Intent(this, ProfileActivity::class.java))
         }
 
-        if (item!!.itemId == R.id.grupo) {
+        if (item.itemId == R.id.grupo) {
 
             startActivity(Intent(this, CriarGrupoActivity::class.java))
         }
 
-        if (item!!.itemId == R.id.home) {
+        if (item.itemId == R.id.home) {
 
             startActivity(Intent(this, HomeActivity::class.java))
         }

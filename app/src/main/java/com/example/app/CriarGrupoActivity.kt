@@ -108,17 +108,17 @@ class CriarGrupoActivity : AppCompatActivity() {
             //startActivity(Intent (this, MainActivity :: class.java ))
         }
 
-        if (item!!.itemId == R.id.profile) {
+        if (item.itemId == R.id.profile) {
 
             startActivity(Intent(this, ProfileActivity::class.java))
         }
 
-        if (item!!.itemId == R.id.grupo) {
+        if (item.itemId == R.id.grupo) {
 
             startActivity(Intent(this, CriarGrupoActivity::class.java))
         }
 
-        if (item!!.itemId == R.id.home) {
+        if (item.itemId == R.id.home) {
 
             startActivity(Intent(this, HomeActivity::class.java))
         }

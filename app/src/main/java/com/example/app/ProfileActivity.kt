@@ -137,7 +137,7 @@ class ProfileActivity : AppCompatActivity() {
             mail.get().addOnSuccessListener { document ->
                 if (document != null) {
                     val nome = document.data?.get("name")
-                    show.setText("email: " + userEmail + "\n" + "name: " + nome)
+                    show.text = "email: " + userEmail + "\n" + "name: " + nome
 
                     Log.d("Profile", "DocumentSnapshot data: ${document.data?.get("name")}")
                 } else {
@@ -227,7 +227,7 @@ class ProfileActivity : AppCompatActivity() {
             if (user != null) {
                 if (!userEmail.isEmpty()) {
 
-                    user?.updateEmail(userEmail)?.addOnCompleteListener { task2 ->
+                    user.updateEmail(userEmail).addOnCompleteListener { task2 ->
                         if (task2.isSuccessful) {
                             val pessoa = HashMap<String, Any>()
                             pessoa["email"] = userEmail
@@ -391,17 +391,17 @@ class ProfileActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        if (item!!.itemId == R.id.profile) {
+        if (item.itemId == R.id.profile) {
 
             startActivity(Intent(this, ProfileActivity::class.java))
         }
 
-        if (item!!.itemId == R.id.grupo) {
+        if (item.itemId == R.id.grupo) {
 
             startActivity(Intent(this, CriarGrupoActivity::class.java))
         }
 
-        if (item!!.itemId == R.id.home) {
+        if (item.itemId == R.id.home) {
 
             startActivity(Intent(this, HomeActivity::class.java))
         }

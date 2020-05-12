@@ -89,7 +89,7 @@ class RegistoUserActivity : AppCompatActivity() {
 
 private fun register(name: String, email: String) {
 
-    val uid = Auth?.uid.toString()
+    val uid = Auth.uid.toString()
     val ref = mAuth.document("$uid")
 
     val pessoa = HashMap<String, Any>()
