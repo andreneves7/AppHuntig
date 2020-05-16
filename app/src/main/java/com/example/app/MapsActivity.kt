@@ -38,12 +38,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickListe
     private lateinit var locationCallback: LocationCallback
     private lateinit var locationRequest: LocationRequest
     private var locationUpdateState = false
+    lateinit var gv: VariaveisGlobais
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        gv = application as VariaveisGlobais
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
@@ -113,34 +114,37 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickListe
                 Log.d("Mapa", "$lastLocation}")
                 Log.d("Mapa", "latitude ${location.latitude }}")
                 Log.d("Mapa", "longitude ${location.longitude }}")
+                gv.Lat = location.latitude
+                gv.Long = location.longitude
+
             }
         }
 
     }
 
-    private fun getAddress(latLng: LatLng): String {
-
-        val geocoder = Geocoder(this)
-        val addresses: List<Address>?
-        val address: Address?
-        var addressText = ""
-
-        try {
-
-            addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
-
-            if (null != addresses && !addresses.isEmpty()) {
-                address = addresses[0]
-                for (i in 0 until address.maxAddressLineIndex) {
-                    addressText += if (i == 0) address.getAddressLine(i) else "\n" + address.getAddressLine(i)
-                }
-            }
-        } catch (e: IOException) {
-            Log.e("MapsActivity", e.localizedMessage)
-        }
-
-        return addressText
-    }
+//    private fun getAddress(latLng: LatLng): String {
+//
+//        val geocoder = Geocoder(this)
+//        val addresses: List<Address>?
+//        val address: Address?
+//        var addressText = ""
+//
+//        try {
+//
+//            addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
+//
+//            if (null != addresses && !addresses.isEmpty()) {
+//                address = addresses[0]
+//                for (i in 0 until address.maxAddressLineIndex) {
+//                    addressText += if (i == 0) address.getAddressLine(i) else "\n" + address.getAddressLine(i)
+//                }
+//            }
+//        } catch (e: IOException) {
+//            Log.e("MapsActivity", e.localizedMessage)
+//        }
+//
+//        return addressText
+//    }
 
     private fun startLocationUpdates() {
 

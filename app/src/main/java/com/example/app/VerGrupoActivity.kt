@@ -26,8 +26,7 @@ class VerGrupoActivity : AppCompatActivity() {
 
     lateinit var gv: VariaveisGlobais
 
-//    val title: MutableList<String> = ArrayList()
-//    val subTitle: MutableList<MutableList<String>> = ArrayList()
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -112,9 +111,9 @@ class VerGrupoActivity : AppCompatActivity() {
 
                                     startActivity(Intent (view.context, GrupoActivity :: class.java ))
 
-                                    Toast.makeText(applicationContext,
-                                        "Position :$position\nItem Value : $itemValue", Toast.LENGTH_LONG)
-                                        .show()
+//                                    Toast.makeText(applicationContext,
+//                                        "Position :$position\nItem Value : $itemValue", Toast.LENGTH_LONG)
+//                                        .show()
                                     Log.d("VerGrupo",
                                         "Positionffff :$list")
 

@@ -15,6 +15,7 @@ import androidx.core.view.isVisible
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_grupo.*
+import java.time.Year
 
 class VariaveisGlobais : Application() {
     var Evento: String =""
@@ -22,6 +23,11 @@ class VariaveisGlobais : Application() {
     var entrar: String=""
     var ver :String=""
     var nome : String=""
+    var Month: Int = 0
+    var Day : Int = 0
+    var Year : Int = 0
+    var Lat : Double = 0.0
+    var Long : Double = 0.0
 
 }
 
