@@ -288,12 +288,12 @@ class HomeActivity : AppCompatActivity() {
 
 
         val alertDialog = AlertDialog.Builder(this)
-        alertDialog.setTitle("Filtros")
+        alertDialog.setTitle("Filtros por Tipo")
         //alertDialog.setView(inflate_view)
         alertDialog.setCancelable(false)
 
-        alertDialog.setNegativeButton("Cancel") { dialog, which ->
-            Toast.makeText(this, "Cancel", Toast.LENGTH_LONG).show()
+        alertDialog.setNegativeButton("Limpar") { dialog, which ->
+            Toast.makeText(this, "Limpar", Toast.LENGTH_LONG).show()
             eventos()
         }
         alertDialog.setMultiChoiceItems(tipos, checkedTiposArray) { dialog, which, isChecked ->
