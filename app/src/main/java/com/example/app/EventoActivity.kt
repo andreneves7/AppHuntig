@@ -75,6 +75,7 @@ class EventoActivity : AppCompatActivity() {
         val dias = checkDiasCaça
         val  rola = checkRola
         val tordo = checkTordo
+        val on = switchForma
 
 
         val user = Auth.currentUser
@@ -85,6 +86,14 @@ class EventoActivity : AppCompatActivity() {
 
           if( isTimeValid(horas) == true){
               gv.Horas = horas
+
+              if(on.isChecked){
+                  gv.privado = "privado"
+              }
+              else{
+                  gv.privado = "publico"
+              }
+
               if (montaria.isChecked == true && espera.isChecked == false && dias.isChecked == false && rola.isChecked == false && tordo.isChecked == false){
                   gv.check = montaria.text.toString()
                   val intent = Intent(this,MapsActivity::class.java)

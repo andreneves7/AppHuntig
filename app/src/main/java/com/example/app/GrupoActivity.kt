@@ -30,7 +30,8 @@ class VariaveisGlobais : Application() {
     var Lat : Double = 0.0
     var Long : Double = 0.0
     var check : String = ""
-    var Horas : String=""
+    var Horas : String = ""
+    var privado : String = ""
 
 
 }

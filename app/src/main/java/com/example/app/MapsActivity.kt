@@ -321,6 +321,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickListe
                         evento["mes"] = gv.Month
                         evento["ano"] = gv.Year
                         evento["Tipo"] = gv.check
+                        evento["Forma"] = gv.privado
                         evento["Latitude"] = gv.Lat
                         evento["Longitude"] = gv.Long
                         mAuth.collection("Eventos").document(gv.nome)

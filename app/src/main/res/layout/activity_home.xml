@@ -7,31 +7,43 @@
     tools:context=".HomeActivity">
 
     <TextView
-        android:id="@+id/textView3"
-        android:layout_width="411dp"
-        android:layout_height="54dp"
+        android:id="@+id/NaoEventos"
+        android:layout_width="396dp"
+        android:layout_height="273dp"
         android:gravity="center"
-        android:text="Grupos disponiveis:"
-        android:textColor="#000000"
-        android:textSize="30sp"
+        android:text="Nao tem eventos disponiveis"
+        app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.272"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.309" />
 
     <ListView
         android:id="@+id/ListView4"
         android:layout_width="411dp"
-        android:layout_height="250dp"
+        android:layout_height="340dp"
         app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.112" />
+        app:layout_constraintVertical_bias="0.996">
+
+    </ListView>
+
+    <SearchView
+        android:id="@+id/SearchEvento"
+        android:layout_width="330dp"
+        android:layout_height="41dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.493"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

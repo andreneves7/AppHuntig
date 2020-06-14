@@ -12,11 +12,13 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.core.view.isVisible
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_grupo.*
 import kotlinx.android.synthetic.main.activity_home.*
+import kotlinx.android.synthetic.main.activity_ver_grupo.*
 import kotlinx.android.synthetic.main.custom_view.view.*
 import kotlinx.android.synthetic.main.custom_view.view.showPass
 import kotlinx.android.synthetic.main.email_custom_view.view.*
@@ -34,17 +36,22 @@ class HomeActivity : AppCompatActivity() {
         gv = application as VariaveisGlobais
         setContentView(R.layout.activity_home)
 
+        val semEventos = NaoEventos
         val lista = ListView4
 
 
-        var d = mAuth.collection("Grupos")
+        var d = mAuth.collection("Eventos")
         d.get().addOnSuccessListener { result ->
             if (result != null) {
                 val values = ArrayList<String>()
-                for (grupo in result) {
 
+                for (evento in result) {
+                    semEventos.isVisible = false
 
-                    values.add(grupo.get("nome").toString())
+                    val f = evento.get("Forma")
+                    if (f == "publico") {
+                        values.add(evento.get("nome").toString())
+                    }
 
                 }
                 Log.d("home", "$values")
@@ -68,34 +75,13 @@ class HomeActivity : AppCompatActivity() {
 
                         val itemValue = lista.getItemAtPosition(position) as String
                         Log.d("home", "grupoID to search: $itemValue")
-                        gv.entrar = itemValue
+                        gv.detalhes = itemValue
                         val uid = Auth.currentUser?.uid
-                        var b = mAuth.collection("Grupos").document(itemValue)
+                        var b = mAuth.collection("Eventos").document(itemValue)
                         b.get().addOnSuccessListener { result ->
                             if (result != null) {
 
-                                var membersList = result.get("membros") as List<String>
-                                Log.d("home", "membros: " + membersList.toString())
-//                                    teste.clear()
-                                /* for (f in a){
-                                     teste.add(f)
-
-                                 }*/
-                                Log.d("home", "aaaa: $membersList" +
-                                        "ffff: $uid")
-                                if (membersList.contains(uid)) {
-                                    startActivity(
-                                        Intent(
-                                            view.context,
-                                            VerGrupoActivity::class.java
-                                        )
-                                    )
-                                    Log.d("home", "$uid, $membersList")
-                                } else {
-                                    startActivity(Intent(view.context, AdesaoActivity::class.java))
-                                    Log.d("home", "$uid, $membersList")
-
-                                }
+                                startActivity(Intent (view.context, DetalhesEventoActivity :: class.java ))
 
 
                             }
@@ -111,6 +97,21 @@ class HomeActivity : AppCompatActivity() {
                     }
 
                 }
+            }
+            var x = 0
+            for (evento in result) {
+
+                x += 1
+            }
+            if (x > 0) {
+                semEventos.isVisible = false
+            } else {
+
+                semEventos.isVisible = true
+                Toast.makeText(
+                    applicationContext,
+                    "Sem eventos disponiveis", Toast.LENGTH_LONG
+                ).show()
             }
 
         }
