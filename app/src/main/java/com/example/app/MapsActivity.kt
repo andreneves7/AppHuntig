@@ -5,6 +5,7 @@ package com.example.app
 
 //import com.google.android.material.floatingactionbutton.FloatingActionButton
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.IntentSender
@@ -15,7 +16,6 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.fragment.app.FragmentActivity
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.location.*
@@ -30,12 +30,12 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.PlacesClient
-import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.GeoPoint
 import kotlinx.android.synthetic.main.activity_maps.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -53,6 +53,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickListe
 
     val Auth = FirebaseAuth.getInstance()
     val mAuth = FirebaseFirestore.getInstance()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,7 +83,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickListe
         search()
 
 
-
         val guardarEvento = bGuardar
         guardarEvento.setOnClickListener {
             evento()
@@ -91,7 +91,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickListe
 
     }
 
-    private fun search(){
+    private fun search() {
         val apiKey = getString(R.string.api_key)
 
 
@@ -103,27 +103,35 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickListe
         val placesClient: PlacesClient = Places.createClient(this)
 
 
-
-
         val autocompleteFragment: AutocompleteSupportFragment? =
             supportFragmentManager.findFragmentById(R.id.autocomplete_fragment) as AutocompleteSupportFragment?
 
-        autocompleteFragment?.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG))
+        autocompleteFragment?.setPlaceFields(
+            Arrays.asList(
+                Place.Field.ID,
+                Place.Field.NAME,
+                Place.Field.LAT_LNG
+            )
+        )
 
         autocompleteFragment!!.setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(place: Place) {
 
-
+//                var x = place.latLng!!.latitude
+//                var y = place.latLng!!.longitude
+//
+//
+//                val point = GeoPoint(x, y)
 
                 gv.Lat = place.latLng?.latitude.toString().toDouble()
                 gv.Long = place.latLng?.longitude.toString().toDouble()
-                val currentLatLng = LatLng(gv.Lat,gv.Long)
+                val currentLatLng = LatLng(gv.Lat, gv.Long)
                 placeMarkerOnMap(currentLatLng)
                 map.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 18f))
                 Log.d(
                     "Mapa",
-                    "Place: " + place.getName().toString() + ", " + place.getId() + "," + place.latLng?.latitude.toString().toDouble()
-                + ", " + place.latLng?.longitude.toString().toDouble()
+                    "Place: " + place.getName()
+                        .toString() + ", " + place.getId() + "," + gv.Lat + ", "+ gv.Long
                 )
             }
 
@@ -132,7 +140,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickListe
                 Log.d("Mapa", "An error occurred: $status")
             }
         })
-
 
 
     }
@@ -160,12 +167,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickListe
     private fun setUpMap() {
         if (ActivityCompat.checkSelfPermission(
                 this,
-                android.Manifest.permission.ACCESS_FINE_LOCATION
+                Manifest.permission.ACCESS_FINE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             ActivityCompat.requestPermissions(
                 this,
-                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                 LOCATION_PERMISSION_REQUEST_CODE
             )
             return
@@ -195,17 +202,16 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickListe
     }
 
 
-
     private fun startLocationUpdates() {
 
         if (ActivityCompat.checkSelfPermission(
                 this,
-                android.Manifest.permission.ACCESS_FINE_LOCATION
+                Manifest.permission.ACCESS_FINE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             ActivityCompat.requestPermissions(
                 this,
-                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                 LOCATION_PERMISSION_REQUEST_CODE
             )
             return
@@ -259,8 +265,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickListe
     }
 
 
-
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CHECK_SETTINGS) {
@@ -272,8 +276,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickListe
 
 
     }
-
-
 
 
     override fun onPause() {

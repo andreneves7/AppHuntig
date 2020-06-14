@@ -6,13 +6,14 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
+
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.CameraPosition
+
 import com.google.android.gms.maps.model.LatLng
+
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
@@ -21,12 +22,15 @@ import kotlinx.android.synthetic.main.activity_detalhes_evento.*
 import java.util.HashMap
 import androidx.core.view.isVisible as isVisible
 
-class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback {
+class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback  {
 
     val Auth = FirebaseAuth.getInstance()
     val mAuth = FirebaseFirestore.getInstance()
     lateinit var gv: VariaveisGlobais
-    private lateinit var map: GoogleMap
+
+    private lateinit var mMap: GoogleMap
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,14 +41,16 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback {
         val marcar = bPresença
 
         val mapFragment = supportFragmentManager
-            .findFragmentById(R.id.map) as SupportMapFragment
+            .findFragmentById(R.id.map2) as SupportMapFragment
         mapFragment.getMapAsync(this)
+
+
 
         desativar()
 
         marcar.setOnClickListener {
             marcarPresença()
-            startActivity(Intent(this, GrupoActivity::class.java))
+            startActivity(Intent(this, HomeActivity::class.java))
         }
 
         val user = Auth.currentUser
@@ -69,13 +75,13 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
 
-                    Log.d(
-                        "evento",
-                        "DocumentSnapshot data: ${document.data?.get("nome")} \n${document.data?.get(
-                            "data"
-                        )}" +
-                                " \n ${document.data?.get("hora")} \n ${document.data?.get("local")}"
-                    )
+//                    Log.d(
+//                        "evento",
+//                        "DocumentSnapshot data: ${document.data?.get("nome")} \n${document.data?.get(
+//                            "data"
+//                        )}" +
+//                                " \n ${document.data?.get("hora")} \n ${document.data?.get("local")}"
+//                    )
                 } else {
                     Log.d("evento", "No such document")
                 }
@@ -85,7 +91,7 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-        map = googleMap
+        mMap = googleMap
 
         val mail = mAuth.collection("Eventos").document(gv.detalhes)
         mail.get().addOnSuccessListener { document ->
@@ -94,19 +100,20 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback {
             val P = LatLng(placeLat.toString().toDouble(), placeLog.toString().toDouble())
 
             placeMarkerOnMap(P)
-            map.mapType = GoogleMap.MAP_TYPE_HYBRID
-            map.animateCamera(CameraUpdateFactory.newLatLngZoom(P, 18f))
+            mMap.mapType = GoogleMap.MAP_TYPE_HYBRID
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(P, 18f))
         }
 
     }
+
 
 
     private fun placeMarkerOnMap(location: LatLng) {
         // 1
         val markerOptions = MarkerOptions().position(location)
         // 2
-        map.clear()
-        map.addMarker(markerOptions)
+        mMap.clear()
+        mMap.addMarker(markerOptions)
     }
 
     fun desativar() {

@@ -1,28 +1,20 @@
 package com.example.app
 
-import android.app.AlertDialog
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.method.PasswordTransformationMethod
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.SearchView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.android.synthetic.main.activity_grupo.*
 import kotlinx.android.synthetic.main.activity_home.*
-import kotlinx.android.synthetic.main.activity_ver_grupo.*
-import kotlinx.android.synthetic.main.custom_view.view.*
-import kotlinx.android.synthetic.main.custom_view.view.showPass
-import kotlinx.android.synthetic.main.email_custom_view.view.*
-import kotlinx.android.synthetic.main.pass_custom_view.view.*
 
 
 class HomeActivity : AppCompatActivity() {
@@ -38,85 +30,219 @@ class HomeActivity : AppCompatActivity() {
 
         val semEventos = NaoEventos
         val lista = ListView4
+        val uid = Auth.currentUser?.uid
 
 
-        var d = mAuth.collection("Eventos")
-        d.get().addOnSuccessListener { result ->
+        val pesquisa = SearchEvento
+        
+
+        var gruposMemmbros = mAuth.collection("Grupos")
+        gruposMemmbros.get().addOnSuccessListener { result ->
             if (result != null) {
-                val values = ArrayList<String>()
+                for (grupo in result) {
 
-                for (evento in result) {
-                    semEventos.isVisible = false
+                    var fazParte = grupo.get("membros") as List<String>
+                    if (fazParte.contains(uid)) {
 
-                    val f = evento.get("Forma")
-                    if (f == "publico") {
-                        values.add(evento.get("nome").toString())
-                    }
-
-                }
-                Log.d("home", "$values")
-
-
-                val adapter = ArrayAdapter(this, R.layout.listview_item, values)
-
-                lista.adapter = adapter
-
-
-                lista.onItemClickListener = object : AdapterView.OnItemClickListener {
-
-
-                    override fun onItemClick(
-                        parent: AdapterView<*>,
-                        view: View,
-                        position: Int,
-                        id: Long
-                    ) {
-
-
-                        val itemValue = lista.getItemAtPosition(position) as String
-                        Log.d("home", "grupoID to search: $itemValue")
-                        gv.detalhes = itemValue
-                        val uid = Auth.currentUser?.uid
-                        var b = mAuth.collection("Eventos").document(itemValue)
-                        b.get().addOnSuccessListener { result ->
+                        var ListaEventosPrivat = mAuth.collection("Eventos")
+                        ListaEventosPrivat.get().addOnSuccessListener { result ->
                             if (result != null) {
+                                val values = ArrayList<String>()
 
-                                startActivity(Intent (view.context, DetalhesEventoActivity :: class.java ))
+                                for (evento in result) {
+                                    semEventos.isVisible = false
 
 
+                                    values.add(evento.get("nome").toString())
+
+                                }
+                                Log.d("home", "$values")
+
+
+                                val adapter = ArrayAdapter(this, R.layout.listview_item, values)
+
+                                lista.adapter = adapter
+                                pesquisa.setOnQueryTextListener(object :
+                                    SearchView.OnQueryTextListener {
+                                    override fun onQueryTextSubmit(query: String): Boolean {
+
+                                        return false
+                                    }
+
+                                    override fun onQueryTextChange(newText: String): Boolean {
+
+                                        adapter.filter.filter(newText)
+                                        return false
+                                    }
+                                })
+
+                                lista.onItemClickListener =
+                                    object : AdapterView.OnItemClickListener {
+
+
+                                        override fun onItemClick(
+                                            parent: AdapterView<*>,
+                                            view: View,
+                                            position: Int,
+                                            id: Long
+                                        ) {
+
+
+                                            val itemValue =
+                                                lista.getItemAtPosition(position) as String
+                                            Log.d("home", "grupoID to search: $itemValue")
+                                            gv.detalhes = itemValue
+                                            val uid = Auth.currentUser?.uid
+                                            var eventoClick =
+                                                mAuth.collection("Eventos").document(itemValue)
+                                            eventoClick.get().addOnSuccessListener { result ->
+                                                if (result != null) {
+
+                                                    startActivity(
+                                                        Intent(
+                                                            view.context,
+                                                            DetalhesEventoActivity::class.java
+                                                        )
+                                                    )
+
+
+                                                }
+                                            }
+
+
+//                                            Toast.makeText(
+//                                                applicationContext,
+//                                                "Position :$position\nItem Value : $itemValue",
+//                                                Toast.LENGTH_LONG
+//                                            ).show()
+
+
+                                        }
+
+                                    }
                             }
+                            var x = 0
+                            for (evento in result) {
+
+                                x += 1
+                            }
+                            if (x > 0) {
+                                semEventos.isVisible = false
+                            } else {
+
+                                semEventos.isVisible = true
+                                Toast.makeText(
+                                    applicationContext,
+                                    "Sem eventos disponiveis", Toast.LENGTH_LONG
+                                ).show()
+                            }
+
                         }
 
+                    } else {
+                        var ListaEventosPublic = mAuth.collection("Eventos")
+                        ListaEventosPublic.get().addOnSuccessListener { result ->
+                            if (result != null) {
+                                val values = ArrayList<String>()
 
-                        Toast.makeText(
-                            applicationContext,
-                            "Position :$position\nItem Value : $itemValue", Toast.LENGTH_LONG
-                        ).show()
+                                for (evento in result) {
+                                    semEventos.isVisible = false
+
+                                    val f = evento.get("Forma")
+                                    if (f == "publico") {
+                                        values.add(evento.get("nome").toString())
+                                    }
+
+                                }
+                                Log.d("home", "$values")
 
 
+                                val adapter = ArrayAdapter(this, R.layout.listview_item, values)
+
+                                lista.adapter = adapter
+
+                                pesquisa.setOnQueryTextListener(object :
+                                    SearchView.OnQueryTextListener {
+                                    override fun onQueryTextSubmit(query: String): Boolean {
+
+                                        return false
+                                    }
+
+                                    override fun onQueryTextChange(newText: String): Boolean {
+
+                                        adapter.filter.filter(newText)
+                                        return false
+                                    }
+                                })
+
+                                lista.onItemClickListener =
+                                    object : AdapterView.OnItemClickListener {
+
+
+                                        override fun onItemClick(
+                                            parent: AdapterView<*>,
+                                            view: View,
+                                            position: Int,
+                                            id: Long
+                                        ) {
+
+
+                                            val itemValue =
+                                                lista.getItemAtPosition(position) as String
+                                            Log.d("home", "grupoID to search: $itemValue")
+                                            gv.detalhes = itemValue
+                                            val uid = Auth.currentUser?.uid
+                                            var eventoclick2 =
+                                                mAuth.collection("Eventos").document(itemValue)
+                                            eventoclick2.get().addOnSuccessListener { result ->
+                                                if (result != null) {
+
+                                                    startActivity(
+                                                        Intent(
+                                                            view.context,
+                                                            DetalhesEventoActivity::class.java
+                                                        )
+                                                    )
+
+
+                                                }
+                                            }
+
+
+//                                            Toast.makeText(
+//                                                applicationContext,
+//                                                "Position :$position\nItem Value : $itemValue",
+//                                                Toast.LENGTH_LONG
+//                                            ).show()
+
+
+                                        }
+
+                                    }
+                            }
+                            var x = 0
+                            for (evento in result) {
+
+                                x += 1
+                            }
+                            if (x > 0) {
+                                semEventos.isVisible = false
+                            } else {
+
+                                semEventos.isVisible = true
+                                Toast.makeText(
+                                    applicationContext,
+                                    "Sem eventos disponiveis", Toast.LENGTH_LONG
+                                ).show()
+                            }
+
+                        }
                     }
-
                 }
             }
-            var x = 0
-            for (evento in result) {
-
-                x += 1
-            }
-            if (x > 0) {
-                semEventos.isVisible = false
-            } else {
-
-                semEventos.isVisible = true
-                Toast.makeText(
-                    applicationContext,
-                    "Sem eventos disponiveis", Toast.LENGTH_LONG
-                ).show()
-            }
-
         }
-
     }
+
 
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -156,5 +282,7 @@ class HomeActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
+
+
 }
 

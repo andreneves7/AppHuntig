@@ -47,7 +47,7 @@ class CriarGrupoActivity : AppCompatActivity() {
 
         val nome = edName.text.toString()
         val cod = edCodigo.text.toString()
-        val documentId = mAuth.collection("Users").document().id
+        //val documentId = mAuth.collection("Users").document().id
         val user = Auth.currentUser
 
         if (user != null) {
