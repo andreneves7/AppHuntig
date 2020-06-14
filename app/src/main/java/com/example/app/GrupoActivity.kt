@@ -29,7 +29,7 @@ class VariaveisGlobais : Application() {
     var Year : Int = 0
     var Lat : Double = 0.0
     var Long : Double = 0.0
-    //var IsHorasValidas : Boolean = false
+    var check : String = ""
     var Horas : String=""
 
 

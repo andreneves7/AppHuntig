@@ -7,6 +7,13 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -14,11 +21,12 @@ import kotlinx.android.synthetic.main.activity_detalhes_evento.*
 import java.util.HashMap
 import androidx.core.view.isVisible as isVisible
 
-class DetalhesEventoActivity : AppCompatActivity() {
+class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback {
 
     val Auth = FirebaseAuth.getInstance()
     val mAuth = FirebaseFirestore.getInstance()
     lateinit var gv: VariaveisGlobais
+    private lateinit var map: GoogleMap
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +35,10 @@ class DetalhesEventoActivity : AppCompatActivity() {
 
         val showDetalhe = tShowDetalhes
         val marcar = bPresença
+
+        val mapFragment = supportFragmentManager
+            .findFragmentById(R.id.map) as SupportMapFragment
+        mapFragment.getMapAsync(this)
 
         desativar()
 
@@ -43,13 +55,19 @@ class DetalhesEventoActivity : AppCompatActivity() {
                 if (document != null) {
 
                     val name = document.data?.get("nome")
-                    val date = document.data?.get("data")
+                    val dateDia = document.data?.get("dia")
+                    val dateMes = document.data?.get("mes")
+                    val dateAno = document.data?.get("ano")
                     val time = document.data?.get("horas")
-                    val place = document.data?.get("local")
+                    val tipo = document.data?.get("Tipo")
+
+
+                    showDetalhe.text =
+                        "nome: " + name + "\n" + "data: " + dateDia + "/" + dateMes + "/" + dateAno + "\n" + "horas: " + time + "\n" + "tipo: " + tipo
 
 
 
-                    showDetalhe.text = "nome: " + name + "\n" + "data: " + date + "\n" + "horas: " + time + "\n" + "local: " + place + "\n"
+
 
                     Log.d(
                         "evento",
@@ -66,6 +84,31 @@ class DetalhesEventoActivity : AppCompatActivity() {
 
     }
 
+    override fun onMapReady(googleMap: GoogleMap) {
+        map = googleMap
+
+        val mail = mAuth.collection("Eventos").document(gv.detalhes)
+        mail.get().addOnSuccessListener { document ->
+            val placeLat = document.data?.get("Latitude")
+            val placeLog = document.data?.get("Longitude")
+            val P = LatLng(placeLat.toString().toDouble(), placeLog.toString().toDouble())
+
+            placeMarkerOnMap(P)
+            map.mapType = GoogleMap.MAP_TYPE_HYBRID
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(P, 18f))
+        }
+
+    }
+
+
+    private fun placeMarkerOnMap(location: LatLng) {
+        // 1
+        val markerOptions = MarkerOptions().position(location)
+        // 2
+        map.clear()
+        map.addMarker(markerOptions)
+    }
+
     fun desativar() {
 
         val marcar = bPresença
@@ -78,24 +121,28 @@ class DetalhesEventoActivity : AppCompatActivity() {
 
                     val pre = document.data?.get("Presenças") as List<String>
 
-                        val buscarNome = mAuth.collection("Users").document(user.uid)
-                        buscarNome.get().addOnSuccessListener { document ->
-                            if (document != null) {
+                    val buscarNome = mAuth.collection("Users").document(user.uid)
+                    buscarNome.get().addOnSuccessListener { document ->
+                        if (document != null) {
 
-                                val nameUser = document.data?.get("name")
-                                if (pre.contains(nameUser)) {
+                            val nameUser = document.data?.get("name")
+                            if (pre.contains(nameUser)) {
 
-                                    marcar.isVisible = false
-                                    Log.d("detalhes", "detalhe: $pre" +
-                                            "ffff: $nameUser"+ "\n" + "false")
-                                }else{
+                                marcar.isVisible = false
+                                Log.d(
+                                    "detalhes", "detalhe: $pre" +
+                                            "ffff: $nameUser" + "\n" + "false"
+                                )
+                            } else {
 
-                                    marcar.isVisible = true
-                                    Log.d("detalhes", "detalhe: $pre" +
-                                            "ffff: $nameUser"+ "\n" + "true")
-                                }
+                                marcar.isVisible = true
+                                Log.d(
+                                    "detalhes", "detalhe: $pre" +
+                                            "ffff: $nameUser" + "\n" + "true"
+                                )
                             }
                         }
+                    }
 
                     Log.d(
                         "evento", "DocumentSnapshot data: ${document.data?.get("admin")} "
@@ -109,7 +156,7 @@ class DetalhesEventoActivity : AppCompatActivity() {
     }
 
 
-    fun marcarPresença(){
+    fun marcarPresença() {
 
         val user = Auth.currentUser
         if (user != null) {

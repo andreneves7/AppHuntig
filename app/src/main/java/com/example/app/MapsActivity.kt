@@ -194,29 +194,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickListe
 
     }
 
-//    private fun getAddress(latLng: LatLng): String {
-//
-//        val geocoder = Geocoder(this)
-//        val addresses: List<Address>?
-//        val address: Address?
-//        var addressText = ""
-//
-//        try {
-//
-//            addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
-//
-//            if (null != addresses && !addresses.isEmpty()) {
-//                address = addresses[0]
-//                for (i in 0 until address.maxAddressLineIndex) {
-//                    addressText += if (i == 0) address.getAddressLine(i) else "\n" + address.getAddressLine(i)
-//                }
-//            }
-//        } catch (e: IOException) {
-//            Log.e("MapsActivity", e.localizedMessage)
-//        }
-//
-//        return addressText
-//    }
+
 
     private fun startLocationUpdates() {
 
@@ -280,17 +258,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickListe
         }
     }
 
-//    private fun loadPlacePicker() {
-//        val builder = PlacePicker.IntentBuilder()
-//
-//        try {
-//            startActivityForResult(builder.build(this@MapsActivity), PLACE_PICKER_REQUEST)
-//        } catch (e: GooglePlayServicesRepairableException) {
-//            e.printStackTrace()
-//        } catch (e: GooglePlayServicesNotAvailableException) {
-//            e.printStackTrace()
-//        }
-//    }
+
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -302,15 +270,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickListe
             }
         }
 
-//        if (requestCode == PLACE_PICKER_REQUEST) {
-//            if (resultCode == RESULT_OK) {
-//                val place = PlacePicker.getPlace(this, data)
-//                var addressText = place.name.toString()
-//                addressText += "\n" + place.address.toString()
-//
-//                placeMarkerOnMap(place.latLng)
-//            }
-//        }
 
     }
 
@@ -360,7 +319,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickListe
                         evento["horas"] = gv.Horas
                         evento["dia"] = gv.Day
                         evento["mes"] = gv.Month
-                        evento["mes"] = gv.Year
+                        evento["ano"] = gv.Year
+                        evento["Tipo"] = gv.check
                         evento["Latitude"] = gv.Lat
                         evento["Longitude"] = gv.Long
                         mAuth.collection("Eventos").document(gv.nome)

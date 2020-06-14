@@ -69,8 +69,13 @@ class EventoActivity : AppCompatActivity() {
     private fun evento() {
 
         val nome = edNome.text.toString()
-
         val horas = edTime.text.toString()
+        val montaria = checkMontaria
+        val espera = checkEspera
+        val dias = checkDiasCaça
+        val  rola = checkRola
+        val tordo = checkTordo
+
 
         val user = Auth.currentUser
 
@@ -80,9 +85,40 @@ class EventoActivity : AppCompatActivity() {
 
           if( isTimeValid(horas) == true){
               gv.Horas = horas
+              if (montaria.isChecked == true && espera.isChecked == false && dias.isChecked == false && rola.isChecked == false && tordo.isChecked == false){
+                  gv.check = montaria.text.toString()
+                  val intent = Intent(this,MapsActivity::class.java)
+                  startActivity(intent)
+              Log.d( "testecheck", gv.check)
+              }
+              else if (montaria.isChecked == false && espera.isChecked == true && dias.isChecked == false && rola.isChecked == false && tordo.isChecked == false){
+                  gv.check = espera.text.toString()
+                  val intent = Intent(this,MapsActivity::class.java)
+                  startActivity(intent)
+                  Log.d( "testecheck", gv.check)
+              }
+              else if (montaria.isChecked == false && espera.isChecked == false && dias.isChecked == true && rola.isChecked == false && tordo.isChecked == false){
+                  gv.check = dias.text.toString()
+                  val intent = Intent(this,MapsActivity::class.java)
+                  startActivity(intent)
+                  Log.d( "testecheck", gv.check)
+              }
+              else if (montaria.isChecked == false && espera.isChecked == false && dias.isChecked == false && rola.isChecked == true && tordo.isChecked == false){
+                  gv.check = rola.text.toString()
+                  val intent = Intent(this,MapsActivity::class.java)
+                  startActivity(intent)
+                  Log.d( "testecheck", gv.check)
+              }
+              else if (montaria.isChecked == false && espera.isChecked == false && dias.isChecked == false && rola.isChecked == false && tordo.isChecked == true){
+                  gv.check = tordo.text.toString()
+                  val intent = Intent(this,MapsActivity::class.java)
+                  startActivity(intent)
+                  Log.d( "testecheck", gv.check)
+              }
+              else{
+                  Toast.makeText(this, "Selecione um Tipo", Toast.LENGTH_SHORT).show()
+              }
 
-              val intent = Intent(this,MapsActivity::class.java)
-              startActivity(intent)
 
           } else{
               Toast.makeText(this, "Horas mal preenchidas", Toast.LENGTH_SHORT).show()
