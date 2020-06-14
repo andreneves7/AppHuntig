@@ -52,7 +52,7 @@ class HomeActivity : AppCompatActivity() {
 
     }
 
-    fun eventos(){
+    fun eventos() {
         val semEventos = NaoEventos
         val uid = Auth.currentUser?.uid
         val lista = ListView4
@@ -271,11 +271,11 @@ class HomeActivity : AppCompatActivity() {
 //        val inflate_view = inflater.inflate(R.layout.filtros_custom_view, null)
 
 
+        val uid = Auth.currentUser?.uid
         val semEventos = NaoEventos
         val lista = ListView4
         val tipos = arrayOf("Montaria", "Espera", "Tordos", "Rolas", "Dias Caça")
-        val checkedTiposArray = booleanArrayOf(false, false, false, false,  false)
-
+        val checkedTiposArray = booleanArrayOf(false, false, false, false, false)
 
 
 //        val diainflate = inflate_view.edDia
@@ -303,75 +303,181 @@ class HomeActivity : AppCompatActivity() {
 
 
         alertDialog.setPositiveButton("Done") { dialog, which ->
-
-            var ListaEventosPublic = mAuth.collection("Eventos")
-            ListaEventosPublic.get().addOnSuccessListener { result ->
+            var gruposMemmbros = mAuth.collection("Grupos")
+            gruposMemmbros.get().addOnSuccessListener { result ->
                 if (result != null) {
-                    val values = ArrayList<String>()
+                    for (grupo in result) {
 
-                    for (evento in result) {
-                        semEventos.isVisible = false
+                        var fazParte = grupo.get("membros") as List<String>
+                        if (fazParte.contains(uid)) {
 
-                        val f = evento.get("Forma")
-                        if (f == "publico") {
-                            for (i in checkedTiposArray.indices) {
-                                val checked = checkedTiposArray[i]
-                                if (checked) {
-                                    val x = tipos[i]
+                            var ListaEventosPrivat = mAuth.collection("Eventos")
+                            ListaEventosPrivat.get().addOnSuccessListener { result ->
+                                if (result != null) {
+                                    val values = ArrayList<String>()
 
-                                    if (evento.get("Tipo").toString() == x){
-                                        Log.d("merda", x)
-                                        values.add(evento.get("nome").toString())
+                                    for (evento in result) {
+                                        semEventos.isVisible = false
+
+
+                                        for (i in checkedTiposArray.indices) {
+                                            val checked = checkedTiposArray[i]
+                                            if (checked) {
+                                                val x = tipos[i]
+
+                                                if (evento.get("Tipo").toString() == x) {
+                                                    Log.d("merda", x)
+                                                    values.add(evento.get("nome").toString())
+                                                }
+                                            }
+                                        }
+
                                     }
+                                    Log.d("home", "$values")
+
+
+                                    val adapter = ArrayAdapter(this, R.layout.listview_item, values)
+
+                                    lista.adapter = adapter
+
+
+                                    lista.onItemClickListener =
+                                        object : AdapterView.OnItemClickListener {
+
+
+                                            override fun onItemClick(
+                                                parent: AdapterView<*>,
+                                                view: View,
+                                                position: Int,
+                                                id: Long
+                                            ) {
+
+
+                                                val itemValue =
+                                                    lista.getItemAtPosition(position) as String
+                                                Log.d("home", "grupoID to search: $itemValue")
+                                                gv.detalhes = itemValue
+                                                val uid = Auth.currentUser?.uid
+                                                var eventoClick =
+                                                    mAuth.collection("Eventos").document(itemValue)
+                                                eventoClick.get().addOnSuccessListener { result ->
+                                                    if (result != null) {
+
+                                                        startActivity(
+                                                            Intent(
+                                                                view.context,
+                                                                DetalhesEventoActivity::class.java
+                                                            )
+                                                        )
+
+
+                                                    }
+                                                }
+
+
+//                                            Toast.makeText(
+//                                                applicationContext,
+//                                                "Position :$position\nItem Value : $itemValue",
+//                                                Toast.LENGTH_LONG
+//                                            ).show()
+
+
+                                            }
+
+                                        }
                                 }
+                                var x = 0
+                                for (evento in result) {
+
+                                    x += 1
+                                }
+                                if (x > 0) {
+                                    semEventos.isVisible = false
+                                } else {
+
+                                    semEventos.isVisible = true
+                                    Toast.makeText(
+                                        applicationContext,
+                                        "Sem eventos disponiveis", Toast.LENGTH_LONG
+                                    ).show()
+                                }
+
                             }
 
-                        }
+                        } else {
+                            var ListaEventosPublic = mAuth.collection("Eventos")
+                            ListaEventosPublic.get().addOnSuccessListener { result ->
+                                if (result != null) {
+                                    val values = ArrayList<String>()
 
+                                    for (evento in result) {
+                                        semEventos.isVisible = false
+
+                                        val f = evento.get("Forma")
+                                        if (f == "publico") {
+                                            for (i in checkedTiposArray.indices) {
+                                                val checked = checkedTiposArray[i]
+                                                if (checked) {
+                                                    val x = tipos[i]
+
+                                                    if (evento.get("Tipo").toString() == x) {
+                                                        Log.d("merda", x)
+                                                        values.add(evento.get("nome").toString())
+                                                    }
+                                                }
+                                            }
+
+                                        }
+
+                                    }
+                                    Log.d("home", "$values")
+                                    val adapter = ArrayAdapter(this, R.layout.listview_item, values)
+
+                                    lista.adapter = adapter
+                                    lista.onItemClickListener =
+                                        object : AdapterView.OnItemClickListener {
+
+
+                                            override fun onItemClick(
+                                                parent: AdapterView<*>,
+                                                view: View,
+                                                position: Int,
+                                                id: Long
+                                            ) {
+
+
+                                                val itemValue =
+                                                    lista.getItemAtPosition(position) as String
+                                                Log.d("home", "grupoID to search: $itemValue")
+                                                gv.detalhes = itemValue
+                                                val uid = Auth.currentUser?.uid
+                                                var eventoclick2 =
+                                                    mAuth.collection("Eventos").document(itemValue)
+                                                eventoclick2.get().addOnSuccessListener { result ->
+                                                    if (result != null) {
+
+                                                        startActivity(
+                                                            Intent(
+                                                                view.context,
+                                                                DetalhesEventoActivity::class.java
+                                                            )
+                                                        )
+
+
+                                                    }
+                                                }
+
+                                            }
+
+                                        }
+
+                                }
+                            }
+                        }
                     }
-                    Log.d("home", "$values")
-                    val adapter = ArrayAdapter(this, R.layout.listview_item, values)
-
-                    lista.adapter = adapter
-                    lista.onItemClickListener =
-                        object : AdapterView.OnItemClickListener {
-
-
-                            override fun onItemClick(
-                                parent: AdapterView<*>,
-                                view: View,
-                                position: Int,
-                                id: Long
-                            ) {
-
-
-                                val itemValue =
-                                    lista.getItemAtPosition(position) as String
-                                Log.d("home", "grupoID to search: $itemValue")
-                                gv.detalhes = itemValue
-                                val uid = Auth.currentUser?.uid
-                                var eventoclick2 =
-                                    mAuth.collection("Eventos").document(itemValue)
-                                eventoclick2.get().addOnSuccessListener { result ->
-                                    if (result != null) {
-
-                                        startActivity(
-                                            Intent(
-                                                view.context,
-                                                DetalhesEventoActivity::class.java
-                                            )
-                                        )
-
-
-                                    }
-                                }
-
-                            }
-
-                        }
-
                 }
             }
+
 
         }
 

@@ -6,6 +6,10 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.SearchView
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
@@ -22,8 +26,11 @@ class CriarGrupoActivity : AppCompatActivity() {
     val Auth = FirebaseAuth.getInstance()
     val mAuth = FirebaseFirestore.getInstance()
 
+    lateinit var gv: VariaveisGlobais
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        gv = application as VariaveisGlobais
         setContentView(R.layout.activity_criar_grupo)
 
         val criarGrupo = bCriaGrupo
@@ -39,6 +46,78 @@ class CriarGrupoActivity : AppCompatActivity() {
             startActivity(Intent(this, VerGrupoActivity::class.java))
         }
 
+        show()
+
+
+    }
+
+    private fun show() {
+
+        val lista = idScrool
+        val uid = Auth.currentUser?.uid
+        var d = mAuth.collection("Grupos")
+        d.get().addOnSuccessListener { result ->
+            if (result != null) {
+                val values = ArrayList<String>()
+
+
+                    for (grupo in result) {
+                        values.add(grupo.get("nome").toString())
+                    }
+                    Log.d("home", "$values")
+
+                    val adapter = ArrayAdapter(this, R.layout.listview_item, values)
+
+
+                    lista.adapter = adapter
+
+
+                    lista.onItemClickListener = object : AdapterView.OnItemClickListener {
+                        override fun onItemClick(
+                            parent: AdapterView<*>,
+                            view: View,
+                            position: Int,
+                            id: Long
+                        ) {
+                            val itemValue = lista.getItemAtPosition(position) as String
+                            Log.d("home", "grupoID to search: $itemValue")
+                            gv.entrar = itemValue
+
+                            var b = mAuth.collection("Grupos").document(itemValue)
+                            b.get().addOnSuccessListener { result ->
+                                if (result != null) {
+                                    var membersList = result.get("membros") as List<String>
+
+                                    Log.d(
+                                        "home", "aaaa: $membersList" +
+                                                "ffff: $uid"
+                                    )
+                                    if (membersList.contains(uid)) {
+                                        startActivity(
+                                            Intent(
+                                                view.context,
+                                                VerGrupoActivity::class.java
+                                            )
+                                        )
+                                        Log.d("home", "$uid, $membersList")
+                                    } else {
+                                        startActivity(
+                                            Intent(
+                                                view.context,
+                                                AdesaoActivity::class.java
+                                            )
+                                        )
+                                        Log.d("home", "$uid, $membersList")
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+
+
+            }
+        }
 
     }
 
@@ -83,7 +162,7 @@ class CriarGrupoActivity : AppCompatActivity() {
 
 
                         Log.d("criar", "DocumentSnapshot data: ${document.data?.get("name")}")
-                    }else{
+                    } else {
                         Toast.makeText(this, "Preencha os campos", Toast.LENGTH_SHORT).show()
                     }
 
