@@ -60,19 +60,7 @@ class ProfileActivity : AppCompatActivity() {
             uploadImageToFirebaseStorage()
             verImagem()
 
-//            val imageUser = Auth.currentUser?.uid.toString()
-//
-//            val consulta = mAuth.collection("Users").document(imageUser)
-//            consulta.get().addOnSuccessListener { task ->
-//                if (task != null) {
-//                    Log.d("Profile", "imagem1: $imageUser")
-//
-//                    val image = task.data?.get("Photo").toString()
-//                    if (image != null){
-//
-//                    }
-//                }
-//            }
+
 
         }
 

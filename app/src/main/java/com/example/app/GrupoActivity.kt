@@ -32,6 +32,7 @@ class VariaveisGlobais : Application() {
     var check : String = ""
     var Horas : String = ""
     var privado : String = ""
+    var filtro : String = ""
 
 
 }

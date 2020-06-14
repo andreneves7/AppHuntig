@@ -10,11 +10,22 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.SearchView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.android.synthetic.main.activity_evento.*
+import kotlinx.android.synthetic.main.activity_evento.checkDiasCaça
+import kotlinx.android.synthetic.main.activity_evento.checkEspera
+import kotlinx.android.synthetic.main.activity_evento.checkMontaria
+import kotlinx.android.synthetic.main.activity_evento.checkRola
+import kotlinx.android.synthetic.main.activity_evento.checkTordo
 import kotlinx.android.synthetic.main.activity_home.*
+import kotlinx.android.synthetic.main.filtros_custom_view.*
+import kotlinx.android.synthetic.main.filtros_custom_view.view.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class HomeActivity : AppCompatActivity() {
@@ -28,13 +39,25 @@ class HomeActivity : AppCompatActivity() {
         gv = application as VariaveisGlobais
         setContentView(R.layout.activity_home)
 
-        val semEventos = NaoEventos
         val lista = ListView4
+
+        val escolherFiltros = filtros
+
+        eventos()
+        escolherFiltros.setOnClickListener {
+            lista.setAdapter(null);
+            showFiltros()
+        }
+
+
+    }
+
+    fun eventos(){
+        val semEventos = NaoEventos
         val uid = Auth.currentUser?.uid
-
-
+        val lista = ListView4
         val pesquisa = SearchEvento
-        
+
 
         var gruposMemmbros = mAuth.collection("Grupos")
         gruposMemmbros.get().addOnSuccessListener { result ->
@@ -243,6 +266,120 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
+    private fun showFiltros() {
+//        val inflater = layoutInflater
+//        val inflate_view = inflater.inflate(R.layout.filtros_custom_view, null)
+
+
+        val semEventos = NaoEventos
+        val lista = ListView4
+        val tipos = arrayOf("Montaria", "Espera", "Tordos", "Rolas", "Dias Caça")
+        val checkedTiposArray = booleanArrayOf(false, false, false, false,  false)
+
+
+
+//        val diainflate = inflate_view.edDia
+//        val mesinflate = inflate_view.edMes
+//        val anoinflate = inflate_view.edAno
+//
+//        val dia = diainflate.text.toString()
+//        val mes = mesinflate.text.toString()
+//        val ano = anoinflate.text.toString()
+
+
+        val alertDialog = AlertDialog.Builder(this)
+        alertDialog.setTitle("Filtros")
+        //alertDialog.setView(inflate_view)
+        alertDialog.setCancelable(false)
+
+        alertDialog.setNegativeButton("Cancel") { dialog, which ->
+            Toast.makeText(this, "Cancel", Toast.LENGTH_LONG).show()
+            eventos()
+        }
+        alertDialog.setMultiChoiceItems(tipos, checkedTiposArray) { dialog, which, isChecked ->
+            checkedTiposArray[which] = isChecked
+
+        }
+
+
+        alertDialog.setPositiveButton("Done") { dialog, which ->
+
+            var ListaEventosPublic = mAuth.collection("Eventos")
+            ListaEventosPublic.get().addOnSuccessListener { result ->
+                if (result != null) {
+                    val values = ArrayList<String>()
+
+                    for (evento in result) {
+                        semEventos.isVisible = false
+
+                        val f = evento.get("Forma")
+                        if (f == "publico") {
+                            for (i in checkedTiposArray.indices) {
+                                val checked = checkedTiposArray[i]
+                                if (checked) {
+                                    val x = tipos[i]
+
+                                    if (evento.get("Tipo").toString() == x){
+                                        Log.d("merda", x)
+                                        values.add(evento.get("nome").toString())
+                                    }
+                                }
+                            }
+
+                        }
+
+                    }
+                    Log.d("home", "$values")
+                    val adapter = ArrayAdapter(this, R.layout.listview_item, values)
+
+                    lista.adapter = adapter
+                    lista.onItemClickListener =
+                        object : AdapterView.OnItemClickListener {
+
+
+                            override fun onItemClick(
+                                parent: AdapterView<*>,
+                                view: View,
+                                position: Int,
+                                id: Long
+                            ) {
+
+
+                                val itemValue =
+                                    lista.getItemAtPosition(position) as String
+                                Log.d("home", "grupoID to search: $itemValue")
+                                gv.detalhes = itemValue
+                                val uid = Auth.currentUser?.uid
+                                var eventoclick2 =
+                                    mAuth.collection("Eventos").document(itemValue)
+                                eventoclick2.get().addOnSuccessListener { result ->
+                                    if (result != null) {
+
+                                        startActivity(
+                                            Intent(
+                                                view.context,
+                                                DetalhesEventoActivity::class.java
+                                            )
+                                        )
+
+
+                                    }
+                                }
+
+                            }
+
+                        }
+
+                }
+            }
+
+        }
+
+
+        val dialog = alertDialog.create()
+        dialog.show()
+
+    }
 
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
