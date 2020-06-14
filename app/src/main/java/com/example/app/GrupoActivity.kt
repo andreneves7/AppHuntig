@@ -15,6 +15,7 @@ import androidx.core.view.isVisible
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_grupo.*
+import java.sql.Time
 import java.time.Year
 
 class VariaveisGlobais : Application() {
@@ -28,6 +29,9 @@ class VariaveisGlobais : Application() {
     var Year : Int = 0
     var Lat : Double = 0.0
     var Long : Double = 0.0
+    //var IsHorasValidas : Boolean = false
+    var Horas : String=""
+
 
 }
 

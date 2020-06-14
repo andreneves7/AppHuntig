@@ -15,6 +15,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_evento.*
+import kotlinx.android.synthetic.main.activity_maps.*
 import java.util.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -25,7 +26,6 @@ class EventoActivity : AppCompatActivity() {
 
 
     val Auth = FirebaseAuth.getInstance()
-    val mAuth = FirebaseFirestore.getInstance()
 
     //val gAuth = FirebaseFirestore.getInstance().collection("Grupo")
     lateinit var gv: VariaveisGlobais
@@ -37,7 +37,7 @@ class EventoActivity : AppCompatActivity() {
         gv = application as VariaveisGlobais
 
 
-        val guardarEvento = bEvento
+
 
 
         val datePicker = findViewById<DatePicker>(R.id.datePicker1)
@@ -59,7 +59,8 @@ class EventoActivity : AppCompatActivity() {
             gv.Year = year
         }
 
-        guardarEvento.setOnClickListener {
+        val paginaMapa = bLocalizacao
+        paginaMapa.setOnClickListener {
             evento()
         }
 
@@ -68,74 +69,31 @@ class EventoActivity : AppCompatActivity() {
     private fun evento() {
 
         val nome = edNome.text.toString()
-        gv.nome = nome
+
         val horas = edTime.text.toString()
 
         val user = Auth.currentUser
 
-        if (user != null) {
-            val mail = mAuth.collection("Users").document(user.uid)
-            mail.get().addOnSuccessListener { document ->
-                if (document != null) {
+        if (!nome.isEmpty()
+        ) {
+            gv.nome = nome
 
-                    val name = document.data?.get("name")
+          if( isTimeValid(horas) == true){
+              gv.Horas = horas
 
+              val intent = Intent(this,MapsActivity::class.java)
+              startActivity(intent)
 
-                        if (!nome.isEmpty() && !horas.isEmpty()
-                        ) {
+          } else{
+              Toast.makeText(this, "Horas mal preenchidas", Toast.LENGTH_SHORT).show()
+          }
 
-                            isTimeValid(
-                                horas
-                            )
+        } else {
 
-
-                            val evento = HashMap<String, Any>()
-                            evento["nome"] = nome
-                            evento["Presenças"] = ArrayList<String>()
-                            evento["horas"] = horas
-                            evento["dia"] = gv.Day
-                            evento["mes"] = gv.Month
-                            evento["mes"] = gv.Year
-                            evento["Latitude"] = gv.Lat
-                            evento["Longitude"] = gv.Long
-                            mAuth.collection("Eventos").document(nome)
-                                .set(evento)
-
-                            val up = HashMap<String, Any>()
-                            up["Eventos"] = arrayListOf(nome)
-                            mAuth.collection("Grupos").document(gv.Evento)
-                                .update("Eventos", FieldValue.arrayUnion(nome))
-
-                            //tirar criador nao conta
-                            val upd = HashMap<String, Any>()
-                            upd["Presenças"] = arrayListOf(name)
-                            mAuth.collection("Eventos").document(gv.nome)
-                                .update("Presenças", FieldValue.arrayUnion(name))
-
-                            Toast.makeText(this, "evento criado", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Preencha campo nome", Toast.LENGTH_SHORT).show()
 
 
-                            val intent = Intent(this, GrupoActivity::class.java)
-                            intent.flags =
-                                Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-                            startActivity(intent)
-                        } else {
-
-                            Toast.makeText(this, "Preencha campos", Toast.LENGTH_SHORT).show()
-
-
-                        }
-
-
-
-                    Log.d(
-                        "evento", "DocumentSnapshot data: ${document.data?.get("name")}"
-                    )
-                } else {
-                    Log.d("evento", "No such document")
-                }
-            }
-        }
+    }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

@@ -22,10 +22,7 @@
             android:id="@+id/grupo"
             android:title="Grupo"
             app:showAsAction="never" />
-        <item
-            android:id="@+id/mapa"
-            android:title="Mapa"
-            app:showAsAction="never" />
+
 
         <item
             android:id="@+id/signOut"

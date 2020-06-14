@@ -144,10 +144,7 @@ class HomeActivity : AppCompatActivity() {
             startActivity(Intent(this, CriarGrupoActivity::class.java))
         }
 
-        if (item.itemId == R.id.mapa) {
 
-            startActivity(Intent(this, MapsActivity::class.java))
-        }
 
         if (item.itemId == R.id.home) {
 
