@@ -27,12 +27,15 @@ class VariaveisGlobais : Application() {
     var Month: Int = 0
     var Day : Int = 0
     var Year : Int = 0
+    var MonthFim: Int = 0
+    var DayFim : Int = 0
+    var YearFim : Int = 0
     var Lat : Double = 0.0
     var Long : Double = 0.0
     var check : String = ""
     var Horas : String = ""
     var privado : String = ""
-    var filtro : String = ""
+    //var filtro : String = ""
 
 
 }

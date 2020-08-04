@@ -56,7 +56,7 @@ class HomeActivity : AppCompatActivity() {
         val semEventos = NaoEventos
         val uid = Auth.currentUser?.uid
         val lista = ListView4
-       // val pesquisa = SearchEvento
+       val pesquisa = SearchEvento
 
 
         var gruposMemmbros = mAuth.collection("Grupos")
@@ -85,7 +85,7 @@ class HomeActivity : AppCompatActivity() {
                                 val adapter = ArrayAdapter(this, R.layout.listview_item, values)
 
                                 lista.adapter = adapter
-                               /* pesquisa.setOnQueryTextListener(object :
+                               pesquisa.setOnQueryTextListener(object :
                                     SearchView.OnQueryTextListener {
                                     override fun onQueryTextSubmit(query: String): Boolean {
 
@@ -97,7 +97,7 @@ class HomeActivity : AppCompatActivity() {
                                         adapter.filter.filter(newText)
                                         return false
                                     }
-                                })*/
+                                })
 
                                 lista.onItemClickListener =
                                     object : AdapterView.OnItemClickListener {

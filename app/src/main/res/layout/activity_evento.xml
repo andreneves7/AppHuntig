@@ -7,20 +7,29 @@
     tools:context=".EventoActivity">
 
 
-
-
     <DatePicker
-        android:id="@+id/datePicker1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/datePicker2"
+        android:layout_width="270dp"
+        android:layout_height="136dp"
         android:calendarViewShown="false"
         android:datePickerMode="spinner"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.813" />
+        app:layout_constraintVertical_bias="0.498" />
+
+    <DatePicker
+        android:id="@+id/datePicker1"
+        android:layout_width="271dp"
+        android:layout_height="129dp"
+        android:calendarViewShown="false"
+        android:datePickerMode="spinner"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.867" />
 
     <EditText
         android:id="@+id/edNome"
@@ -34,7 +43,7 @@
         app:layout_constraintHorizontal_bias="0.481"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.06" />
+        app:layout_constraintVertical_bias="0.028" />
 
     <Button
         android:id="@+id/bLocalizacao"
@@ -47,7 +56,8 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.971" />
+        app:layout_constraintVertical_bias="0.987" />
+
 
     <Button
         android:id="@+id/bTipos"
@@ -57,10 +67,10 @@
         android:text="Tipos"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.255"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.337" />
+        app:layout_constraintVertical_bias="0.258" />
 
     <EditText
         android:id="@+id/edTime"
@@ -74,8 +84,7 @@
         app:layout_constraintHorizontal_bias="0.487"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.166" />
-
+        app:layout_constraintVertical_bias="0.14" />
 
     <Switch
         android:id="@+id/switchForma"
@@ -84,10 +93,36 @@
         android:text="Privado"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.475"
+        app:layout_constraintHorizontal_bias="0.737"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.471" />
+        app:layout_constraintVertical_bias="0.274" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="125dp"
+        android:layout_height="19dp"
+        android:text="Data do Evento:"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.248"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.669" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="125dp"
+        android:layout_height="19dp"
+        android:text="Data do Fecho:"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.248"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.364" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

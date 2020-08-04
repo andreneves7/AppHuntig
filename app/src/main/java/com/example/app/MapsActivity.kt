@@ -322,6 +322,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickListe
                         evento["dia"] = gv.Day
                         evento["mes"] = gv.Month
                         evento["ano"] = gv.Year
+                        evento["diaFim"] = gv.DayFim
+                        evento["mesFim"] = gv.MonthFim
+                        evento["anoFim"] = gv.YearFim
                         evento["Tipo"] = gv.check
                         evento["Forma"] = gv.privado
                         evento["Latitude"] = gv.Lat

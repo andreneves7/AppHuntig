@@ -34,7 +34,24 @@ class EventoActivity : AppCompatActivity() {
         gv = application as VariaveisGlobais
 
 
+        val datePicker2 = findViewById<DatePicker>(R.id.datePicker2)
+        val today2 = Calendar.getInstance()
+        datePicker2.init(
+            today2.get(Calendar.YEAR), today2.get(Calendar.MONTH),
+            today2.get(Calendar.DAY_OF_MONTH)
 
+        ) { view, year, month, day ->
+            val month = month + 1
+            val ano = year
+            // val msg = "You Selected: $day/$month/$year"
+            Log.d(
+                "evento",
+                "dados2: $month , $ano , $day"
+            )
+            gv.MonthFim = month
+            gv.DayFim = day
+            gv.YearFim = year
+        }
 
 
         val datePicker = findViewById<DatePicker>(R.id.datePicker1)
@@ -87,11 +104,6 @@ class EventoActivity : AppCompatActivity() {
 
         val nome = edNome.text.toString()
         val horas = edTime.text.toString()
-//        val montaria = checkMontaria
-//        val espera = checkEspera
-//        val dias = checkDiasCaça
-//        val  rola = checkRola
-//        val tordo = checkTordo
         val on = switchForma
 
 
