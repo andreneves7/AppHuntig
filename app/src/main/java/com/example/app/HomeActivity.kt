@@ -16,11 +16,11 @@ import androidx.core.view.isVisible
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_evento.*
-import kotlinx.android.synthetic.main.activity_evento.checkDiasCaça
-import kotlinx.android.synthetic.main.activity_evento.checkEspera
-import kotlinx.android.synthetic.main.activity_evento.checkMontaria
-import kotlinx.android.synthetic.main.activity_evento.checkRola
-import kotlinx.android.synthetic.main.activity_evento.checkTordo
+//import kotlinx.android.synthetic.main.activity_evento.checkDiasCaça
+//import kotlinx.android.synthetic.main.activity_evento.checkEspera
+//import kotlinx.android.synthetic.main.activity_evento.checkMontaria
+//import kotlinx.android.synthetic.main.activity_evento.checkRola
+//import kotlinx.android.synthetic.main.activity_evento.checkTordo
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.filtros_custom_view.*
 import kotlinx.android.synthetic.main.filtros_custom_view.view.*
@@ -41,13 +41,13 @@ class HomeActivity : AppCompatActivity() {
 
         val lista = ListView4
 
-        val escolherFiltros = filtros
+        //val escolherFiltros = filtros
 
         eventos()
-        escolherFiltros.setOnClickListener {
+        /*escolherFiltros.setOnClickListener {
             lista.setAdapter(null);
             showFiltros()
-        }
+        }*/
 
 
     }
@@ -56,7 +56,7 @@ class HomeActivity : AppCompatActivity() {
         val semEventos = NaoEventos
         val uid = Auth.currentUser?.uid
         val lista = ListView4
-        val pesquisa = SearchEvento
+       // val pesquisa = SearchEvento
 
 
         var gruposMemmbros = mAuth.collection("Grupos")
@@ -85,7 +85,7 @@ class HomeActivity : AppCompatActivity() {
                                 val adapter = ArrayAdapter(this, R.layout.listview_item, values)
 
                                 lista.adapter = adapter
-                                pesquisa.setOnQueryTextListener(object :
+                               /* pesquisa.setOnQueryTextListener(object :
                                     SearchView.OnQueryTextListener {
                                     override fun onQueryTextSubmit(query: String): Boolean {
 
@@ -97,7 +97,7 @@ class HomeActivity : AppCompatActivity() {
                                         adapter.filter.filter(newText)
                                         return false
                                     }
-                                })
+                                })*/
 
                                 lista.onItemClickListener =
                                     object : AdapterView.OnItemClickListener {
@@ -184,7 +184,7 @@ class HomeActivity : AppCompatActivity() {
 
                                 lista.adapter = adapter
 
-                                pesquisa.setOnQueryTextListener(object :
+                                /*pesquisa.setOnQueryTextListener(object :
                                     SearchView.OnQueryTextListener {
                                     override fun onQueryTextSubmit(query: String): Boolean {
 
@@ -196,7 +196,7 @@ class HomeActivity : AppCompatActivity() {
                                         adapter.filter.filter(newText)
                                         return false
                                     }
-                                })
+                                })*/
 
                                 lista.onItemClickListener =
                                     object : AdapterView.OnItemClickListener {
@@ -266,6 +266,11 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
+
+
+    // filtros de pesquisa
+
+   /* val checkedTiposArray = booleanArrayOf(false, false, false, false, false)
     private fun showFiltros() {
 //        val inflater = layoutInflater
 //        val inflate_view = inflater.inflate(R.layout.filtros_custom_view, null)
@@ -275,7 +280,7 @@ class HomeActivity : AppCompatActivity() {
         val semEventos = NaoEventos
         val lista = ListView4
         val tipos = arrayOf("Montaria", "Espera", "Tordos", "Rolas", "Dias Caça")
-        val checkedTiposArray = booleanArrayOf(false, false, false, false, false)
+
 
 
 //        val diainflate = inflate_view.edDia
@@ -295,6 +300,7 @@ class HomeActivity : AppCompatActivity() {
         alertDialog.setNegativeButton("Limpar") { dialog, which ->
             Toast.makeText(this, "Limpar", Toast.LENGTH_LONG).show()
             eventos()
+
         }
         alertDialog.setMultiChoiceItems(tipos, checkedTiposArray) { dialog, which, isChecked ->
             checkedTiposArray[which] = isChecked
@@ -485,7 +491,7 @@ class HomeActivity : AppCompatActivity() {
         val dialog = alertDialog.create()
         dialog.show()
 
-    }
+    }*/
 
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

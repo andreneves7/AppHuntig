@@ -6,10 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.ArrayAdapter
-import android.widget.DatePicker
-import android.widget.Spinner
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
@@ -59,6 +56,26 @@ class EventoActivity : AppCompatActivity() {
             gv.Year = year
         }
 
+        val btnPop = bTipos
+
+        btnPop.setOnClickListener{
+
+            val popMenu = PopupMenu(this@EventoActivity, btnPop)
+            popMenu.menuInflater.inflate(R.menu.menu_pop, popMenu.menu)
+            popMenu.setOnMenuItemClickListener(object: PopupMenu.OnMenuItemClickListener {
+                override fun onMenuItemClick(item: MenuItem?): Boolean {
+                    when (item!!.itemId){
+                        R.id.checkMontaria -> gv.check = "montaria"
+                        R.id.checkDiasCaca -> gv.check = "dias"
+                        R.id.checkEspera -> gv.check = "espera"
+                        R.id.checkRolas -> gv.check = "rolas"
+                        R.id.checkTordos -> gv.check = "tordos"
+                    }
+                    return true
+                }
+            })
+            popMenu.show()
+        }
         val paginaMapa = bLocalizacao
         paginaMapa.setOnClickListener {
             evento()
@@ -70,12 +87,13 @@ class EventoActivity : AppCompatActivity() {
 
         val nome = edNome.text.toString()
         val horas = edTime.text.toString()
-        val montaria = checkMontaria
-        val espera = checkEspera
-        val dias = checkDiasCaça
-        val  rola = checkRola
-        val tordo = checkTordo
+//        val montaria = checkMontaria
+//        val espera = checkEspera
+//        val dias = checkDiasCaça
+//        val  rola = checkRola
+//        val tordo = checkTordo
         val on = switchForma
+
 
 
         val user = Auth.currentUser
@@ -84,61 +102,32 @@ class EventoActivity : AppCompatActivity() {
         ) {
             gv.nome = nome
 
-          if( isTimeValid(horas) == true){
-              gv.Horas = horas
+            if (isTimeValid(horas) == true) {
+                gv.Horas = horas
 
-              if(on.isChecked){
-                  gv.privado = "privado"
-              }
-              else{
-                  gv.privado = "publico"
-              }
-
-              if (montaria.isChecked == true && espera.isChecked == false && dias.isChecked == false && rola.isChecked == false && tordo.isChecked == false){
-                  gv.check = montaria.text.toString()
-                  val intent = Intent(this,MapsActivity::class.java)
-                  startActivity(intent)
-              Log.d( "testecheck", gv.check)
-              }
-              else if (montaria.isChecked == false && espera.isChecked == true && dias.isChecked == false && rola.isChecked == false && tordo.isChecked == false){
-                  gv.check = espera.text.toString()
-                  val intent = Intent(this,MapsActivity::class.java)
-                  startActivity(intent)
-                  Log.d( "testecheck", gv.check)
-              }
-              else if (montaria.isChecked == false && espera.isChecked == false && dias.isChecked == true && rola.isChecked == false && tordo.isChecked == false){
-                  gv.check = dias.text.toString()
-                  val intent = Intent(this,MapsActivity::class.java)
-                  startActivity(intent)
-                  Log.d( "testecheck", gv.check)
-              }
-              else if (montaria.isChecked == false && espera.isChecked == false && dias.isChecked == false && rola.isChecked == true && tordo.isChecked == false){
-                  gv.check = rola.text.toString()
-                  val intent = Intent(this,MapsActivity::class.java)
-                  startActivity(intent)
-                  Log.d( "testecheck", gv.check)
-              }
-              else if (montaria.isChecked == false && espera.isChecked == false && dias.isChecked == false && rola.isChecked == false && tordo.isChecked == true){
-                  gv.check = tordo.text.toString()
-                  val intent = Intent(this,MapsActivity::class.java)
-                  startActivity(intent)
-                  Log.d( "testecheck", gv.check)
-              }
-              else{
-                  Toast.makeText(this, "Selecione um Tipo", Toast.LENGTH_SHORT).show()
-              }
+                if (on.isChecked) {
+                    gv.privado = "privado"
+                } else {
+                    gv.privado = "publico"
+                }
+                if (gv.check != "") {
+                    val intent = Intent(this, MapsActivity::class.java)
+                    startActivity(intent)
+                } else {
+                    Toast.makeText(this, "Selecionar Tipo", Toast.LENGTH_SHORT).show()
+                }
 
 
-          } else{
-              Toast.makeText(this, "Horas mal preenchidas", Toast.LENGTH_SHORT).show()
-          }
+            } else {
+                Toast.makeText(this, "Horas mal preenchidas", Toast.LENGTH_SHORT).show()
+            }
 
         } else {
 
-        Toast.makeText(this, "Preencha campo nome", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Preencha campo nome", Toast.LENGTH_SHORT).show()
 
 
-    }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

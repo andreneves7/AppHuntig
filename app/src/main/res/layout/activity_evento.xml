@@ -7,41 +7,7 @@
     tools:context=".EventoActivity">
 
 
-    <CheckBox
-        android:id="@+id/checkTordo"
-        android:layout_width="101dp"
-        android:layout_height="29dp"
-        android:text="Tordos"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.245"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.447" />
 
-    <CheckBox
-        android:id="@+id/checkRola"
-        android:layout_width="101dp"
-        android:layout_height="29dp"
-        android:text="Rolas"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.658"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.371" />
-
-    <CheckBox
-        android:id="@+id/checkDiasCaça"
-        android:layout_width="100dp"
-        android:layout_height="30dp"
-        android:text="Dias Caça"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.244"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.371" />
 
     <DatePicker
         android:id="@+id/datePicker1"
@@ -83,6 +49,19 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.971" />
 
+    <Button
+        android:id="@+id/bTipos"
+        android:layout_width="114dp"
+        android:layout_height="46dp"
+        android:background="@drawable/botoes"
+        android:text="Tipos"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.337" />
+
     <EditText
         android:id="@+id/edTime"
         android:layout_width="255dp"
@@ -97,41 +76,18 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.166" />
 
-    <CheckBox
-        android:id="@+id/checkMontaria"
-        android:layout_width="98dp"
-        android:layout_height="27dp"
-        android:text="Montaria"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.242"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.284" />
-
-    <CheckBox
-        android:id="@+id/checkEspera"
-        android:layout_width="100dp"
-        android:layout_height="30dp"
-        android:text="Espera"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.655"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.287" />
 
     <Switch
         android:id="@+id/switchForma"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="106dp"
+        android:layout_height="34dp"
         android:text="Privado"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.655"
+        app:layout_constraintHorizontal_bias="0.475"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.493" />
+        app:layout_constraintVertical_bias="0.471" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
