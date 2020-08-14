@@ -6,145 +6,177 @@
     android:layout_height="match_parent"
     tools:context=".RegistoUserActivity">
 
-    <EditText
-        android:id="@+id/addPostal"
-        android:layout_width="345dp"
-        android:layout_height="51dp"
-        android:ems="10"
-        android:hint="Cod.Postal"
-        android:inputType="numberSigned"
+
+    <ScrollView
+        android:layout_width="373dp"
+        android:layout_height="587dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.575"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.443" />
+        app:layout_constraintVertical_bias="0.0">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/addCartao"
-        android:layout_width="345dp"
-        android:layout_height="51dp"
-        android:ems="10"
-        android:hint="C.C/BI"
-        android:inputType="numberSigned"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.56"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.737" />
+            <EditText
+                android:id="@+id/addNome"
+                android:layout_width="345dp"
+                android:layout_height="54dp"
+                android:ems="10"
+                android:hint="Name"
+                android:inputType="textPersonName" />
 
-    <EditText
-        android:id="@+id/addNif"
-        android:layout_width="345dp"
-        android:layout_height="51dp"
-        android:ems="10"
-        android:hint="Nif"
-        android:inputType="numberSigned"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.53"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.827" />
+            <EditText
+                android:id="@+id/addPass"
+                android:layout_width="346dp"
+                android:layout_height="54dp"
+                android:ems="10"
+                android:hint="Password"
+                android:inputType="textPassword" />
 
-    <Button
-        android:id="@+id/bSingUp"
-        android:layout_width="129dp"
-        android:layout_height="70dp"
-        android:background="@drawable/botoes"
-        android:text="Sign Up"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.46"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.969" />
+            <EditText
+                android:id="@+id/addEmail"
+                android:layout_width="348dp"
+                android:layout_height="53dp"
+                android:ems="10"
+                android:hint="email"
+                android:inputType="textEmailAddress" />
 
-    <EditText
-        android:id="@+id/addNome"
-        android:layout_width="345dp"
-        android:layout_height="54dp"
-        android:ems="10"
-        android:hint="Name"
-        android:inputType="textPersonName"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.545"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.051" />
+            <EditText
+                android:id="@+id/addTele"
+                android:layout_width="346dp"
+                android:layout_height="58dp"
+                android:ems="10"
+                android:hint="Telefone"
+                android:inputType="phone" />
 
-    <EditText
-        android:id="@+id/addEmail"
-        android:layout_width="348dp"
-        android:layout_height="53dp"
-        android:ems="10"
-        android:hint="Email"
-        android:inputType="textEmailAddress"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.571"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.149" />
+            <EditText
+                android:id="@+id/addLocalidade"
+                android:layout_width="343dp"
+                android:layout_height="58dp"
+                android:ems="10"
+                android:hint="Localidade"
+                android:inputType="textPersonName" />
 
-    <EditText
-        android:id="@+id/addPass"
-        android:layout_width="346dp"
-        android:layout_height="54dp"
-        android:ems="10"
-        android:hint="Password"
-        android:inputType="textPassword"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.545"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.245" />
+            <EditText
+                android:id="@+id/addMorada"
+                android:layout_width="344dp"
+                android:layout_height="55dp"
+                android:ems="10"
+                android:hint="Morada"
+                android:inputType="textPostalAddress" />
 
-    <EditText
-        android:id="@+id/addTele"
-        android:layout_width="346dp"
-        android:layout_height="58dp"
-        android:ems="10"
-        android:hint="Telefone"
-        android:inputType="phone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.584"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.344" />
+            <EditText
+                android:id="@+id/addPostal"
+                android:layout_width="345dp"
+                android:layout_height="51dp"
+                android:ems="10"
+                android:hint="Cod.Postal"
+                android:inputType="numberSigned" />
 
-    <EditText
-        android:id="@+id/addMorada"
-        android:layout_width="344dp"
-        android:layout_height="55dp"
-        android:ems="10"
-        android:hint="Morada"
-        android:inputType="textPostalAddress"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.537"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.538" />
+            <EditText
+                android:id="@+id/addCartao"
+                android:layout_width="345dp"
+                android:layout_height="51dp"
+                android:ems="10"
+                android:hint="C.C/BI"
+                android:inputType="numberSigned" />
 
-    <EditText
-        android:id="@+id/addLocalidade"
-        android:layout_width="343dp"
-        android:layout_height="58dp"
-        android:ems="10"
-        android:hint="Localidade"
-        android:inputType="textPersonName"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.529"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.642" />
+            <EditText
+                android:id="@+id/addNif"
+                android:layout_width="345dp"
+                android:layout_height="51dp"
+                android:ems="10"
+                android:hint="Nif"
+                android:inputType="numberSigned" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/bPais_User"
+                    android:layout_width="77dp"
+                    android:layout_height="44dp"
+                    android:background="@drawable/botoes"
+                    android:text="Pais" />
+
+                <EditText
+                    android:id="@+id/addPais_Outros"
+                    android:layout_width="224dp"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="Outros"
+                    android:inputType="textPersonName" />
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/add1"
+                android:layout_width="345dp"
+                android:layout_height="51dp"
+                android:ems="10"
+                android:hint="1"
+                android:inputType="numberSigned" />
+
+            <EditText
+                android:id="@+id/add2"
+                android:layout_width="345dp"
+                android:layout_height="51dp"
+                android:ems="10"
+                android:hint="2"
+                android:inputType="numberSigned" />
+
+            <EditText
+                android:id="@+id/add3"
+                android:layout_width="345dp"
+                android:layout_height="51dp"
+                android:ems="10"
+                android:hint="3"
+                android:inputType="numberSigned" />
+
+            <EditText
+                android:id="@+id/add4"
+                android:layout_width="345dp"
+                android:layout_height="51dp"
+                android:ems="10"
+                android:hint="4"
+                android:inputType="numberSigned" />
+
+            <EditText
+                android:id="@+id/add5"
+                android:layout_width="345dp"
+                android:layout_height="51dp"
+                android:ems="10"
+                android:hint="5"
+                android:inputType="numberSigned" />
+
+            <EditText
+                android:id="@+id/add5"
+                android:layout_width="345dp"
+                android:layout_height="51dp"
+                android:ems="10"
+                android:hint="5"
+                android:inputType="numberSigned" />
+
+        </LinearLayout>
+    </ScrollView>
+
+<!--    <Button-->
+<!--        android:id="@+id/bSingUp"-->
+<!--        android:layout_width="129dp"-->
+<!--        android:layout_height="70dp"-->
+<!--        android:background="@drawable/botoes"-->
+<!--        android:text="Sign Up"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.46"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintVertical_bias="0.969" />-->
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

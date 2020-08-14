@@ -1,24 +1,27 @@
 package com.example.app
 
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
-import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.MediaStore
+import android.provider.AlarmClock.EXTRA_MESSAGE
 import android.util.Log
-import android.widget.ImageView
+import android.view.MenuItem
+import android.view.View
+import android.widget.EditText
+import android.widget.PopupMenu
 import android.widget.Toast
-import com.google.firebase.Timestamp
+import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.auth.User
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_registo_user.*
+import org.jetbrains.anko.email
 import java.lang.Exception
 import java.util.*
 
+const val EXTRA_MESSAGE ="ola"
 class RegistoUserActivity : AppCompatActivity() {
 
     val mAuth = FirebaseFirestore.getInstance().collection("Users")
@@ -30,24 +33,65 @@ class RegistoUserActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_registo_user)
 
-        val regBtn = bSingUp
+//       val regBtn = bNext
 
 //        val imageView =findViewById<ImageView>(R.id.imageView)
 //        Glide.with(this/*context*/).load(mStorage).into()
 
 
+        val email= addEmail.text.toString()
+        val password = addPass.text.toString()
+        val name = addNome.text.toString()
 
-        regBtn.setOnClickListener {
+//regBtn.setOnClickListener {   val editText = findViewById<EditText>(R.id.addEmail)
+//    val message = editText.text.toString()
+//    val intent = Intent(this, RegistoActivity::class.java).apply {
+//        putExtra(EXTRA_MESSAGE, message)
+//    }
+//    startActivity(intent) }
 
-            val email = addEmail.text.toString()
-            val password = addPass.text.toString()
-            val name = addNome.text.toString()
+        var g = ""
+        val outros = addPais_Outros
+        outros.isInvisible = true
+        val btnPop = bPais_User
 
-            registoAuth(password, email, name)
+        btnPop.setOnClickListener{
 
+            val popMenu = PopupMenu(this@RegistoUserActivity, btnPop)
+            popMenu.menuInflater.inflate(R.menu.menu_pop2, popMenu.menu)
+            popMenu.setOnMenuItemClickListener(object: PopupMenu.OnMenuItemClickListener {
+                override fun onMenuItemClick(item: MenuItem?): Boolean {
+                    when (item!!.itemId){
+
+                        R.id.checkPortugal -> {"Portugal"
+                            outros.isInvisible = true
+                            Log.d("RegistoUser", "putas")
+
+                        }
+                        R.id.checkOutros ->  {outros.isVisible = true
+                        g = outros.text.toString().toUpperCase()
+                            Log.d("RegistoUser", "$g")
+                        }
+                        R.id.checkEspanha -> {"Espanha"
+                            outros.isInvisible = true
+                            Log.d("RegistoUser", "putas2")
+                        }
+                    }
+                    return true
+                }
+
+            })
+            popMenu.show()
         }
 
+
+        //registoAuth(password, email, name)
+
     }
+
+
+
+
 
 
     private fun registoAuth(password: String, email: String, name: String) {

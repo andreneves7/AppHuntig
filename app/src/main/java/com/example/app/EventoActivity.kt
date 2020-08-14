@@ -9,14 +9,10 @@ import android.view.MenuItem
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_evento.*
-import kotlinx.android.synthetic.main.activity_maps.*
 import java.util.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
-import kotlin.collections.ArrayList
 
 
 class EventoActivity : AppCompatActivity() {
@@ -93,7 +89,7 @@ class EventoActivity : AppCompatActivity() {
             })
             popMenu.show()
         }
-        val paginaMapa = bLocalizacao
+        val paginaMapa = bPais_User
         paginaMapa.setOnClickListener {
             evento()
         }

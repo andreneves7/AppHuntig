@@ -46,7 +46,7 @@
         app:layout_constraintVertical_bias="0.028" />
 
     <Button
-        android:id="@+id/bLocalizacao"
+        android:id="@+id/bPais_User"
         android:layout_width="114dp"
         android:layout_height="46dp"
         android:background="@drawable/botoes"

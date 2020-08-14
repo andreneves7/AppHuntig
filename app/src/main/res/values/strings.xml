@@ -1,7 +1,9 @@
 <resources>
     <string name="app_name">HuntingEvent</string>
     <string name="title_activity_maps">Map</string>
-<string name="api_key">AIzaSyCR_5PdNIjarIMG5-GBDPLvBj0rSbGu8bY</string>
+    <string name="api_key">AIzaSyCR_5PdNIjarIMG5-GBDPLvBj0rSbGu8bY</string>
+    <string name="edit_message">Enter a message</string>
+    <string name="button_send">Send</string>
 
     <!--    <string-array name="mes_array">-->
     <!--        <item>Janeiro</item>-->

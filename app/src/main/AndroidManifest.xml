@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.app">
-
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
@@ -21,6 +20,12 @@
         android:roundIcon="@mipmap/ic_launcher_hunt_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".RegistoActivity"
+            android:parentActivityName=".RegistoUserActivity">
+            <!-- The meta-data tag is required if you support API level 15 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".RegistoUserActivity" /></activity>
 
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -36,7 +41,7 @@
 
         <activity
             android:name=".MapsActivity"
-            android:label="@string/title_activity_maps"></activity>
+            android:label="@string/title_activity_maps" />
         <activity
             android:name=".AdesaoActivity"
             android:screenOrientation="portrait" />
@@ -68,7 +73,7 @@
         <activity
             android:name=".HomeActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan"/>
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".RegistoUserActivity"
             android:screenOrientation="portrait" />
