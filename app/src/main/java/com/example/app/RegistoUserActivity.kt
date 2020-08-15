@@ -55,6 +55,10 @@ class RegistoUserActivity : AppCompatActivity() {
         outros.isInvisible = true
         val btnPop = bPais_User
 
+        val passaporte = addNumero_Passaporte
+        passaporte.isInvisible = true
+
+
         btnPop.setOnClickListener{
 
             val popMenu = PopupMenu(this@RegistoUserActivity, btnPop)
@@ -65,15 +69,18 @@ class RegistoUserActivity : AppCompatActivity() {
 
                         R.id.checkPortugal -> {"Portugal"
                             outros.isInvisible = true
+                            passaporte.isInvisible = true
                             Log.d("RegistoUser", "putas")
 
                         }
                         R.id.checkOutros ->  {outros.isVisible = true
+                            passaporte.isVisible = true
                         g = outros.text.toString().toUpperCase()
                             Log.d("RegistoUser", "$g")
                         }
                         R.id.checkEspanha -> {"Espanha"
                             outros.isInvisible = true
+                            passaporte.isInvisible = true
                             Log.d("RegistoUser", "putas2")
                         }
                     }
