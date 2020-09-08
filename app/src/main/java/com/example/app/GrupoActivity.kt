@@ -36,6 +36,9 @@ class VariaveisGlobais : Application() {
     var Horas : String = ""
     var privado : String = ""
     var extra : String = ""
+    var Associacao : String = ""
+    var numSocio : Int = 0
+    var numEspanha : Int = 0
 
 
 }

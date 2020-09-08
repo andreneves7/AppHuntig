@@ -247,8 +247,8 @@
 
                 <LinearLayout
                     android:id="@+id/linearLayoutInfoAssPortugal"
-                    android:layout_width="375dp"
-                    android:layout_height="87dp"
+                    android:layout_width="368dp"
+                    android:layout_height="85dp"
                     android:orientation="horizontal"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -269,15 +269,15 @@
                         android:id="@+id/bAdd"
                         android:layout_width="100dp"
                         android:layout_height="75dp"
-                        android:text="add"
-                        android:background="@drawable/botoes"/>
+                        android:background="@drawable/botoes"
+                        android:text="add" />
 
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/linearLayoutZonas"
-                    android:layout_width="375dp"
-                    android:layout_height="87dp"
+                    android:layout_width="368dp"
+                    android:layout_height="85dp"
                     android:orientation="horizontal"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -298,8 +298,8 @@
                         android:id="@+id/buttonAddicionar"
                         android:layout_width="100dp"
                         android:layout_height="75dp"
-                        android:text="add"
-                        android:background="@drawable/botoes"/>
+                        android:background="@drawable/botoes"
+                        android:text="add" />
 
                 </LinearLayout>
 
@@ -335,6 +335,7 @@
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+
             <androidx.core.widget.NestedScrollView
                 android:id="@+id/scrollView2"
                 android:layout_width="match_parent"

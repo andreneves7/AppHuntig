@@ -2,29 +2,31 @@ package com.example.app
 
 import android.app.AlertDialog
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_registo_user.*
-import java.lang.Exception
 import java.util.*
+import kotlin.collections.ArrayList
 
 const val EXTRA_MESSAGE = "ola"
 
 class RegistoUserActivity : AppCompatActivity() {
 
     val mAuth = FirebaseFirestore.getInstance().collection("Users")
+    val gAuth = FirebaseFirestore.getInstance().collection("Grupos")
     val Auth = FirebaseAuth.getInstance()
     val mStorage = FirebaseStorage.getInstance().reference
     lateinit var gv: VariaveisGlobais
+    val valor = ArrayList<String>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,35 +35,56 @@ class RegistoUserActivity : AppCompatActivity() {
         gv = application as VariaveisGlobais
 
 
+     formaAssociacoes()
+
         val email = addEmail.text.toString()
         val password = addPass.text.toString()
         val name = addNome.text.toString()
+        val tele = addTele.text.toString()
+        val local = addLocalidade.text.toString()
+        val morada = addMorada.text.toString()
+        val postal = addPostal.text.toString()
+        val cartaCaca = addCartaCaca.text.toString()
+        val licencaArma = addLicencaArma.text.toString()
+        val nomeSeguradora = addNomeSeguradora.text.toString()
+        val numApolice = addNumeroApolice.text.toString()
+        val outros = addPais_Outros
+        val linceca = addLicencaCacaPortugal
+        val nomeSeguradoraExtra = addNomeSeguradoraExtra
+        val numApoliceExtra = addNumeroApoliceExtra
+        val numCaca = addNumPassCaca
+        val licencaP = editTextLicencaPortugal
+        val passaporte = addNumero_Passaporte
+        val dni = addDNI
+        val bi = addCartao
+        val nif = addNif
 
 
-        val putas = linearLayoutInfoExtraEspanha
-        val s = scrollView2
+
         val bEspanha = buttonAddicionar
         val b = button5
         val bPortugal = bAdd
+        val btnPop = bPais_User
+
         val e = checkBoxEspanha
         val p = checkBoxPortugal
-        val linceca = addLicencaCacaPortugal
-        val nome = addNomeSeguradoraExtra
-        val num = addNumeroApoliceExtra
-        val numCaca = addNumPassCaca
-        val licencaP = editTextLicencaPortugal
+
         val spinner = findViewById<Spinner>(R.id.spinner)
         val spinner2 = findViewById<Spinner>(R.id.spinnerAssociacoes)
         val spinner3 = findViewById<Spinner>(R.id.spinnerZonas)
+
         val putas2 = linearLayoutInfoAssPortugal
         val ZonasLicença = linearLayoutZonas
-
-
+        val extraEspanha = linearLayoutInfoExtraEspanha
+        val s = scrollView2
         val scrooll = scrollView3
 
 
-        nome.setVisibility(View.INVISIBLE)
-        num.setVisibility(View.INVISIBLE)
+        var g = ""
+
+
+        nomeSeguradoraExtra.setVisibility(View.INVISIBLE)
+        numApoliceExtra.setVisibility(View.INVISIBLE)
         numCaca.setVisibility(View.INVISIBLE)
         linceca.setVisibility(View.INVISIBLE)
         licencaP.setVisibility(View.INVISIBLE)
@@ -72,18 +95,10 @@ class RegistoUserActivity : AppCompatActivity() {
         e.setVisibility(View.INVISIBLE)
         p.setVisibility(View.INVISIBLE)
         spinner.setVisibility(View.INVISIBLE)
-        putas.setVisibility(View.INVISIBLE)
+        extraEspanha.setVisibility(View.INVISIBLE)
         s.setVisibility(View.INVISIBLE)
         scrooll.setVisibility(View.INVISIBLE)
 
-
-        var g = ""
-        val btnPop = bPais_User
-        val outros = addPais_Outros
-        val passaporte = addNumero_Passaporte
-        val dni = addDNI
-        val bi = addCartao
-        val nif = addNif
         outros.isInvisible = true
         dni.isInvisible = true
         bi.isInvisible = true
@@ -117,12 +132,16 @@ class RegistoUserActivity : AppCompatActivity() {
                         R.id.checkPortugal -> {
                             "Portugal"
                             bi.isVisible = true
+                            bi.text.toString()
                             nif.isVisible = true
+                            nif.text.toString()
                             nif.isFocusableInTouchMode = true
                             dni.isInvisible = true
                             outros.isInvisible = true
                             passaporte.isInvisible = true
                             Log.d("RegistoUser", "putas")
+
+                            g = "Portugal"
 
                             spinner2.setVisibility(View.VISIBLE)
                             putas2.setVisibility(View.VISIBLE)
@@ -130,6 +149,7 @@ class RegistoUserActivity : AppCompatActivity() {
                             ZonasLicença.setVisibility(View.INVISIBLE)
                             s.setVisibility(View.VISIBLE)
                             licencaP.setVisibility(View.VISIBLE)
+                            licencaP.text.toString()
                             spinner2()
 
 
@@ -137,7 +157,7 @@ class RegistoUserActivity : AppCompatActivity() {
                             e.setVisibility(View.VISIBLE);
                             e.setOnClickListener {
                                 if (e.isChecked) {
-                                    putas.setVisibility(View.VISIBLE);
+                                    extraEspanha.setVisibility(View.VISIBLE);
                                     spinner.setVisibility(View.VISIBLE);
                                     s.setVisibility(View.VISIBLE)
                                     numCaca.setVisibility(View.VISIBLE)
@@ -145,10 +165,10 @@ class RegistoUserActivity : AppCompatActivity() {
                                     spinner()
                                 } else {
                                     spinner.setVisibility(View.INVISIBLE)
-                                    putas.setVisibility(View.INVISIBLE)
+                                    extraEspanha.setVisibility(View.INVISIBLE)
                                     s.setVisibility(View.INVISIBLE)
-                                    nome.setVisibility(View.INVISIBLE)
-                                    num.setVisibility(View.INVISIBLE)
+                                    nomeSeguradoraExtra.setVisibility(View.INVISIBLE)
+                                    numApoliceExtra.setVisibility(View.INVISIBLE)
                                     numCaca.setVisibility(View.INVISIBLE)
                                     linceca.setVisibility(View.INVISIBLE)
                                     scrooll.setVisibility(View.INVISIBLE)
@@ -159,16 +179,18 @@ class RegistoUserActivity : AppCompatActivity() {
                         R.id.checkOutros -> {
                             outros.isVisible = true
                             passaporte.isVisible = true
+                            passaporte.text.toString()
                             nif.isInvisible = true
                             dni.isInvisible = true
                             bi.isInvisible = true
                             numCaca.setVisibility(View.VISIBLE)
-                            g = outros.text.toString().toUpperCase()
+                            g = outros.text.toString()
                             Log.d("RegistoUser", "$g")
                         }
                         R.id.checkEspanha -> {
                             "Espanha"
                             dni.isVisible = true
+                            dni.text.toString()
                             bi.isInvisible = true
                             nif.isInvisible = true
                             outros.isInvisible = true
@@ -183,21 +205,23 @@ class RegistoUserActivity : AppCompatActivity() {
                             s.setVisibility(View.VISIBLE)
                             spinnerZonas()
 
+                            g = "Espanha"
+
                             p.setVisibility(View.VISIBLE)
                             e.setVisibility(View.INVISIBLE)
                             spinner.setVisibility(View.INVISIBLE)
-                            putas.setVisibility(View.INVISIBLE)
+                            extraEspanha.setVisibility(View.INVISIBLE)
                             p.setOnClickListener {
                                 if (p.isChecked) {
-                                    nome.setVisibility(View.VISIBLE)
-                                    num.setVisibility(View.VISIBLE)
+                                    nomeSeguradoraExtra.setVisibility(View.VISIBLE)
+                                    numApoliceExtra.setVisibility(View.VISIBLE)
                                     numCaca.setVisibility(View.VISIBLE)
                                     linceca.setVisibility(View.VISIBLE)
                                 } else {
                                     spinner.setVisibility(View.INVISIBLE)
-                                    putas.setVisibility(View.INVISIBLE)
-                                    nome.setVisibility(View.INVISIBLE)
-                                    num.setVisibility(View.INVISIBLE)
+                                    extraEspanha.setVisibility(View.INVISIBLE)
+                                    nomeSeguradoraExtra.setVisibility(View.INVISIBLE)
+                                    numApoliceExtra.setVisibility(View.INVISIBLE)
                                     numCaca.setVisibility(View.INVISIBLE)
                                     linceca.setVisibility(View.INVISIBLE)
                                 }
@@ -212,11 +236,25 @@ class RegistoUserActivity : AppCompatActivity() {
         }
 
 
-        //registoAuth(password, email, name)
+//        registoAuth(password, email, name)
 
     }
 
-    fun licencaEspanha(){
+    fun formaAssociacoes(){
+        val dados = gAuth
+        dados.get().addOnSuccessListener { result ->
+            if (result != null) {
+
+
+                for (Asso in result) {
+                    valor.add(Asso.get("nome").toString())
+                }
+            }
+        }
+    }
+
+
+    fun licencaEspanha() {
         val numEspanha = editTextNumLicenca
         val ll = layoutVer
         val cb = TextView(this)
@@ -229,9 +267,10 @@ class RegistoUserActivity : AppCompatActivity() {
         bt.setText("remove")
 
         if (numEspanha.text.toString() != "") {
+            gv.numEspanha = numEspanha.text.toString().toInt()
 
             ll.addView(ld)
-            cb.setText("Numero: " + "${numEspanha.text.toString()}" + " ");
+            cb.setText("Numero: " + "${gv.numEspanha}" + " ");
             ct.setText("Zona: " + "${gv.check}  ");
             ld.addView(ct)
             ld.addView(cb)
@@ -262,10 +301,11 @@ class RegistoUserActivity : AppCompatActivity() {
         bt.setText("remove")
 
         if (NumSocio.text.toString() != "") {
+            gv.numSocio = NumSocio.text.toString().toInt()
 
             ll.addView(ld)
-            cb.setText("Numero: " + "${NumSocio.text.toString()}" + " ");
-            ct.setText("Associativa: " + "${gv.check}  ");
+            cb.setText("Numero: " + "${gv.numSocio}" + " ");
+            ct.setText("Associativa: " + "${gv.Associacao}  ");
             ld.addView(ct)
             ld.addView(cb)
             ld.addView(bt)
@@ -354,21 +394,14 @@ class RegistoUserActivity : AppCompatActivity() {
 
 
     fun spinner2() {
-//        val languages = resources.getStringArray(R.array.zonas)
-        val languages: MutableList<String> = ArrayList()
-        languages.add("Automobile")
-        languages.add("Business Services")
-        languages.add("Computers")
-        languages.add("Education")
-        languages.add("Personal")
-        languages.add("Travel")
+
         if (spinnerAssociacoes != null) {
             val adapter = ArrayAdapter(
                 this,
-                android.R.layout.simple_spinner_item, languages
+                android.R.layout.simple_spinner_item, valor
             )
                 .also { adapter ->
-                    // Specify the layout to use when the list of choices appears
+
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                     spinnerAssociacoes.adapter = adapter
                 }
@@ -380,9 +413,9 @@ class RegistoUserActivity : AppCompatActivity() {
                     view: View, position: Int, id: Long
                 ) {
 
-                    gv.check = languages[position]
+                    gv.Associacao = valor[position]
 
-                    Log.d("testea", "${gv.check}")
+                    Log.d("testeb", "${gv.Associacao}")
 
                 }
 
@@ -415,9 +448,9 @@ class RegistoUserActivity : AppCompatActivity() {
                     view: View, position: Int, id: Long
                 ) {
 
-                    gv.check = languages[position]
+                    gv.extra = languages[position]
 
-                    Log.d("testea", "${gv.check}")
+                    Log.d("testea", "${gv.extra}")
 
                 }
 
@@ -435,7 +468,7 @@ class RegistoUserActivity : AppCompatActivity() {
 
     private fun registoAuth(password: String, email: String, name: String) {
 
-        if (!password.isEmpty() && !email.isEmpty() && !name.isEmpty()) {
+        //if (!password.isEmpty() && !email.isEmpty() && !name.isEmpty()) {
             Auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { it ->
 
                 if (!it.isSuccessful) return@addOnCompleteListener
@@ -459,10 +492,10 @@ class RegistoUserActivity : AppCompatActivity() {
                 .addOnFailureListener { exception: Exception ->
                     Toast.makeText(this, exception.toString(), Toast.LENGTH_LONG).show()
                 }
-        } else {
-            Toast.makeText(this, "Preencha todos os campos", Toast.LENGTH_LONG).show()
-            Log.d("RegistoUser", "nao registo")
-        }
+//        } else {
+//            Toast.makeText(this, "Preencha todos os campos", Toast.LENGTH_LONG).show()
+//            Log.d("RegistoUser", "nao registo")
+//        }
 
     }
 
@@ -517,5 +550,11 @@ class RegistoUserActivity : AppCompatActivity() {
         addEmail.text.clear()
         addPass.text.clear()
     }
+
+    private fun validar(){
+        val texto_erros = ""
+
+    }
+
 }
 
