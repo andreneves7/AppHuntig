@@ -35,7 +35,7 @@ class RegistoUserActivity : AppCompatActivity() {
         gv = application as VariaveisGlobais
 
 
-     formaAssociacoes()
+
 
         val email = addEmail.text.toString()
         val password = addPass.text.toString()
@@ -54,30 +54,32 @@ class RegistoUserActivity : AppCompatActivity() {
         val numApoliceExtra = addNumeroApoliceExtra
         val numCaca = addNumPassCaca
         val licencaP = editTextLicencaPortugal
+        val licencaE = addLicencaCacaEspanha
         val passaporte = addNumero_Passaporte
         val dni = addDNI
         val bi = addCartao
         val nif = addNif
+        val licencaEspanha = addEspanhaExtra
 
 
 
-        val bEspanha = buttonAddicionar
-        val b = button5
-        val bPortugal = bAdd
+        // val bEspanha = buttonAddicionar
+        // val b = button5
+        // val bPortugal = bAdd
         val btnPop = bPais_User
 
         val e = checkBoxEspanha
         val p = checkBoxPortugal
 
-        val spinner = findViewById<Spinner>(R.id.spinner)
-        val spinner2 = findViewById<Spinner>(R.id.spinnerAssociacoes)
-        val spinner3 = findViewById<Spinner>(R.id.spinnerZonas)
+       // val spinner = findViewById<Spinner>(R.id.spinner)
+       // val spinner2 = findViewById<Spinner>(R.id.spinnerAssociacoes)
+       // val spinner3 = findViewById<Spinner>(R.id.spinnerZonas)
 
-        val putas2 = linearLayoutInfoAssPortugal
-        val ZonasLicença = linearLayoutZonas
-        val extraEspanha = linearLayoutInfoExtraEspanha
-        val s = scrollView2
-        val scrooll = scrollView3
+        // val putas2 = linearLayoutInfoAssPortugal
+//        val ZonasLicença = linearLayoutZonas
+//        val extraEspanha = linearLayoutInfoExtraEspanha
+//        val s = scrollView2
+//        val scrooll = scrollView3
 
 
         var g = ""
@@ -88,16 +90,18 @@ class RegistoUserActivity : AppCompatActivity() {
         numCaca.setVisibility(View.INVISIBLE)
         linceca.setVisibility(View.INVISIBLE)
         licencaP.setVisibility(View.INVISIBLE)
-        putas2.setVisibility(View.INVISIBLE)
-        spinner2.setVisibility(View.INVISIBLE)
-        spinner3.setVisibility(View.INVISIBLE)
-        ZonasLicença.setVisibility(View.INVISIBLE)
+        licencaEspanha.setVisibility(View.INVISIBLE)
+        licencaE.setVisibility(View.INVISIBLE)
+        // putas2.setVisibility(View.INVISIBLE)
+        // spinner2.setVisibility(View.INVISIBLE)
+//        spinner3.setVisibility(View.INVISIBLE)
+//        ZonasLicença.setVisibility(View.INVISIBLE)
         e.setVisibility(View.INVISIBLE)
         p.setVisibility(View.INVISIBLE)
-        spinner.setVisibility(View.INVISIBLE)
-        extraEspanha.setVisibility(View.INVISIBLE)
-        s.setVisibility(View.INVISIBLE)
-        scrooll.setVisibility(View.INVISIBLE)
+//        spinner.setVisibility(View.INVISIBLE)
+//        extraEspanha.setVisibility(View.INVISIBLE)
+//        s.setVisibility(View.INVISIBLE)
+//        scrooll.setVisibility(View.INVISIBLE)
 
         outros.isInvisible = true
         dni.isInvisible = true
@@ -106,18 +110,18 @@ class RegistoUserActivity : AppCompatActivity() {
         passaporte.isInvisible = true
 
 
-        b.setOnClickListener {
-            extra()
-        }
+//        b.setOnClickListener {
+//            extra()
+//        }
 
 
-        bPortugal.setOnClickListener {
-            lincecaPortugal()
-        }
+//        bPortugal.setOnClickListener {
+//            lincecaPortugal()
+//        }
 
-        bEspanha.setOnClickListener {
-            licencaEspanha()
-        }
+//        bEspanha.setOnClickListener {
+//            licencaEspanha()
+//        }
 
 
 
@@ -143,35 +147,40 @@ class RegistoUserActivity : AppCompatActivity() {
 
                             g = "Portugal"
 
-                            spinner2.setVisibility(View.VISIBLE)
-                            putas2.setVisibility(View.VISIBLE)
-                            spinner3.setVisibility(View.INVISIBLE)
-                            ZonasLicença.setVisibility(View.INVISIBLE)
-                            s.setVisibility(View.VISIBLE)
+                            // spinner2.setVisibility(View.VISIBLE)
+                            // putas2.setVisibility(View.VISIBLE)
+//                            spinner3.setVisibility(View.INVISIBLE)
+//                            ZonasLicença.setVisibility(View.INVISIBLE)
+//                            s.setVisibility(View.VISIBLE)
+                            licencaE.setVisibility(View.INVISIBLE)
                             licencaP.setVisibility(View.VISIBLE)
                             licencaP.text.toString()
-                            spinner2()
+                            // spinner2()
 
 
                             p.setVisibility(View.INVISIBLE);
                             e.setVisibility(View.VISIBLE);
                             e.setOnClickListener {
                                 if (e.isChecked) {
-                                    extraEspanha.setVisibility(View.VISIBLE);
-                                    spinner.setVisibility(View.VISIBLE);
-                                    s.setVisibility(View.VISIBLE)
-                                    numCaca.setVisibility(View.VISIBLE)
-                                    scrooll.setVisibility(View.VISIBLE)
-                                    spinner()
+                                   // extraEspanha.setVisibility(View.VISIBLE);
+//                                    spinner.setVisibility(View.VISIBLE);
+//                                    s.setVisibility(View.VISIBLE)
+                                    nomeSeguradoraExtra.setVisibility(View.VISIBLE)
+                                    numApoliceExtra.setVisibility(View.VISIBLE)
+                                   numCaca.setVisibility(View.VISIBLE)
+                                    licencaEspanha.setVisibility(View.VISIBLE)
+                                   // scrooll.setVisibility(View.VISIBLE)
+                                    // spinner()
                                 } else {
-                                    spinner.setVisibility(View.INVISIBLE)
-                                    extraEspanha.setVisibility(View.INVISIBLE)
-                                    s.setVisibility(View.INVISIBLE)
-                                    nomeSeguradoraExtra.setVisibility(View.INVISIBLE)
+//                                    spinner.setVisibility(View.INVISIBLE)
+//                                    extraEspanha.setVisibility(View.INVISIBLE)
+//                                    s.setVisibility(View.INVISIBLE)
+                             nomeSeguradoraExtra.setVisibility(View.INVISIBLE)
                                     numApoliceExtra.setVisibility(View.INVISIBLE)
                                     numCaca.setVisibility(View.INVISIBLE)
                                     linceca.setVisibility(View.INVISIBLE)
-                                    scrooll.setVisibility(View.INVISIBLE)
+                                    licencaEspanha.setVisibility(View.INVISIBLE)
+//                                    scrooll.setVisibility(View.INVISIBLE)
                                 }
                             }
 
@@ -185,6 +194,10 @@ class RegistoUserActivity : AppCompatActivity() {
                             bi.isInvisible = true
                             numCaca.setVisibility(View.VISIBLE)
                             g = outros.text.toString()
+                            licencaP.setVisibility(View.INVISIBLE)
+                            licencaE.setVisibility(View.INVISIBLE)
+                            p.setVisibility(View.INVISIBLE);
+                            e.setVisibility(View.INVISIBLE);
                             Log.d("RegistoUser", "$g")
                         }
                         R.id.checkEspanha -> {
@@ -197,20 +210,22 @@ class RegistoUserActivity : AppCompatActivity() {
                             passaporte.isInvisible = true
                             Log.d("RegistoUser", "putas2")
 
-                            spinner2.setVisibility(View.INVISIBLE)
-                            spinner3.setVisibility(View.VISIBLE)
-                            ZonasLicença.setVisibility(View.VISIBLE)
+                            // spinner2.setVisibility(View.INVISIBLE)
+//                            spinner3.setVisibility(View.VISIBLE)
+//                            ZonasLicença.setVisibility(View.VISIBLE)
                             licencaP.setVisibility(View.INVISIBLE)
-                            putas2.setVisibility(View.INVISIBLE)
-                            s.setVisibility(View.VISIBLE)
-                            spinnerZonas()
+                            licencaE.setVisibility(View.VISIBLE)
+                            licencaE.text.toString()
+                            // putas2.setVisibility(View.INVISIBLE)
+//                            s.setVisibility(View.VISIBLE)
+//                            spinnerZonas()
 
                             g = "Espanha"
 
                             p.setVisibility(View.VISIBLE)
                             e.setVisibility(View.INVISIBLE)
-                            spinner.setVisibility(View.INVISIBLE)
-                            extraEspanha.setVisibility(View.INVISIBLE)
+//                            spinner.setVisibility(View.INVISIBLE)
+//                             extraEspanha.setVisibility(View.INVISIBLE)
                             p.setOnClickListener {
                                 if (p.isChecked) {
                                     nomeSeguradoraExtra.setVisibility(View.VISIBLE)
@@ -218,8 +233,8 @@ class RegistoUserActivity : AppCompatActivity() {
                                     numCaca.setVisibility(View.VISIBLE)
                                     linceca.setVisibility(View.VISIBLE)
                                 } else {
-                                    spinner.setVisibility(View.INVISIBLE)
-                                    extraEspanha.setVisibility(View.INVISIBLE)
+//                                    spinner.setVisibility(View.INVISIBLE)
+//                                    extraEspanha.setVisibility(View.INVISIBLE)
                                     nomeSeguradoraExtra.setVisibility(View.INVISIBLE)
                                     numApoliceExtra.setVisibility(View.INVISIBLE)
                                     numCaca.setVisibility(View.INVISIBLE)
@@ -254,216 +269,216 @@ class RegistoUserActivity : AppCompatActivity() {
     }
 
 
-    fun licencaEspanha() {
-        val numEspanha = editTextNumLicenca
-        val ll = layoutVer
-        val cb = TextView(this)
-        val ct = TextView(this)
-
-        val ld = LinearLayout(this)
-        ld.setOrientation(LinearLayout.HORIZONTAL)
-
-        val bt = Button(this)
-        bt.setText("remove")
-
-        if (numEspanha.text.toString() != "") {
-            gv.numEspanha = numEspanha.text.toString().toInt()
-
-            ll.addView(ld)
-            cb.setText("Numero: " + "${gv.numEspanha}" + " ");
-            ct.setText("Zona: " + "${gv.check}  ");
-            ld.addView(ct)
-            ld.addView(cb)
-            ld.addView(bt)
-
-
-        }
-
-        bt.setOnClickListener {
-
-
-            ll.removeView(ld)
-
-
-        }
-    }
-
-    fun lincecaPortugal() {
-        val ll = layoutVer
-        val NumSocio = editTextNumSocio
-        val cb = TextView(this)
-        val ct = TextView(this)
-
-        val ld = LinearLayout(this)
-        ld.setOrientation(LinearLayout.HORIZONTAL)
-
-        val bt = Button(this)
-        bt.setText("remove")
-
-        if (NumSocio.text.toString() != "") {
-            gv.numSocio = NumSocio.text.toString().toInt()
-
-            ll.addView(ld)
-            cb.setText("Numero: " + "${gv.numSocio}" + " ");
-            ct.setText("Associativa: " + "${gv.Associacao}  ");
-            ld.addView(ct)
-            ld.addView(cb)
-            ld.addView(bt)
-
-
-        }
-
-        bt.setOnClickListener {
-
-
-            ll.removeView(ld)
-
-
-        }
-    }
-
-
-    fun extra() {
-        val et = editTextExtra
-        val ver = layoutVer2
-        val cb = TextView(this)
-        val ct = TextView(this)
-
-        val ld = LinearLayout(this)
-        ld.setOrientation(LinearLayout.HORIZONTAL)
-
-        val bt = Button(this)
-        bt.setText("remove")
-
-        if (et.text.toString() != "") {
-
-            ver.addView(ld)
-            cb.setText("Numero: " + "${et.text.toString()}" + " ");
-            ct.setText("Zona: " + "${gv.extra}  ");
-            ld.addView(ct)
-            ld.addView(cb)
-            ld.addView(bt)
-
-
-        }
-
-        bt.setOnClickListener {
-
-
-            ver.removeView(ld)
-
-
-        }
-    }
-
-
-    fun spinner() {
-        val languages = resources.getStringArray(R.array.zonas)
-        if (spinner != null) {
-            val adapter = ArrayAdapter(
-                this,
-                android.R.layout.simple_spinner_item, languages
-            )
-                .also { adapter ->
-                    // Specify the layout to use when the list of choices appears
-                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                    spinner.adapter = adapter
-                }
-
-            spinner.onItemSelectedListener = object :
-                AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(
-                    parent: AdapterView<*>,
-                    view: View, position: Int, id: Long
-                ) {
-
-                    gv.extra = languages[position]
-
-                    Log.d("testea", "${gv.extra}")
-
-                }
-
-                override fun onNothingSelected(parent: AdapterView<*>) {
-                    // write code to perform some action
-                }
-
-            }
-
-        }
-    }
-
-
-    fun spinner2() {
-
-        if (spinnerAssociacoes != null) {
-            val adapter = ArrayAdapter(
-                this,
-                android.R.layout.simple_spinner_item, valor
-            )
-                .also { adapter ->
-
-                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                    spinnerAssociacoes.adapter = adapter
-                }
-
-            spinnerAssociacoes.onItemSelectedListener = object :
-                AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(
-                    parent: AdapterView<*>,
-                    view: View, position: Int, id: Long
-                ) {
-
-                    gv.Associacao = valor[position]
-
-                    Log.d("testeb", "${gv.Associacao}")
-
-                }
-
-                override fun onNothingSelected(parent: AdapterView<*>) {
-                    // write code to perform some action
-                }
-
-            }
-
-        }
-    }
-
-    fun spinnerZonas() {
-        val languages = resources.getStringArray(R.array.zonas)
-        if (spinnerZonas != null) {
-            val adapter = ArrayAdapter(
-                this,
-                android.R.layout.simple_spinner_item, languages
-            )
-                .also { adapter ->
-                    // Specify the layout to use when the list of choices appears
-                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                    spinnerZonas.adapter = adapter
-                }
-
-            spinnerZonas.onItemSelectedListener = object :
-                AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(
-                    parent: AdapterView<*>,
-                    view: View, position: Int, id: Long
-                ) {
-
-                    gv.extra = languages[position]
-
-                    Log.d("testea", "${gv.extra}")
-
-                }
-
-                override fun onNothingSelected(parent: AdapterView<*>) {
-                    // write code to perform some action
-                }
-
-            }
-
-        }
-
-
-    }
+//    fun licencaEspanha() {
+//        val numEspanha = editTextNumLicenca
+//        val ll = layoutVer
+//        val cb = TextView(this)
+//        val ct = TextView(this)
+//
+//        val ld = LinearLayout(this)
+//        ld.setOrientation(LinearLayout.HORIZONTAL)
+//
+//        val bt = Button(this)
+//        bt.setText("remove")
+//
+//        if (numEspanha.text.toString() != "") {
+//            gv.numEspanha = numEspanha.text.toString().toInt()
+//
+//            ll.addView(ld)
+//            cb.setText("Numero: " + "${gv.numEspanha}" + " ");
+//            ct.setText("Zona: " + "${gv.check}  ");
+//            ld.addView(ct)
+//            ld.addView(cb)
+//            ld.addView(bt)
+//
+//
+//        }
+//
+//        bt.setOnClickListener {
+//
+//
+//            ll.removeView(ld)
+//
+//
+//        }
+//    }
+
+//    fun lincecaPortugal() {
+//        val ll = layoutVer
+//       // val NumSocio = editTextNumSocio
+//        val cb = TextView(this)
+//        val ct = TextView(this)
+//
+//        val ld = LinearLayout(this)
+//        ld.setOrientation(LinearLayout.HORIZONTAL)
+//
+//        val bt = Button(this)
+//        bt.setText("remove")
+//
+//        if (NumSocio.text.toString() != "") {
+//            gv.numSocio = NumSocio.text.toString().toInt()
+//
+//            ll.addView(ld)
+//            cb.setText("Numero: " + "${gv.numSocio}" + " ");
+//            ct.setText("Associativa: " + "${gv.Associacao}  ");
+//            ld.addView(ct)
+//            ld.addView(cb)
+//            ld.addView(bt)
+//
+//
+//        }
+//
+//        bt.setOnClickListener {
+//
+//
+//            ll.removeView(ld)
+//
+//
+//        }
+//    }
+
+
+//    fun extra() {
+//        val et = editTextExtra
+//        val ver = layoutVer2
+//        val cb = TextView(this)
+//        val ct = TextView(this)
+//
+//        val ld = LinearLayout(this)
+//        ld.setOrientation(LinearLayout.HORIZONTAL)
+//
+//        val bt = Button(this)
+//        bt.setText("remove")
+//
+//        if (et.text.toString() != "") {
+//
+//            ver.addView(ld)
+//            cb.setText("Numero: " + "${et.text.toString()}" + " ");
+//            ct.setText("Zona: " + "${gv.extra}  ");
+//            ld.addView(ct)
+//            ld.addView(cb)
+//            ld.addView(bt)
+//
+//
+//        }
+//
+//        bt.setOnClickListener {
+//
+//
+//            ver.removeView(ld)
+//
+//
+//        }
+//    }
+
+
+//    fun spinner() {
+//        val languages = resources.getStringArray(R.array.zonas)
+//        if (spinner != null) {
+//            val adapter = ArrayAdapter(
+//                this,
+//                android.R.layout.simple_spinner_item, languages
+//            )
+//                .also { adapter ->
+//                    // Specify the layout to use when the list of choices appears
+//                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+//                    spinner.adapter = adapter
+//                }
+//
+//            spinner.onItemSelectedListener = object :
+//                AdapterView.OnItemSelectedListener {
+//                override fun onItemSelected(
+//                    parent: AdapterView<*>,
+//                    view: View, position: Int, id: Long
+//                ) {
+//
+//                    gv.extra = languages[position]
+//
+//                    Log.d("testea", "${gv.extra}")
+//
+//                }
+//
+//                override fun onNothingSelected(parent: AdapterView<*>) {
+//                    // write code to perform some action
+//                }
+//
+//            }
+//
+//        }
+//    }
+
+
+//    fun spinner2() {
+//
+//        if (spinnerAssociacoes != null) {
+//            val adapter = ArrayAdapter(
+//                this,
+//                android.R.layout.simple_spinner_item, valor
+//            )
+//                .also { adapter ->
+//
+//                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+//                    spinnerAssociacoes.adapter = adapter
+//                }
+//
+//            spinnerAssociacoes.onItemSelectedListener = object :
+//                AdapterView.OnItemSelectedListener {
+//                override fun onItemSelected(
+//                    parent: AdapterView<*>,
+//                    view: View, position: Int, id: Long
+//                ) {
+//
+//                    gv.Associacao = valor[position]
+//
+//                    Log.d("testeb", "${gv.Associacao}")
+//
+//                }
+//
+//                override fun onNothingSelected(parent: AdapterView<*>) {
+//                    // write code to perform some action
+//                }
+//
+//            }
+//
+//        }
+//    }
+
+//    fun spinnerZonas() {
+//        val languages = resources.getStringArray(R.array.zonas)
+//        if (spinnerZonas != null) {
+//            val adapter = ArrayAdapter(
+//                this,
+//                android.R.layout.simple_spinner_item, languages
+//            )
+//                .also { adapter ->
+//                    // Specify the layout to use when the list of choices appears
+//                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+//                    spinnerZonas.adapter = adapter
+//                }
+//
+//            spinnerZonas.onItemSelectedListener = object :
+//                AdapterView.OnItemSelectedListener {
+//                override fun onItemSelected(
+//                    parent: AdapterView<*>,
+//                    view: View, position: Int, id: Long
+//                ) {
+//
+//                    gv.extra = languages[position]
+//
+//                    Log.d("testea", "${gv.extra}")
+//
+//                }
+//
+//                override fun onNothingSelected(parent: AdapterView<*>) {
+//                    // write code to perform some action
+//                }
+//
+//            }
+//
+//        }
+//
+//
+//    }
 
 
     private fun registoAuth(password: String, email: String, name: String) {
