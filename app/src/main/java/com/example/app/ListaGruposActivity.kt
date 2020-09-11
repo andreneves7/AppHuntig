@@ -3,7 +3,7 @@ package com.example.app
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.AlarmClock.EXTRA_MESSAGE
+import android.provider.AlarmClock
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -11,11 +11,12 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ListView
+import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.android.synthetic.main.activity_preferencias.*
 
-class PreferenciasActivity : AppCompatActivity() {
+class ListaGruposActivity : AppCompatActivity() {
+
     val Auth = FirebaseAuth.getInstance()
     val mAuth = FirebaseFirestore.getInstance()
     lateinit var gv: VariaveisGlobais
@@ -25,19 +26,7 @@ class PreferenciasActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_preferencias)
-
-        val pular = bPular
-
-        pular.setOnClickListener {
-            val intent = Intent(this, HomeActivity::class.java)
-            intent.flags =
-                Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-            startActivity(intent)
-        }
-
-
-
+        setContentView(R.layout.activity_lista_grupos)
         listView = findViewById(R.id.listView)
 
         var d = mAuth.collection("Grupos")
@@ -70,19 +59,44 @@ class PreferenciasActivity : AppCompatActivity() {
                             id: Long
                         ) {
 
-                            val itemValue = listView.getItemAtPosition(position)
-                            val message = itemValue as String
+                            val itemValue = listView.getItemAtPosition(position) as String
+                            val message = itemValue
                             Log.d("Preferencias", "mensagem: $message" + "item: $itemValue ")
-                            var b = mAuth.collection("Grupos").document(itemValue.toString())
+
+
+                            var b = mAuth.collection("Grupos").document(itemValue)
                             b.get().addOnSuccessListener { result ->
                                 if (result != null) {
+                                    var p = result.data?.get("membros") as List<String>
 
 
-                                    startActivity(
-                                        Intent(view.context, AdesaoActivity::class.java).apply {
-                                            putExtra(EXTRA_MESSAGE, message)
+                                    val user = Auth.currentUser!!.uid
+
+                                    var controlo = 0
+                                    for (m in p) {
+
+                                        if (m.contains(user)) {
+                                            controlo = 1
                                         }
-                                    )
+                                    }
+                                    if (controlo == 0) {
+                                        startActivity(
+                                            Intent(
+                                                view.context,
+                                                AdesaoActivity::class.java
+                                            ).apply {
+                                                putExtra(AlarmClock.EXTRA_MESSAGE, message)
+                                            }
+                                        )
+                                    } else {
+                                        Toast.makeText(
+                                            this@ListaGruposActivity,
+                                            "ja esta presente neste grupo",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                    }
+
+
                                 }
 
                             }

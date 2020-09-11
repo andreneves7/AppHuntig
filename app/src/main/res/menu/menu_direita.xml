@@ -22,6 +22,11 @@
             android:id="@+id/grupo"
             android:title="Grupo"
             app:showAsAction="never" />
+        <item
+            android:id="@+id/Lista"
+            android:title="ListaGrupos"
+            app:showAsAction="never" />
+
 
 
         <item

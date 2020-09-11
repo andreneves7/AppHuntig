@@ -20,8 +20,8 @@
         android:roundIcon="@mipmap/ic_launcher_hunt_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".PreferenciasActivity"></activity>
-        <!-- The meta-data tag is required if you support API level 15 and lower -->
+        <activity android:name=".ListaGruposActivity"></activity>
+        <activity android:name=".PreferenciasActivity" /> <!-- The meta-data tag is required if you support API level 15 and lower -->
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").

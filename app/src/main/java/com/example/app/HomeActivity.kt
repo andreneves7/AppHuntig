@@ -548,6 +548,11 @@ class HomeActivity : AppCompatActivity() {
             startActivity(Intent(this, ProfileActivity::class.java))
         }
 
+        if (item.itemId == R.id.Lista) {
+
+            startActivity(Intent(this, ListaGruposActivity::class.java))
+        }
+
         if (item.itemId == R.id.grupo) {
 
             startActivity(Intent(this, CriarGrupoActivity::class.java))

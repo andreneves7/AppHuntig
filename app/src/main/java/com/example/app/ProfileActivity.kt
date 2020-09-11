@@ -389,6 +389,11 @@ class ProfileActivity : AppCompatActivity() {
             startActivity(Intent(this,VerGrupoActivity::class.java))
         }
 
+        if (item.itemId == R.id.Lista) {
+
+            startActivity(Intent(this, ListaGruposActivity::class.java))
+        }
+
         if (item.itemId == R.id.home) {
 
             startActivity(Intent(this, HomeActivity::class.java))
