@@ -4,8 +4,12 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.AlarmClock.EXTRA_MESSAGE
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.ListView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -41,39 +45,49 @@ class PreferenciasActivity : AppCompatActivity() {
             if (result != null) {
 
 
-                var list = ArrayList<Model>()
+                var list = ArrayList<String>()
 
                 for (grupo in result) {
 
                     list.add(
-                        Model(
-                            "${grupo.get("nome").toString()}", "${
-                                grupo.get("Numero").toString()
-                            }", "${grupo.get("Photo").toString()}"
-                        )
+                        "${grupo.get("nome").toString()}"
                     )
 
                 }
 
-                listView.adapter = MyListAdapter(this, R.layout.row, list)
-                listView.setOnItemClickListener { parent, view, position, id ->
+                val adapter = ArrayAdapter(this, R.layout.listview_item, list)
 
-                    val itemValue = listView.getItemAtPosition(position)
-                    val message = itemValue.toString()
-                    var b = mAuth.collection("Grupos").document(itemValue.toString())
-                    b.get().addOnSuccessListener { result ->
-                        if (result != null) {
+                listView.adapter = adapter
+
+                listView.onItemClickListener =
+                    object : AdapterView.OnItemClickListener {
 
 
-                            startActivity(
-                                Intent(view.context, AdesaoActivity::class.java).apply {
-                                    putExtra(EXTRA_MESSAGE, message)
+                        override fun onItemClick(
+                            parent: AdapterView<*>,
+                            view: View,
+                            position: Int,
+                            id: Long
+                        ) {
+
+                            val itemValue = listView.getItemAtPosition(position)
+                            val message = itemValue as String
+                            Log.d("Preferencias", "mensagem: $message" + "item: $itemValue ")
+                            var b = mAuth.collection("Grupos").document(itemValue.toString())
+                            b.get().addOnSuccessListener { result ->
+                                if (result != null) {
+
+
+                                    startActivity(
+                                        Intent(view.context, AdesaoActivity::class.java).apply {
+                                            putExtra(EXTRA_MESSAGE, message)
+                                        }
+                                    )
                                 }
-                            )
-                        }
 
+                            }
+                        }
                     }
-                }
 
             }
 

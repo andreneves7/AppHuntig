@@ -12,8 +12,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 
 
-class MyListAdapter(var mCtx: Context, var resource:Int, var items: ArrayList<Model>)
-    : ArrayAdapter<Model>( mCtx , resource , items ){
+class MyListAdapter(var mCtx: Context,var resource:Int,  var items: ArrayList<Model>)
+    : ArrayAdapter<Model>( mCtx, resource , items ){
 
     val mAuth = FirebaseFirestore.getInstance()
 
