@@ -6,27 +6,26 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
-import android.widget.*
+import android.widget.EditText
+import android.widget.PopupMenu
+import android.widget.Switch
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.firestore.FieldValue
 import kotlinx.android.synthetic.main.activity_registo_user.*
-import java.util.*
-import kotlin.collections.ArrayList
-
-const val EXTRA_MESSAGE = "ola"
 
 class RegistoUserActivity : AppCompatActivity() {
 
-    val mAuth = FirebaseFirestore.getInstance().collection("Users")
-    val gAuth = FirebaseFirestore.getInstance().collection("Grupos")
+    val mAuth = FirebaseFirestore.getInstance()
+    //val gAuth = FirebaseFirestore.getInstance().collection("Grupos")
     val Auth = FirebaseAuth.getInstance()
-    val mStorage = FirebaseStorage.getInstance().reference
+    //val mStorage = FirebaseStorage.getInstance().reference
     lateinit var gv: VariaveisGlobais
-    val valor = ArrayList<String>()
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,18 +35,6 @@ class RegistoUserActivity : AppCompatActivity() {
 
 
 
-
-        val email = addEmail.text.toString()
-        val password = addPass.text.toString()
-        val name = addNome.text.toString()
-        val tele = addTele.text.toString()
-        val local = addLocalidade.text.toString()
-        val morada = addMorada.text.toString()
-        val postal = addPostal.text.toString()
-        val cartaCaca = addCartaCaca.text.toString()
-        val licencaArma = addLicencaArma.text.toString()
-        val nomeSeguradora = addNomeSeguradora.text.toString()
-        val numApolice = addNumeroApolice.text.toString()
         val outros = addPais_Outros
         val linceca = addLicencaCacaPortugal
         val nomeSeguradoraExtra = addNomeSeguradoraExtra
@@ -62,24 +49,11 @@ class RegistoUserActivity : AppCompatActivity() {
         val licencaEspanha = addEspanhaExtra
 
 
-
-        // val bEspanha = buttonAddicionar
-        // val b = button5
-        // val bPortugal = bAdd
         val btnPop = bPais_User
+        val buttonRegistar = bRegistar
 
         val e = checkBoxEspanha
         val p = checkBoxPortugal
-
-       // val spinner = findViewById<Spinner>(R.id.spinner)
-       // val spinner2 = findViewById<Spinner>(R.id.spinnerAssociacoes)
-       // val spinner3 = findViewById<Spinner>(R.id.spinnerZonas)
-
-        // val putas2 = linearLayoutInfoAssPortugal
-//        val ZonasLicença = linearLayoutZonas
-//        val extraEspanha = linearLayoutInfoExtraEspanha
-//        val s = scrollView2
-//        val scrooll = scrollView3
 
 
         var g = ""
@@ -92,16 +66,10 @@ class RegistoUserActivity : AppCompatActivity() {
         licencaP.setVisibility(View.INVISIBLE)
         licencaEspanha.setVisibility(View.INVISIBLE)
         licencaE.setVisibility(View.INVISIBLE)
-        // putas2.setVisibility(View.INVISIBLE)
-        // spinner2.setVisibility(View.INVISIBLE)
-//        spinner3.setVisibility(View.INVISIBLE)
-//        ZonasLicença.setVisibility(View.INVISIBLE)
+
         e.setVisibility(View.INVISIBLE)
         p.setVisibility(View.INVISIBLE)
-//        spinner.setVisibility(View.INVISIBLE)
-//        extraEspanha.setVisibility(View.INVISIBLE)
-//        s.setVisibility(View.INVISIBLE)
-//        scrooll.setVisibility(View.INVISIBLE)
+
 
         outros.isInvisible = true
         dni.isInvisible = true
@@ -110,18 +78,7 @@ class RegistoUserActivity : AppCompatActivity() {
         passaporte.isInvisible = true
 
 
-//        b.setOnClickListener {
-//            extra()
-//        }
 
-
-//        bPortugal.setOnClickListener {
-//            lincecaPortugal()
-//        }
-
-//        bEspanha.setOnClickListener {
-//            licencaEspanha()
-//        }
 
 
 
@@ -136,51 +93,36 @@ class RegistoUserActivity : AppCompatActivity() {
                         R.id.checkPortugal -> {
                             "Portugal"
                             bi.isVisible = true
-                            bi.text.toString()
                             nif.isVisible = true
-                            nif.text.toString()
                             nif.isFocusableInTouchMode = true
+                            licencaP.setVisibility(View.VISIBLE)
+                            e.setVisibility(View.VISIBLE);
+
+                            p.setVisibility(View.INVISIBLE);
                             dni.isInvisible = true
                             outros.isInvisible = true
                             passaporte.isInvisible = true
-                            Log.d("RegistoUser", "putas")
+                            licencaE.setVisibility(View.INVISIBLE)
+
+
+                            //Log.d("RegistoUser", "putas")
 
                             g = "Portugal"
-
-                            // spinner2.setVisibility(View.VISIBLE)
-                            // putas2.setVisibility(View.VISIBLE)
-//                            spinner3.setVisibility(View.INVISIBLE)
-//                            ZonasLicença.setVisibility(View.INVISIBLE)
-//                            s.setVisibility(View.VISIBLE)
-                            licencaE.setVisibility(View.INVISIBLE)
-                            licencaP.setVisibility(View.VISIBLE)
-                            licencaP.text.toString()
-                            // spinner2()
-
-
-                            p.setVisibility(View.INVISIBLE);
-                            e.setVisibility(View.VISIBLE);
                             e.setOnClickListener {
                                 if (e.isChecked) {
-                                   // extraEspanha.setVisibility(View.VISIBLE);
-//                                    spinner.setVisibility(View.VISIBLE);
-//                                    s.setVisibility(View.VISIBLE)
+
                                     nomeSeguradoraExtra.setVisibility(View.VISIBLE)
                                     numApoliceExtra.setVisibility(View.VISIBLE)
-                                   numCaca.setVisibility(View.VISIBLE)
+                                    numCaca.setVisibility(View.VISIBLE)
                                     licencaEspanha.setVisibility(View.VISIBLE)
-                                   // scrooll.setVisibility(View.VISIBLE)
-                                    // spinner()
+
                                 } else {
-//                                    spinner.setVisibility(View.INVISIBLE)
-//                                    extraEspanha.setVisibility(View.INVISIBLE)
-//                                    s.setVisibility(View.INVISIBLE)
-                             nomeSeguradoraExtra.setVisibility(View.INVISIBLE)
+
+                                    licencaEspanha.setVisibility(View.INVISIBLE)
+                                    nomeSeguradoraExtra.setVisibility(View.INVISIBLE)
                                     numApoliceExtra.setVisibility(View.INVISIBLE)
                                     numCaca.setVisibility(View.INVISIBLE)
                                     linceca.setVisibility(View.INVISIBLE)
-                                    licencaEspanha.setVisibility(View.INVISIBLE)
-//                                    scrooll.setVisibility(View.INVISIBLE)
                                 }
                             }
 
@@ -188,12 +130,14 @@ class RegistoUserActivity : AppCompatActivity() {
                         R.id.checkOutros -> {
                             outros.isVisible = true
                             passaporte.isVisible = true
-                            passaporte.text.toString()
                             nif.isInvisible = true
                             dni.isInvisible = true
                             bi.isInvisible = true
                             numCaca.setVisibility(View.VISIBLE)
-                            g = outros.text.toString()
+
+
+
+                            licencaEspanha.setVisibility(View.INVISIBLE)
                             licencaP.setVisibility(View.INVISIBLE)
                             licencaE.setVisibility(View.INVISIBLE)
                             p.setVisibility(View.INVISIBLE);
@@ -203,29 +147,22 @@ class RegistoUserActivity : AppCompatActivity() {
                         R.id.checkEspanha -> {
                             "Espanha"
                             dni.isVisible = true
-                            dni.text.toString()
                             bi.isInvisible = true
                             nif.isInvisible = true
                             outros.isInvisible = true
                             passaporte.isInvisible = true
+                            licencaE.setVisibility(View.VISIBLE)
+                            p.setVisibility(View.VISIBLE)
                             Log.d("RegistoUser", "putas2")
 
-                            // spinner2.setVisibility(View.INVISIBLE)
-//                            spinner3.setVisibility(View.VISIBLE)
-//                            ZonasLicença.setVisibility(View.VISIBLE)
-                            licencaP.setVisibility(View.INVISIBLE)
-                            licencaE.setVisibility(View.VISIBLE)
-                            licencaE.text.toString()
-                            // putas2.setVisibility(View.INVISIBLE)
-//                            s.setVisibility(View.VISIBLE)
-//                            spinnerZonas()
+
+
 
                             g = "Espanha"
 
-                            p.setVisibility(View.VISIBLE)
+                            licencaP.setVisibility(View.INVISIBLE)
                             e.setVisibility(View.INVISIBLE)
-//                            spinner.setVisibility(View.INVISIBLE)
-//                             extraEspanha.setVisibility(View.INVISIBLE)
+
                             p.setOnClickListener {
                                 if (p.isChecked) {
                                     nomeSeguradoraExtra.setVisibility(View.VISIBLE)
@@ -233,8 +170,6 @@ class RegistoUserActivity : AppCompatActivity() {
                                     numCaca.setVisibility(View.VISIBLE)
                                     linceca.setVisibility(View.VISIBLE)
                                 } else {
-//                                    spinner.setVisibility(View.INVISIBLE)
-//                                    extraEspanha.setVisibility(View.INVISIBLE)
                                     nomeSeguradoraExtra.setVisibility(View.INVISIBLE)
                                     numApoliceExtra.setVisibility(View.INVISIBLE)
                                     numCaca.setVisibility(View.INVISIBLE)
@@ -250,283 +185,331 @@ class RegistoUserActivity : AppCompatActivity() {
             popMenu.show()
         }
 
-
-//        registoAuth(password, email, name)
-
-    }
-
-    fun formaAssociacoes(){
-        val dados = gAuth
-        dados.get().addOnSuccessListener { result ->
-            if (result != null) {
+        //portugal
 
 
-                for (Asso in result) {
-                    valor.add(Asso.get("nome").toString())
-                }
-            }
+        //outros
+        passaporte.text.toString()
+        g = outros.text.toString()
+
+        //espanha
+        dni.text.toString()
+        licencaE.text.toString()
+
+        buttonRegistar.setOnClickListener {
+
+            val email = addEmail.text.toString()
+            val password = addPass.text.toString()
+            val name = addNome.text.toString()
+            val tele = addTele.text.toString()
+            val local = addLocalidade.text.toString()
+            val morada = addMorada.text.toString()
+            val postal = addPostal.text.toString()
+            val cartaCaca = addCartaCaca.text.toString()
+            val licencaArma = addLicencaArma.text.toString()
+            val nomeSeguradora = addNomeSeguradora.text.toString()
+            val numApolice = addNumeroApolice.text.toString()
+
+            registoAuth(
+                password,
+                email,
+                name,
+                tele,
+                morada,
+                local,
+                postal,
+                cartaCaca,
+                licencaArma,
+                nomeSeguradora,
+                numApolice,
+                g,
+                bi,
+                nif,
+                licencaP,
+                passaporte,
+                dni,
+                licencaE,
+                e,
+                p,
+                nomeSeguradoraExtra,
+                numApoliceExtra,
+                numCaca,
+                linceca, licencaEspanha
+            )
         }
     }
 
 
-//    fun licencaEspanha() {
-//        val numEspanha = editTextNumLicenca
-//        val ll = layoutVer
-//        val cb = TextView(this)
-//        val ct = TextView(this)
-//
-//        val ld = LinearLayout(this)
-//        ld.setOrientation(LinearLayout.HORIZONTAL)
-//
-//        val bt = Button(this)
-//        bt.setText("remove")
-//
-//        if (numEspanha.text.toString() != "") {
-//            gv.numEspanha = numEspanha.text.toString().toInt()
-//
-//            ll.addView(ld)
-//            cb.setText("Numero: " + "${gv.numEspanha}" + " ");
-//            ct.setText("Zona: " + "${gv.check}  ");
-//            ld.addView(ct)
-//            ld.addView(cb)
-//            ld.addView(bt)
-//
-//
-//        }
-//
-//        bt.setOnClickListener {
-//
-//
-//            ll.removeView(ld)
-//
-//
-//        }
-//    }
-
-//    fun lincecaPortugal() {
-//        val ll = layoutVer
-//       // val NumSocio = editTextNumSocio
-//        val cb = TextView(this)
-//        val ct = TextView(this)
-//
-//        val ld = LinearLayout(this)
-//        ld.setOrientation(LinearLayout.HORIZONTAL)
-//
-//        val bt = Button(this)
-//        bt.setText("remove")
-//
-//        if (NumSocio.text.toString() != "") {
-//            gv.numSocio = NumSocio.text.toString().toInt()
-//
-//            ll.addView(ld)
-//            cb.setText("Numero: " + "${gv.numSocio}" + " ");
-//            ct.setText("Associativa: " + "${gv.Associacao}  ");
-//            ld.addView(ct)
-//            ld.addView(cb)
-//            ld.addView(bt)
-//
-//
-//        }
-//
-//        bt.setOnClickListener {
-//
-//
-//            ll.removeView(ld)
-//
-//
-//        }
-//    }
+   private fun registoAuth(
+       password: String,
+       email: String,
+       name: String,
+       tele: String,
+       morada: String,
+       local: String,
+       postal: String,
+       cartaCaca: String,
+       licencaArma: String,
+       nomeSeguradora: String,
+       numApolice: String,
+       g: String,
+       bi: EditText,
+       nif: EditText,
+       licencaP: EditText,
+       passaporte: EditText,
+       dni: EditText,
+       licencaE: EditText,
+       e: Switch,
+       p: Switch,
+       nomeSeguradoraExtra: EditText,
+       numApoliceExtra: EditText,
+       numCaca: EditText,
+       linceca: EditText,
+       licencaEspanha: EditText
+   ) {
 
 
-//    fun extra() {
-//        val et = editTextExtra
-//        val ver = layoutVer2
-//        val cb = TextView(this)
-//        val ct = TextView(this)
-//
-//        val ld = LinearLayout(this)
-//        ld.setOrientation(LinearLayout.HORIZONTAL)
-//
-//        val bt = Button(this)
-//        bt.setText("remove")
-//
-//        if (et.text.toString() != "") {
-//
-//            ver.addView(ld)
-//            cb.setText("Numero: " + "${et.text.toString()}" + " ");
-//            ct.setText("Zona: " + "${gv.extra}  ");
-//            ld.addView(ct)
-//            ld.addView(cb)
-//            ld.addView(bt)
-//
-//
-//        }
-//
-//        bt.setOnClickListener {
-//
-//
-//            ver.removeView(ld)
-//
-//
-//        }
-//    }
+        if (!password.isEmpty() && !email.isEmpty() && !name.isEmpty() && !tele.isEmpty() && !morada.isEmpty() && !local.isEmpty()
+            && !postal.isEmpty() && !cartaCaca.isEmpty() && !licencaArma.isEmpty() && !nomeSeguradora.isEmpty() && !numApolice.isEmpty()
+        ) {
+
+            if (tele.length == 9 && postal.length == 7 && cartaCaca.length == 6 && licencaArma.length == 5 && numApolice.length == 10) {
+                if (!g.isEmpty()) {
 
 
-//    fun spinner() {
-//        val languages = resources.getStringArray(R.array.zonas)
-//        if (spinner != null) {
-//            val adapter = ArrayAdapter(
-//                this,
-//                android.R.layout.simple_spinner_item, languages
-//            )
-//                .also { adapter ->
-//                    // Specify the layout to use when the list of choices appears
-//                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-//                    spinner.adapter = adapter
-//                }
-//
-//            spinner.onItemSelectedListener = object :
-//                AdapterView.OnItemSelectedListener {
-//                override fun onItemSelected(
-//                    parent: AdapterView<*>,
-//                    view: View, position: Int, id: Long
-//                ) {
-//
-//                    gv.extra = languages[position]
-//
-//                    Log.d("testea", "${gv.extra}")
-//
-//                }
-//
-//                override fun onNothingSelected(parent: AdapterView<*>) {
-//                    // write code to perform some action
-//                }
-//
-//            }
-//
-//        }
-//    }
+                    Auth.createUserWithEmailAndPassword(email, password)
+                        .addOnCompleteListener { it ->
+
+                            if (!it.isSuccessful) return@addOnCompleteListener
+
+                            Log.d(
+                                "RegistoUser",
+                                "user auth com uid: ${it.result?.user?.uid}"
+                            )
+                            register(
+                                name,
+                                email,
+                                tele,
+                                morada,
+                                local,
+                                postal,
+                                cartaCaca,
+                                licencaArma,
+                                nomeSeguradora,
+                                numApolice,
+                                g,
+                                bi,
+                                nif,
+                                licencaP,
+                                e,
+                                p,
+                                licencaEspanha,
+                                nomeSeguradoraExtra,
+                                numApoliceExtra,
+                                numCaca,
+                                linceca, dni, licencaE, passaporte
+                            )
+                            when {
+                                it.isSuccessful -> {
+                                    Toast.makeText(
+                                        this,
+                                        "Registo COM sucesso",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                    Auth.signOut()
+                                }
+                                else -> {
+                                    Toast.makeText(
+                                        this,
+                                        "Registo sem sucesso",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            }
 
 
-//    fun spinner2() {
-//
-//        if (spinnerAssociacoes != null) {
-//            val adapter = ArrayAdapter(
-//                this,
-//                android.R.layout.simple_spinner_item, valor
-//            )
-//                .also { adapter ->
-//
-//                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-//                    spinnerAssociacoes.adapter = adapter
-//                }
-//
-//            spinnerAssociacoes.onItemSelectedListener = object :
-//                AdapterView.OnItemSelectedListener {
-//                override fun onItemSelected(
-//                    parent: AdapterView<*>,
-//                    view: View, position: Int, id: Long
-//                ) {
-//
-//                    gv.Associacao = valor[position]
-//
-//                    Log.d("testeb", "${gv.Associacao}")
-//
-//                }
-//
-//                override fun onNothingSelected(parent: AdapterView<*>) {
-//                    // write code to perform some action
-//                }
-//
-//            }
-//
-//        }
-//    }
-
-//    fun spinnerZonas() {
-//        val languages = resources.getStringArray(R.array.zonas)
-//        if (spinnerZonas != null) {
-//            val adapter = ArrayAdapter(
-//                this,
-//                android.R.layout.simple_spinner_item, languages
-//            )
-//                .also { adapter ->
-//                    // Specify the layout to use when the list of choices appears
-//                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-//                    spinnerZonas.adapter = adapter
-//                }
-//
-//            spinnerZonas.onItemSelectedListener = object :
-//                AdapterView.OnItemSelectedListener {
-//                override fun onItemSelected(
-//                    parent: AdapterView<*>,
-//                    view: View, position: Int, id: Long
-//                ) {
-//
-//                    gv.extra = languages[position]
-//
-//                    Log.d("testea", "${gv.extra}")
-//
-//                }
-//
-//                override fun onNothingSelected(parent: AdapterView<*>) {
-//                    // write code to perform some action
-//                }
-//
-//            }
-//
-//        }
-//
-//
-//    }
+                        }
 
 
-    private fun registoAuth(password: String, email: String, name: String) {
+                        .addOnFailureListener { exception: Exception ->
+                            Toast.makeText(this, exception.toString(), Toast.LENGTH_LONG)
+                                .show()
+                        }
 
-        //if (!password.isEmpty() && !email.isEmpty() && !name.isEmpty()) {
-            Auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { it ->
 
-                if (!it.isSuccessful) return@addOnCompleteListener
-
-                Log.d("RegistoUser", "user auth com uid: ${it.result?.user?.uid}")
-                register(name, email)
-                when {
-                    it.isSuccessful -> {
-                        Toast.makeText(this, "Registo COM sucesso", Toast.LENGTH_SHORT).show()
-                        Auth.signOut()
-                    }
-                    else -> {
-                        Toast.makeText(this, "Registo sem sucesso", Toast.LENGTH_SHORT).show()
-                    }
+                } else {
+                    //Toast.makeText(this, "Numero mal introduzido ", Toast.LENGTH_SHORT).show()
                 }
 
 
+////copiado para cada pais com as suas restricoes
+//                Auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { it ->
+//
+//                    if (!it.isSuccessful) return@addOnCompleteListener
+//
+//                    Log.d("RegistoUser", "user auth com uid: ${it.result?.user?.uid}")
+//                    //register()
+//                    when {
+//                        it.isSuccessful -> {
+//                            Toast.makeText(this, "Registo COM sucesso", Toast.LENGTH_SHORT).show()
+//                            Auth.signOut()
+//                        }
+//                        else -> {
+//                            Toast.makeText(this, "Registo sem sucesso", Toast.LENGTH_SHORT).show()
+//                        }
+//                    }
+//
+//
+//                }
+//
+//
+//                    .addOnFailureListener { exception: Exception ->
+//                        Toast.makeText(this, exception.toString(), Toast.LENGTH_LONG).show()
+//                    }
+            } else {
+                Toast.makeText(this, "Preencha todos os campos", Toast.LENGTH_LONG).show()
+                Log.d("RegistoUser", "nao registo")
             }
 
-
-                .addOnFailureListener { exception: Exception ->
-                    Toast.makeText(this, exception.toString(), Toast.LENGTH_LONG).show()
-                }
-//        } else {
-//            Toast.makeText(this, "Preencha todos os campos", Toast.LENGTH_LONG).show()
-//            Log.d("RegistoUser", "nao registo")
-//        }
-
+        }
     }
 
 
-    private fun register(name: String, email: String) {
+    private fun register(
+        name: String,
+        email: String,
+        tele: String,
+        morada: String,
+        local: String,
+        postal: String,
+        cartaCaca: String,
+        licencaArma: String,
+        nomeSeguradora: String,
+        numApolice: String,
+        g: String,
+        bi: EditText,
+        nif: EditText,
+        licencaP: EditText,
+        e: Switch,
+        p: Switch,
+        licencaEspanha: EditText,
+        nomeSeguradoraExtra: EditText,
+        numApoliceExtra: EditText,
+        numCaca: EditText,
+        linceca: EditText,
+        dni: EditText,
+        licencaE: EditText,
+        passaporte: EditText
+    ) {
 
         val uid = Auth.uid.toString()
-        val ref = mAuth.document("$uid")
+//        val ref = mAuth.document("$uid")
+//
+//        val NomeSeguradoraExtra = nomeSeguradoraExtra.text.toString()
+//        val NumApoliceExtra = numApoliceExtra.text.toString()
+//        val NumCaca = numCaca.text.toString()
 
-        val pessoa = HashMap<String, Any>()
+        //val pessoa = HashMap<String, Any>()
+        val pessoa: MutableMap<String, Any> = HashMap()
+
         pessoa["uid"] = uid
-        pessoa["name"] = name
         pessoa["email"] = email
-        pessoa["grupo"] = ArrayList<String>()
-        ref.set(pessoa)
+        pessoa["name"] = name
+        pessoa["telemovel"] = tele
+//        pessoa["morada"] = morada
+//        pessoa["localidade"] = local
+//        pessoa["Codigo Postal"] = postal
+//        pessoa["Carta Caçadore"] = cartaCaca
+//        pessoa["Licença Arma"] = licencaArma
+//        pessoa["Nome Seguradora"] = nomeSeguradora
+//        pessoa["Numero Apolice"] = numApolice
+//        pessoa["grupo"] = ArrayList<String>()
+//        pessoa["Pais"] = g
+
+
+
+
+
+        mAuth.collection("Users").document("$uid").set(pessoa)
         Log.d("RegistoUser", "user firestore registo")
+
+//        if (g == "Portugal") {
+//
+//            val Bi = bi.text.toString()
+//            val Nif = nif.text.toString()
+//            val LicencaP = licencaP.text.toString()
+//
+//            if (!Bi.isEmpty() && !Nif.isEmpty() && !LicencaP.isEmpty()) {
+//
+//                pessoa["BI"] = Bi
+//                pessoa["Nif"] = Nif
+//                pessoa["Licenca Portugal"] = LicencaP
+//
+////                Log.d("RegistoUser", "user firestore registo")
+//                val LicencaEspanha = licencaEspanha.text.toString()
+//                if (e.isChecked) {
+//                    if (!LicencaEspanha.isEmpty() && !NomeSeguradoraExtra.isEmpty() && !NumApoliceExtra.isEmpty() && !NumCaca.isEmpty()) {
+//
+//                        pessoa["Licenca Espanha"] = LicencaEspanha
+//                        pessoa["nome Seguradora Extra"] = NomeSeguradoraExtra
+//                        pessoa["numero Apolice Extra"] = NumApoliceExtra
+//                        pessoa["Numero Passaporte Europeu"] = NumCaca
+//                        //mAuth.document("$uid").set(pessoa)
+//                        Log.d("RegistoUser", "user firestore registo")
+//
+//
+//                    }
+//                }
+//                else{
+//                    ref.set(pessoa)
+//                }
+//            }
+//
+//
+//        } else if (g == "Espanha") {
+//
+//            val Dni = dni.text.toString()
+//            val LicencaE = licencaE.text.toString()
+//
+//            if (!Dni.isEmpty() && !LicencaE.isEmpty()) {
+//
+//                pessoa["Dni"] = Dni
+//                pessoa["Licenca Espanha"] = LicencaE
+//                Log.d("RegistoUser", "user firestore registo")
+//
+//                val LicencaPortuguesa = linceca.text.toString()
+//
+//                if (p.isChecked) {
+//                    if (!LicencaPortuguesa.isEmpty() && !NomeSeguradoraExtra.isEmpty() && !NumApoliceExtra.isEmpty() && !NumCaca.isEmpty()) {
+//
+//                        pessoa["Licenca Portugal"] = LicencaPortuguesa
+//                        pessoa["nome Seguradora Extra"] = NomeSeguradoraExtra
+//                        pessoa["numero Apolice Extra"] = NumApoliceExtra
+//                        pessoa["Numero Passaporte Europeu"] = NumCaca
+//                        ref.set(pessoa)
+//                        Log.d("RegistoUser", "user firestore registo")
+//                    }
+//                }
+//                else{
+//                    ref.set(pessoa)
+//                }
+//            }
+//        } else {
+//
+//            val Passaporte = passaporte.text.toString()
+//            if (!Passaporte.isEmpty()){
+//
+//                pessoa["Passaporte"] = Passaporte
+//                ref.set(pessoa)
+//                Log.d("RegistoUser", "user firestore registo")
+//
+//            }
+
+        //}
+
+
+
+
 
 
         sendEmailVerification()
@@ -566,7 +549,7 @@ class RegistoUserActivity : AppCompatActivity() {
         addPass.text.clear()
     }
 
-    private fun validar(){
+    private fun validar() {
         val texto_erros = ""
 
     }

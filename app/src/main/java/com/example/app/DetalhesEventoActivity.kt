@@ -216,7 +216,7 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback  {
 
         if (item.itemId == R.id.grupo) {
 
-            startActivity(Intent(this, CriarGrupoActivity::class.java))
+            startActivity(Intent(this,VerGrupoActivity::class.java))
         }
 
         if (item.itemId == R.id.home) {

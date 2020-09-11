@@ -6,29 +6,21 @@
     android:layout_height="match_parent"
     tools:context=".AdesaoActivity">
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="333dp"
-        android:layout_height="179dp"
-        android:orientation="vertical"
+
+    <EditText
+        android:id="@+id/grupoCodigo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:hint="Introduzir Numero Socio"
+        android:inputType= "number"
+        android:padding="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.343"
+        app:layout_constraintHorizontal_bias="0.761"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <EditText
-            android:id="@+id/grupoCodigo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:hint="Enter Codigo"
-            android:inputType="textPassword"
-            android:padding="20dp" />
-
-
-    </LinearLayout>
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.429" />
 
     <Button
         android:id="@+id/bEntrar"

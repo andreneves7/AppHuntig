@@ -3,19 +3,84 @@ package com.example.app
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.AlarmClock.EXTRA_MESSAGE
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.ListView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.android.synthetic.main.activity_preferencias.*
 
 class PreferenciasActivity : AppCompatActivity() {
     val Auth = FirebaseAuth.getInstance()
     val mAuth = FirebaseFirestore.getInstance()
     lateinit var gv: VariaveisGlobais
+
+
+    lateinit var listView: ListView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_preferencias)
+
+        val pular = bPular
+
+        pular.setOnClickListener {
+            val intent = Intent(this, HomeActivity::class.java)
+            intent.flags =
+                Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+        }
+
+
+
+        listView = findViewById(R.id.listView)
+
+        var d = mAuth.collection("Grupos")
+        d.get().addOnSuccessListener { result ->
+            if (result != null) {
+
+
+                var list = ArrayList<Model>()
+
+                for (grupo in result) {
+
+                    list.add(
+                        Model(
+                            "${grupo.get("nome").toString()}", "${
+                                grupo.get("Numero").toString()
+                            }", "${grupo.get("Photo").toString()}"
+                        )
+                    )
+
+                }
+
+                listView.adapter = MyListAdapter(this, R.layout.row, list)
+                listView.setOnItemClickListener { parent, view, position, id ->
+
+                    val itemValue = listView.getItemAtPosition(position)
+                    val message = itemValue.toString()
+                    var b = mAuth.collection("Grupos").document(itemValue.toString())
+                    b.get().addOnSuccessListener { result ->
+                        if (result != null) {
+
+
+                            startActivity(
+                                Intent(view.context, AdesaoActivity::class.java).apply {
+                                    putExtra(EXTRA_MESSAGE, message)
+                                }
+                            )
+                        }
+
+                    }
+                }
+
+            }
+
+
+        }
     }
+
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
@@ -40,7 +105,7 @@ class PreferenciasActivity : AppCompatActivity() {
 
         if (item.itemId == R.id.grupo) {
 
-            startActivity(Intent(this, CriarGrupoActivity::class.java))
+            startActivity(Intent(this, VerGrupoActivity::class.java))
         }
 
 

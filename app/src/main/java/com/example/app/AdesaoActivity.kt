@@ -1,19 +1,16 @@
 package com.example.app
 
-import android.app.AlertDialog
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.method.PasswordTransformationMethod
+import android.provider.AlarmClock.EXTRA_MESSAGE
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_adesao.*
-import kotlinx.android.synthetic.main.custom_view.view.*
 
 
 class AdesaoActivity : AppCompatActivity() {
@@ -33,17 +30,19 @@ class AdesaoActivity : AppCompatActivity() {
 
 
         val user = Auth.currentUser
+        val message = intent.getStringExtra(EXTRA_MESSAGE)
 
         if (user != null) {
-            val mail = mAuth.collection("Grupos").document(gv.entrar)
+            val mail = mAuth.collection("Grupos").document(message)
             mail.get().addOnSuccessListener { document ->
                 if (document != null) {
 
                     val name = document.data?.get("nome")
+                    val numero = document.data?.get("Numero")
 
 
 
-                    texto.text = "nome: " + name
+                    texto.text = "nome: " + name + "\n"+ "numero de associativa:" + numero
 
                     Log.d(
                         "adesao", "DocumentSnapshot data: ${document.data?.get("nome")} }"
@@ -67,28 +66,27 @@ class AdesaoActivity : AppCompatActivity() {
 
         val cod = grupoCodigo
         val codigo = cod.text.toString()
+        val message = intent.getStringExtra(EXTRA_MESSAGE)
 
-        val c = mAuth.collection("Grupos").document(gv.entrar)
+        val c = mAuth.collection("Grupos").document(message)
         c.get().addOnSuccessListener { document ->
             if (document != null) {
 
-                val verdade = document.data?.get("Codigo")
-                Log.d("adesao", "codigo: ${verdade} ")
-
-                if (codigo == verdade) {
                     val use = Auth.currentUser
-                    mAuth.collection("Grupos").document(gv.entrar)
-                        .update("membros", FieldValue.arrayUnion(use?.uid))
-                    mAuth.collection("Users").document(use!!.uid)
-                        .update("grupo", FieldValue.arrayUnion(gv.entrar))
+                val socio: MutableMap<String, Any> = HashMap()
+                socio["numero socio"] = codigo
 
-                    val intent = Intent(this, VerGrupoActivity :: class.java )
+                    mAuth.collection("Grupos").document(message).collection("Pendentes")
+                        .document(use!!.uid).set(socio)
+
+
+                    val intent = Intent(this, HomeActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
                     startActivity(intent)
 
 
-                }
-                Log.d("adesao", "DocumentSnapshot data: ${gv.entrar} ")
+
+                Log.d("adesao", "DocumentSnapshot data: ${message} ")
 
             }
 
@@ -105,7 +103,7 @@ class AdesaoActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item!!.itemId == R.id.signOut) {
             Auth.signOut()
-            val intent = Intent(this, LoginActivity :: class.java )
+            val intent = Intent(this, LoginActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
         }
@@ -117,7 +115,7 @@ class AdesaoActivity : AppCompatActivity() {
 
         if (item.itemId == R.id.grupo) {
 
-            startActivity(Intent(this, CriarGrupoActivity::class.java))
+            startActivity(Intent(this,VerGrupoActivity::class.java))
         }
 
         if (item.itemId == R.id.home) {
