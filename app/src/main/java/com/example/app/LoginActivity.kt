@@ -69,7 +69,7 @@ class LoginActivity : AppCompatActivity() {
                                     p["firstTime"] = false
                                     ver.update(p)
                                 } else {
-                                    val intent = Intent(this, HomeActivity::class.java)
+                                    val intent = Intent(this, FiltrosActivity::class.java)
                                     intent.flags =
                                         Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
                                     startActivity(intent)

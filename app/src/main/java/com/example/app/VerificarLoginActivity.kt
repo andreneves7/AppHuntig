@@ -14,7 +14,7 @@ class VerificarLoginActivity : AppCompatActivity() {
         if (FirebaseAuth.getInstance().currentUser == null) {
             startActivity<LoginActivity>()
         } else {
-            startActivity<HomeActivity>()
+            startActivity<FiltrosActivity>()
         }
         finish()
     }

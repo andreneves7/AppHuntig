@@ -2,6 +2,7 @@ package com.example.app
 
 import android.content.Intent
 import android.os.Bundle
+import android.provider.AlarmClock.EXTRA_MESSAGE
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -58,6 +59,7 @@ class HomeActivity : AppCompatActivity() {
         val uid = Auth.currentUser!!.uid
         val lista = ListViewHome
         val pesquisa = SearchEvento
+        val filtro = intent.getStringExtra(EXTRA_MESSAGE)
 
 
         var gruposMemmbros = mAuth.collection("Grupos")
@@ -71,108 +73,115 @@ class HomeActivity : AppCompatActivity() {
 
                 for (grupo in result) {
 
-                    var fazParte = grupo.get("membros") as List<String>
-                    if (fazParte.contains(uid)) {
+
+                        var fazParte = grupo.get("membros") as List<String>
+                        if (fazParte.contains(uid)) {
 
 
-                        ListaEventosPrivat.get().addOnSuccessListener { result ->
-                            if (result != null) {
+                            ListaEventosPrivat.get().addOnSuccessListener { result ->
+                                if (result != null) {
 
 
-                                for (evento in result) {
-                                    semEventos.isVisible = false
-                                    val anoAtual =
-                                        Calendar.getInstance().get(Calendar.YEAR)
-                                    val mesAtual =
-                                        Calendar.getInstance().get(Calendar.MONTH) + 1
-                                    val diaAtual =
-                                        Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
-                                    val ano = evento.get("anoFim").toString().toInt()
-                                    val mes = evento.get("mesFim").toString().toInt()
-                                    val dia = evento.get("diaFim").toString().toInt()
+                                    for (evento in result) {
 
 
-                                    // PROBLEMA NA VERIFICAÇAO DO DIA
-                                    if (anoAtual < ano) {
-                                        val f = evento.get("Forma")
-                                        if (f == "privado") {
-                                            values.add(evento.get("nome").toString())
+                                        var tipo = evento.get("Tipo").toString()
 
-                                        }
+                                        if (tipo == filtro) {
 
-                                    } else if (anoAtual == ano) {
-                                        if (mesAtual < mes) {
+                                        semEventos.isVisible = false
+                                        val anoAtual =
+                                            Calendar.getInstance().get(Calendar.YEAR)
+                                        val mesAtual =
+                                            Calendar.getInstance().get(Calendar.MONTH) + 1
+                                        val diaAtual =
+                                            Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+                                        val ano = evento.get("anoFim").toString().toInt()
+                                        val mes = evento.get("mesFim").toString().toInt()
+                                        val dia = evento.get("diaFim").toString().toInt()
+
+
+                                        // PROBLEMA NA VERIFICAÇAO DO DIA
+                                        if (anoAtual < ano) {
                                             val f = evento.get("Forma")
                                             if (f == "privado") {
                                                 values.add(evento.get("nome").toString())
 
                                             }
-                                        } else if (mesAtual == mes) {
-                                            if (diaAtual <= dia) {
 
+                                        } else if (anoAtual == ano) {
+                                            if (mesAtual < mes) {
                                                 val f = evento.get("Forma")
                                                 if (f == "privado") {
                                                     values.add(evento.get("nome").toString())
 
                                                 }
-                                            }
-                                        }
+                                            } else if (mesAtual == mes) {
+                                                if (diaAtual <= dia) {
 
-                                    }
+                                                    val f = evento.get("Forma")
+                                                    if (f == "privado") {
+                                                        values.add(evento.get("nome").toString())
 
-                                }
-                                Log.d("home9", "$values")
-
-
-                                val adapter = ArrayAdapter(this, R.layout.listview_item, values)
-
-                                lista.adapter = adapter
-                                pesquisa.setOnQueryTextListener(object :
-                                    SearchView.OnQueryTextListener {
-                                    override fun onQueryTextSubmit(query: String): Boolean {
-
-                                        return false
-                                    }
-
-                                    override fun onQueryTextChange(newText: String): Boolean {
-
-                                        adapter.filter.filter(newText)
-                                        return false
-                                    }
-                                })
-
-                                lista.onItemClickListener =
-                                    object : AdapterView.OnItemClickListener {
-
-
-                                        override fun onItemClick(
-                                            parent: AdapterView<*>,
-                                            view: View,
-                                            position: Int,
-                                            id: Long
-                                        ) {
-
-
-                                            val itemValue =
-                                                lista.getItemAtPosition(position) as String
-                                            Log.d("home44", "grupoID to search: $itemValue")
-                                            gv.detalhes = itemValue
-                                            val uid = Auth.currentUser?.uid
-                                            var eventoClick =
-                                                mAuth.collection("Eventos").document(itemValue)
-                                            eventoClick.get().addOnSuccessListener { result ->
-                                                if (result != null) {
-
-                                                    startActivity(
-                                                        Intent(
-                                                            view.context,
-                                                            DetalhesEventoActivity::class.java
-                                                        )
-                                                    )
-
-
+                                                    }
                                                 }
                                             }
+
+                                        }
+
+                                    }}
+                                    Log.d("home9", "$values")
+
+
+                                    val adapter = ArrayAdapter(this, R.layout.listview_item, values)
+
+                                    lista.adapter = adapter
+                                    pesquisa.setOnQueryTextListener(object :
+                                        SearchView.OnQueryTextListener {
+                                        override fun onQueryTextSubmit(query: String): Boolean {
+
+                                            return false
+                                        }
+
+                                        override fun onQueryTextChange(newText: String): Boolean {
+
+                                            adapter.filter.filter(newText)
+                                            return false
+                                        }
+                                    })
+
+                                    lista.onItemClickListener =
+                                        object : AdapterView.OnItemClickListener {
+
+
+                                            override fun onItemClick(
+                                                parent: AdapterView<*>,
+                                                view: View,
+                                                position: Int,
+                                                id: Long
+                                            ) {
+
+
+                                                val itemValue =
+                                                    lista.getItemAtPosition(position) as String
+                                                Log.d("home44", "grupoID to search: $itemValue")
+                                                gv.detalhes = itemValue
+                                                val uid = Auth.currentUser?.uid
+                                                var eventoClick =
+                                                    mAuth.collection("Eventos").document(itemValue)
+                                                eventoClick.get().addOnSuccessListener { result ->
+                                                    if (result != null) {
+
+                                                        startActivity(
+                                                            Intent(
+                                                                view.context,
+                                                                DetalhesEventoActivity::class.java
+                                                            )
+                                                        )
+
+
+                                                    }
+                                                }
 
 
 //                                            Toast.makeText(
@@ -182,65 +191,56 @@ class HomeActivity : AppCompatActivity() {
 //                                            ).show()
 
 
+                                            }
+
                                         }
-
-                                    }
-                            }
-                            var x = 0
-                            for (evento in result) {
-
-                                x += 1
-                            }
-                            if (x > 0) {
-                                semEventos.isVisible = false
-                            } else {
-
-                                semEventos.isVisible = true
-                                Toast.makeText(
-                                    applicationContext,
-                                    "Sem eventos disponiveis", Toast.LENGTH_LONG
-                                ).show()
-                            }
-
-                        }
-
-                    } else {
-
-                        ListaEventosPublic.get().addOnSuccessListener { result ->
-                            if (result != null) {
-
-
+                                }
+                                var x = 0
                                 for (evento in result) {
+
+                                    x += 1
+                                }
+                                if (x > 0) {
                                     semEventos.isVisible = false
-                                    val anoAtual =
-                                        Calendar.getInstance().get(Calendar.YEAR)
-                                    val mesAtual =
-                                        Calendar.getInstance().get(Calendar.MONTH) + 1
-                                    val diaAtual =
-                                        Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
-                                    val ano = evento.get("anoFim").toString().toInt()
-                                    val mes = evento.get("mesFim").toString().toInt()
-                                    val dia = evento.get("diaFim").toString().toInt()
+                                } else {
+
+                                    semEventos.isVisible = true
+                                    Toast.makeText(
+                                        applicationContext,
+                                        "Sem eventos disponiveis", Toast.LENGTH_LONG
+                                    ).show()
+                                }
+
+                            }
+
+                        } else {
+
+                            ListaEventosPublic.get().addOnSuccessListener { result ->
+                                if (result != null) {
 
 
-                                    // PROBLEMA NA VERIFICAÇAO DO DIA
-                                    if (anoAtual < ano) {
+                                    for (evento in result) {
 
-                                        val f = evento.get("Forma")
-                                        if (f == "publico") {
-                                            Log.d(
-                                                "home2",
-                                                "${
-                                                    evento.get("nome")
-                                                        .toString()
-                                                },$anoAtual ,$mesAtual,$diaAtual, $ano, $mes, $dia"
-                                            )
-                                            values.add(evento.get("nome").toString())
-                                        }
 
-                                    } else if (anoAtual == ano) {
+                                        var tipo = evento.get("Tipo").toString()
 
-                                        if (mesAtual < mes) {
+                                        if (tipo == filtro) {
+
+                                        semEventos.isVisible = false
+                                        val anoAtual =
+                                            Calendar.getInstance().get(Calendar.YEAR)
+                                        val mesAtual =
+                                            Calendar.getInstance().get(Calendar.MONTH) + 1
+                                        val diaAtual =
+                                            Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+                                        val ano = evento.get("anoFim").toString().toInt()
+                                        val mes = evento.get("mesFim").toString().toInt()
+                                        val dia = evento.get("diaFim").toString().toInt()
+
+
+                                        // PROBLEMA NA VERIFICAÇAO DO DIA
+                                        if (anoAtual < ano) {
+
                                             val f = evento.get("Forma")
                                             if (f == "publico") {
                                                 Log.d(
@@ -252,8 +252,10 @@ class HomeActivity : AppCompatActivity() {
                                                 )
                                                 values.add(evento.get("nome").toString())
                                             }
-                                        } else if (mesAtual == mes) {
-                                            if (diaAtual <= dia) {
+
+                                        } else if (anoAtual == ano) {
+
+                                            if (mesAtual < mes) {
                                                 val f = evento.get("Forma")
                                                 if (f == "publico") {
                                                     Log.d(
@@ -265,10 +267,23 @@ class HomeActivity : AppCompatActivity() {
                                                     )
                                                     values.add(evento.get("nome").toString())
                                                 }
+                                            } else if (mesAtual == mes) {
+                                                if (diaAtual <= dia) {
+                                                    val f = evento.get("Forma")
+                                                    if (f == "publico") {
+                                                        Log.d(
+                                                            "home2",
+                                                            "${
+                                                                evento.get("nome")
+                                                                    .toString()
+                                                            },$anoAtual ,$mesAtual,$diaAtual, $ano, $mes, $dia"
+                                                        )
+                                                        values.add(evento.get("nome").toString())
+                                                    }
+                                                }
                                             }
-                                        }
 
-                                    }
+                                        }
 
 
 //                                    val f = evento.get("Forma")
@@ -284,15 +299,16 @@ class HomeActivity : AppCompatActivity() {
 //                                    }
 
 
-                                }
-                                Log.d("home5", "$values")
+                                    }}
+                                    Log.d("home5", "$values")
 
 
-                                val adapter = ArrayAdapter(this, R.layout.listview_itemhome, values)
+                                    val adapter =
+                                        ArrayAdapter(this, R.layout.listview_itemhome, values)
 
-                                lista.adapter = adapter
+                                    lista.adapter = adapter
 
-                                /*pesquisa.setOnQueryTextListener(object :
+                                    /*pesquisa.setOnQueryTextListener(object :
                                     SearchView.OnQueryTextListener {
                                     override fun onQueryTextSubmit(query: String): Boolean {
 
@@ -306,38 +322,38 @@ class HomeActivity : AppCompatActivity() {
                                     }
                                 })*/
 
-                                lista.onItemClickListener =
-                                    object : AdapterView.OnItemClickListener {
+                                    lista.onItemClickListener =
+                                        object : AdapterView.OnItemClickListener {
 
 
-                                        override fun onItemClick(
-                                            parent: AdapterView<*>,
-                                            view: View,
-                                            position: Int,
-                                            id: Long
-                                        ) {
+                                            override fun onItemClick(
+                                                parent: AdapterView<*>,
+                                                view: View,
+                                                position: Int,
+                                                id: Long
+                                            ) {
 
 
-                                            val itemValue =
-                                                lista.getItemAtPosition(position) as String
-                                            Log.d("home", "grupoID to search: $itemValue")
-                                            gv.detalhes = itemValue
-                                            val uid = Auth.currentUser?.uid
-                                            var eventoclick2 =
-                                                mAuth.collection("Eventos").document(itemValue)
-                                            eventoclick2.get().addOnSuccessListener { result ->
-                                                if (result != null) {
+                                                val itemValue =
+                                                    lista.getItemAtPosition(position) as String
+                                                Log.d("home", "grupoID to search: $itemValue")
+                                                gv.detalhes = itemValue
+                                                val uid = Auth.currentUser?.uid
+                                                var eventoclick2 =
+                                                    mAuth.collection("Eventos").document(itemValue)
+                                                eventoclick2.get().addOnSuccessListener { result ->
+                                                    if (result != null) {
 
-                                                    startActivity(
-                                                        Intent(
-                                                            view.context,
-                                                            DetalhesEventoActivity::class.java
+                                                        startActivity(
+                                                            Intent(
+                                                                view.context,
+                                                                DetalhesEventoActivity::class.java
+                                                            )
                                                         )
-                                                    )
 
 
+                                                    }
                                                 }
-                                            }
 
 
 //                                            Toast.makeText(
@@ -347,29 +363,32 @@ class HomeActivity : AppCompatActivity() {
 //                                            ).show()
 
 
+                                            }
+
                                         }
+                                }
+                                var x = 0
+                                for (evento in result) {
 
-                                    }
+                                    x += 1
+                                }
+                                if (x > 0) {
+                                    semEventos.isVisible = false
+                                } else {
+
+                                    semEventos.isVisible = true
+                                    Toast.makeText(
+                                        applicationContext,
+                                        "Sem eventos disponiveis", Toast.LENGTH_LONG
+                                    ).show()
+                                }
+
                             }
-                            var x = 0
-                            for (evento in result) {
-
-                                x += 1
-                            }
-                            if (x > 0) {
-                                semEventos.isVisible = false
-                            } else {
-
-                                semEventos.isVisible = true
-                                Toast.makeText(
-                                    applicationContext,
-                                    "Sem eventos disponiveis", Toast.LENGTH_LONG
-                                ).show()
-                            }
-
                         }
-                    }
-                }
+
+
+
+                }/////
             }
         }
     }
@@ -622,10 +641,10 @@ class HomeActivity : AppCompatActivity() {
             startActivity(Intent(this, ProfileActivity::class.java))
         }
 
-//        if (item.itemId == R.id.Lista) {
-//
-//            startActivity(Intent(this, ListaGruposActivity::class.java))
-//        }
+        if (item.itemId == R.id.Lis) {
+
+            startActivity(Intent(this, ListaGruposActivity::class.java))
+        }
 
         if (item.itemId == R.id.grupo) {
 

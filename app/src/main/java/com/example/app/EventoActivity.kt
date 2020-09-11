@@ -170,8 +170,9 @@ class EventoActivity : AppCompatActivity() {
 
         if (item.itemId == R.id.home) {
 
-            startActivity(Intent(this, HomeActivity::class.java))
+            startActivity(Intent(this, FiltrosActivity::class.java))
         }
+
         return super.onOptionsItemSelected(item)
     }
 

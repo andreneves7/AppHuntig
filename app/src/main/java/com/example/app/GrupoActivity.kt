@@ -79,6 +79,8 @@ class GrupoActivity : AppCompatActivity() {
                         val nameUser = document.data?.get("name")
                         Log.d("grupo", "aaaa: $admin" +
                                 "ffff: $nameUser")
+
+                        //apos separar retirar
                         if (admin.contains(nameUser) ) {
                             evento.isVisible = true
 
@@ -244,8 +246,9 @@ class GrupoActivity : AppCompatActivity() {
         }
         if (item.itemId == R.id.home) {
 
-            startActivity(Intent(this, HomeActivity::class.java))
+            startActivity(Intent(this, FiltrosActivity::class.java))
         }
+
 
 
         return super.onOptionsItemSelected(item)

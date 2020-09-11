@@ -30,7 +30,7 @@ class PreferenciasActivity : AppCompatActivity() {
         val pular = bPular
 
         pular.setOnClickListener {
-            val intent = Intent(this, HomeActivity::class.java)
+            val intent = Intent(this, FiltrosActivity::class.java)
             intent.flags =
                 Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
@@ -131,7 +131,7 @@ class PreferenciasActivity : AppCompatActivity() {
 
         if (item.itemId == R.id.home) {
 
-            val intent = Intent(this, HomeActivity::class.java)
+            val intent = Intent(this, FiltrosActivity::class.java)
             intent.flags =
                 Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
