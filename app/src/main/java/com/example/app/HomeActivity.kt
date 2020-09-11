@@ -40,7 +40,7 @@ class HomeActivity : AppCompatActivity() {
         gv = application as VariaveisGlobais
         setContentView(R.layout.activity_home)
 
-        val lista = ListView4
+        //val lista = ListView4
 
         //val escolherFiltros = filtros
 
@@ -55,46 +55,73 @@ class HomeActivity : AppCompatActivity() {
 
     fun eventos() {
         val semEventos = NaoEventos
-        val uid = Auth.currentUser?.uid
-        val lista = ListView4
+        val uid = Auth.currentUser!!.uid
+        val lista = ListViewHome
         val pesquisa = SearchEvento
 
 
         var gruposMemmbros = mAuth.collection("Grupos")
         gruposMemmbros.get().addOnSuccessListener { result ->
             if (result != null) {
+                var ListaEventosPrivat = mAuth.collection("Eventos")
+
+                var ListaEventosPublic = mAuth.collection("Eventos")
+
+                val values = ArrayList<String>()
+
                 for (grupo in result) {
 
                     var fazParte = grupo.get("membros") as List<String>
                     if (fazParte.contains(uid)) {
 
-                        var ListaEventosPrivat = mAuth.collection("Eventos")
+
                         ListaEventosPrivat.get().addOnSuccessListener { result ->
                             if (result != null) {
-                                val values = ArrayList<String>()
+
 
                                 for (evento in result) {
                                     semEventos.isVisible = false
                                     val anoAtual =
-                                        Calendar.getInstance().get(Calendar.YEAR).toString()
+                                        Calendar.getInstance().get(Calendar.YEAR)
                                     val mesAtual =
-                                        Calendar.getInstance().get(Calendar.MONTH).toString()
+                                        Calendar.getInstance().get(Calendar.MONTH) + 1
                                     val diaAtual =
-                                        Calendar.getInstance().get(Calendar.DAY_OF_MONTH).toString()
-                                    val ano = evento.get("anoFim").toString()
-                                    val mes = evento.get("mesFim").toString()
-                                    val dia = evento.get("diaFim").toString()
+                                        Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+                                    val ano = evento.get("anoFim").toString().toInt()
+                                    val mes = evento.get("mesFim").toString().toInt()
+                                    val dia = evento.get("diaFim").toString().toInt()
 
 
                                     // PROBLEMA NA VERIFICAÇAO DO DIA
-                                    if (anoAtual <= ano && mesAtual <= mes && diaAtual <= dia) {
+                                    if (anoAtual < ano) {
+                                        val f = evento.get("Forma")
+                                        if (f == "privado") {
+                                            values.add(evento.get("nome").toString())
 
+                                        }
 
-                                        values.add(evento.get("nome").toString())
+                                    } else if (anoAtual == ano) {
+                                        if (mesAtual < mes) {
+                                            val f = evento.get("Forma")
+                                            if (f == "privado") {
+                                                values.add(evento.get("nome").toString())
+
+                                            }
+                                        } else if (mesAtual == mes) {
+                                            if (diaAtual <= dia) {
+
+                                                val f = evento.get("Forma")
+                                                if (f == "privado") {
+                                                    values.add(evento.get("nome").toString())
+
+                                                }
+                                            }
+                                        }
+
                                     }
 
                                 }
-                                Log.d("home", "$values")
+                                Log.d("home9", "$values")
 
 
                                 val adapter = ArrayAdapter(this, R.layout.listview_item, values)
@@ -128,7 +155,7 @@ class HomeActivity : AppCompatActivity() {
 
                                             val itemValue =
                                                 lista.getItemAtPosition(position) as String
-                                            Log.d("home", "grupoID to search: $itemValue")
+                                            Log.d("home44", "grupoID to search: $itemValue")
                                             gv.detalhes = itemValue
                                             val uid = Auth.currentUser?.uid
                                             var eventoClick =
@@ -178,43 +205,90 @@ class HomeActivity : AppCompatActivity() {
                         }
 
                     } else {
-                        var ListaEventosPublic = mAuth.collection("Eventos")
+
                         ListaEventosPublic.get().addOnSuccessListener { result ->
                             if (result != null) {
-                                val values = ArrayList<String>()
+
 
                                 for (evento in result) {
                                     semEventos.isVisible = false
                                     val anoAtual =
-                                        Calendar.getInstance().get(Calendar.YEAR).toString()
+                                        Calendar.getInstance().get(Calendar.YEAR)
                                     val mesAtual =
-                                        Calendar.getInstance().get(Calendar.MONTH).toString()
+                                        Calendar.getInstance().get(Calendar.MONTH) + 1
                                     val diaAtual =
-                                        Calendar.getInstance().get(Calendar.DAY_OF_MONTH).toString()
-                                    val ano = evento.get("anoFim").toString()
-                                    val mes = evento.get("mesFim").toString()
-                                    val dia = evento.get("diaFim").toString()
+                                        Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+                                    val ano = evento.get("anoFim").toString().toInt()
+                                    val mes = evento.get("mesFim").toString().toInt()
+                                    val dia = evento.get("diaFim").toString().toInt()
 
 
                                     // PROBLEMA NA VERIFICAÇAO DO DIA
-                                    if (anoAtual <= ano && mesAtual <= mes && diaAtual <= dia) {
+                                    if (anoAtual < ano) {
+
                                         val f = evento.get("Forma")
                                         if (f == "publico") {
-                                            Log.d("home2",
-                                                "${evento.get("nome")
-                                                    .toString()},$anoAtual ,$mesAtual,$diaAtual, $ano, $mes, $dia"
+                                            Log.d(
+                                                "home2",
+                                                "${
+                                                    evento.get("nome")
+                                                        .toString()
+                                                },$anoAtual ,$mesAtual,$diaAtual, $ano, $mes, $dia"
                                             )
                                             values.add(evento.get("nome").toString())
+                                        }
+
+                                    } else if (anoAtual == ano) {
+
+                                        if (mesAtual < mes) {
+                                            val f = evento.get("Forma")
+                                            if (f == "publico") {
+                                                Log.d(
+                                                    "home2",
+                                                    "${
+                                                        evento.get("nome")
+                                                            .toString()
+                                                    },$anoAtual ,$mesAtual,$diaAtual, $ano, $mes, $dia"
+                                                )
+                                                values.add(evento.get("nome").toString())
+                                            }
+                                        } else if (mesAtual == mes) {
+                                            if (diaAtual <= dia) {
+                                                val f = evento.get("Forma")
+                                                if (f == "publico") {
+                                                    Log.d(
+                                                        "home2",
+                                                        "${
+                                                            evento.get("nome")
+                                                                .toString()
+                                                        },$anoAtual ,$mesAtual,$diaAtual, $ano, $mes, $dia"
+                                                    )
+                                                    values.add(evento.get("nome").toString())
+                                                }
+                                            }
                                         }
 
                                     }
 
 
+//                                    val f = evento.get("Forma")
+//                                    if (f == "publico") {
+//                                        Log.d(
+//                                            "home2",
+//                                            "${
+//                                                evento.get("nome")
+//                                                    .toString()
+//                                            },$anoAtual ,$mesAtual,$diaAtual, $ano, $mes, $dia"
+//                                        )
+//                                        values.add(evento.get("nome").toString())
+//                                    }
+
+
                                 }
-                                Log.d("home", "$values")
+                                Log.d("home5", "$values")
 
 
-                                val adapter = ArrayAdapter(this, R.layout.listview_item, values)
+                                val adapter = ArrayAdapter(this, R.layout.listview_itemhome, values)
 
                                 lista.adapter = adapter
 
@@ -469,7 +543,7 @@ class HomeActivity : AppCompatActivity() {
                                          }
 
                                      }
-                                     Log.d("home", "$values")
+                                     Log.d("home44", "$values")
                                      val adapter = ArrayAdapter(this, R.layout.listview_item, values)
 
                                      lista.adapter = adapter
@@ -548,10 +622,10 @@ class HomeActivity : AppCompatActivity() {
             startActivity(Intent(this, ProfileActivity::class.java))
         }
 
-        if (item.itemId == R.id.Lista) {
-
-            startActivity(Intent(this, ListaGruposActivity::class.java))
-        }
+//        if (item.itemId == R.id.Lista) {
+//
+//            startActivity(Intent(this, ListaGruposActivity::class.java))
+//        }
 
         if (item.itemId == R.id.grupo) {
 
@@ -569,7 +643,5 @@ class HomeActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
-
-
 }
 

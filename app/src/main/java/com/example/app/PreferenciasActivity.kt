@@ -38,7 +38,7 @@ class PreferenciasActivity : AppCompatActivity() {
 
 
 
-        listView = findViewById(R.id.listView)
+        listView = findViewById(R.id.listViewPre)
 
         var d = mAuth.collection("Grupos")
         d.get().addOnSuccessListener { result ->
@@ -55,9 +55,9 @@ class PreferenciasActivity : AppCompatActivity() {
 
                 }
 
-                val adapter = ArrayAdapter(this, R.layout.listview_item, list)
+                val adapter3 = ArrayAdapter(this, R.layout.listview_item, list)
 
-                listView.adapter = adapter
+                listView.adapter = adapter3
 
                 listView.onItemClickListener =
                     object : AdapterView.OnItemClickListener {
@@ -117,7 +117,7 @@ class PreferenciasActivity : AppCompatActivity() {
             startActivity(Intent(this, ProfileActivity::class.java))
         }
 
-        if (item.itemId == R.id.Lista) {
+        if (item.itemId == R.id.Lis) {
 
             startActivity(Intent(this, ListaGruposActivity::class.java))
         }

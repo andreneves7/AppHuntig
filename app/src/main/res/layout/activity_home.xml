@@ -21,7 +21,7 @@
         app:layout_constraintVertical_bias="0.309" />
 
     <ListView
-        android:id="@+id/ListView4"
+        android:id="@+id/ListViewHome"
         android:layout_width="411dp"
         android:layout_height="602dp"
         app:autoSizeTextType="uniform"

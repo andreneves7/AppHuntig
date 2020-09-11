@@ -168,7 +168,7 @@ class VerGrupoActivity : AppCompatActivity() {
             startActivity(Intent(this,VerGrupoActivity::class.java))
         }
 
-        if (item.itemId == R.id.Lista) {
+        if (item.itemId == R.id.Lis) {
 
             startActivity(Intent(this, ListaGruposActivity::class.java))
         }

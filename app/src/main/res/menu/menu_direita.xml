@@ -23,8 +23,8 @@
             android:title="Grupo"
             app:showAsAction="never" />
         <item
-            android:id="@+id/Lista"
-            android:title="ListaGrupos"
+            android:id="@+id/Lis"
+            android:title="Lista Grupos"
             app:showAsAction="never" />
 
 

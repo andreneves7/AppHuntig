@@ -27,7 +27,7 @@ class ListaGruposActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_lista_grupos)
-        listView = findViewById(R.id.listView)
+        listView = findViewById(R.id.listViewLista)
 
         var d = mAuth.collection("Grupos")
         d.get().addOnSuccessListener { result ->
@@ -44,9 +44,9 @@ class ListaGruposActivity : AppCompatActivity() {
 
                 }
 
-                val adapter = ArrayAdapter(this, R.layout.listview_item, list)
+                val adapter2 = ArrayAdapter(this, R.layout.listview_item, list)
 
-                listView.adapter = adapter
+                listView.adapter = adapter2
 
                 listView.onItemClickListener =
                     object : AdapterView.OnItemClickListener {
@@ -131,7 +131,7 @@ class ListaGruposActivity : AppCompatActivity() {
             startActivity(Intent(this, ProfileActivity::class.java))
         }
 
-        if (item.itemId == R.id.Lista) {
+        if (item.itemId == R.id.Lis) {
 
             startActivity(Intent(this, ListaGruposActivity::class.java))
         }
