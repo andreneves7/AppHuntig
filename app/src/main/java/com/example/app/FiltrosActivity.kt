@@ -29,16 +29,20 @@ class FiltrosActivity : AppCompatActivity() {
         val montaria = bMontarias
         val tordos = bTordos
         val rolas = bRolas
+        val dias = bDias
 
 
         rolas.setVisibility(View.INVISIBLE)
         tordos.setVisibility(View.INVISIBLE)
         montaria.setVisibility(View.INVISIBLE)
         esperas.setVisibility(View.INVISIBLE)
+        dias.setVisibility(View.INVISIBLE)
+
 
         maior.setOnClickListener(View.OnClickListener { view ->
 
             rolas.setVisibility(View.INVISIBLE)
+            dias.setVisibility(View.INVISIBLE)
             tordos.setVisibility(View.INVISIBLE)
             montaria.setVisibility(View.VISIBLE)
             esperas.setVisibility(View.VISIBLE)
@@ -65,6 +69,7 @@ class FiltrosActivity : AppCompatActivity() {
 
             rolas.setVisibility(View.VISIBLE)
             tordos.setVisibility(View.VISIBLE)
+            dias.setVisibility(View.VISIBLE)
             montaria.setVisibility(View.INVISIBLE)
             esperas.setVisibility(View.INVISIBLE)
             tordos.setOnClickListener(View.OnClickListener { view ->
@@ -81,12 +86,20 @@ class FiltrosActivity : AppCompatActivity() {
                 }
                 startActivity(intent)
             })
+            dias.setOnClickListener(View.OnClickListener { view ->
+                val filtro = "dias"
+                val intent = Intent(this, HomeActivity::class.java).apply {
+                    putExtra(EXTRA_MESSAGE, filtro)
+                }
+                startActivity(intent)
+            })
         })
 
         tudo.setOnClickListener(View.OnClickListener { view ->
 
             rolas.setVisibility(View.INVISIBLE)
             tordos.setVisibility(View.INVISIBLE)
+            dias.setVisibility(View.INVISIBLE)
             montaria.setVisibility(View.INVISIBLE)
             esperas.setVisibility(View.INVISIBLE)
 
@@ -128,7 +141,7 @@ class FiltrosActivity : AppCompatActivity() {
 
         if (item.itemId == R.id.grupo) {
 
-            startActivity(Intent(this, CriarGrupoActivity::class.java))
+            startActivity(Intent(this,VerGrupoActivity::class.java))
         }
 
 

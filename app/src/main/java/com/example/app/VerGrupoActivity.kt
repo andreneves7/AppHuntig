@@ -42,17 +42,22 @@ class VerGrupoActivity : AppCompatActivity() {
 
         val user = Auth.currentUser
         if (user != null) {
-            val mail = mAuth.collection("Users").document(user.uid)
+            val mail = mAuth.collection("Users").document(user?.uid)
             mail.get().addOnSuccessListener { document ->
                 if (document != null) {
 
 
                     val values = ArrayList<String>()
 
+                    Log.d(
+                        "VerGrupo2",
+                        "${user?.uid}"
+                    )
+                    
 
 
 
-                    val ref = document.data?.get("grupo") as List<String>
+                    val ref = document.data!!.get("grupo") as List<String>
                     Log.d(
                         "VerGrupo",
                         " ref $ref"

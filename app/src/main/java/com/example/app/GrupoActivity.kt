@@ -70,7 +70,7 @@ class GrupoActivity : AppCompatActivity() {
         mail.get().addOnSuccessListener { document ->
             if (document != null) {
 
-                val admin = document.data?.get("admin")as List<String>
+                val admin = document.data?.get("admin").toString()
 
                 val buscarEvento = mAuth.collection("Users").document(user?.uid.toString())
                 buscarEvento.get().addOnSuccessListener { document ->
@@ -81,7 +81,7 @@ class GrupoActivity : AppCompatActivity() {
                                 "ffff: $nameUser")
 
                         //apos separar retirar
-                        if (admin.contains(nameUser) ) {
+                        if (admin == nameUser ) {
                             evento.isVisible = true
 
                             Log.d("grupo", "aaaa: $admin" +
@@ -90,7 +90,7 @@ class GrupoActivity : AppCompatActivity() {
                             evento.isVisible = false
                             Log.d("grupo", "aaaa: $admin" +
                                     "ffff: $nameUser"+ "\n" + "false")
-                        }
+                        }///
                     }
                 }
 
@@ -220,6 +220,7 @@ class GrupoActivity : AppCompatActivity() {
 
 
 
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
         inflater.inflate(R.menu.menu_direita, menu)
@@ -227,29 +228,32 @@ class GrupoActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item!!.itemId == R.id.signOut){
+        if (item!!.itemId == R.id.signOut) {
             Auth.signOut()
-            val intent = Intent(this, LoginActivity :: class.java )
+            val intent = Intent(this, LoginActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
-            //startActivity(Intent (this, MainActivity :: class.java ))
         }
 
-        if (item.itemId == R.id.profile){
+        if (item.itemId == R.id.profile) {
 
-            startActivity(Intent (this, ProfileActivity :: class.java ))
+            startActivity(Intent(this, ProfileActivity::class.java))
         }
 
         if (item.itemId == R.id.grupo) {
 
             startActivity(Intent(this,VerGrupoActivity::class.java))
         }
+
+        if (item.itemId == R.id.Lis) {
+
+            startActivity(Intent(this, ListaGruposActivity::class.java))
+        }
+
         if (item.itemId == R.id.home) {
 
             startActivity(Intent(this, FiltrosActivity::class.java))
         }
-
-
 
         return super.onOptionsItemSelected(item)
     }

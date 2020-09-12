@@ -3,6 +3,8 @@ package com.example.app
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -24,7 +26,10 @@ class LoginActivity : AppCompatActivity() {
 
 
         val loginBtn = bLogin
+        val loginOrg = bLoginOrg
         val regTxt = bRegisto
+
+        loginOrg.setVisibility(View.INVISIBLE)
 
         loginBtn.setOnClickListener(View.OnClickListener { view ->
             login()
@@ -33,8 +38,51 @@ class LoginActivity : AppCompatActivity() {
         regTxt.setOnClickListener(View.OnClickListener { view ->
             register()
         })
-    }
 
+        loginOrg.setOnClickListener(View.OnClickListener { view ->
+            loginOrg()
+        })
+    }
+fun loginOrg(){
+    val emailTxt = idEmail
+    val passwordTxt = idPassword
+
+    var email = emailTxt.text.toString()
+    var password = passwordTxt.text.toString()
+
+    if (!email.isEmpty() && !password.isEmpty()) {
+        Auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                if (Auth.currentUser!!.isEmailVerified) {
+                    val ver = mAuth.collection("Users").document(Auth.currentUser!!.uid)
+                    ver.get().addOnSuccessListener { document ->
+
+                        if (document != null) {
+
+
+
+                                val intent = Intent(this, OrgActivity::class.java)
+                                intent.flags =
+                                    Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                startActivity(intent)
+
+
+                            Toast.makeText(this, "Successfully Logged in :)", Toast.LENGTH_LONG)
+                                .show()
+                            Log.d("Login", "user ${Auth.currentUser?.uid}")
+                        }
+                    }
+                } else {
+                    Toast.makeText(this, "verifique email", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                Toast.makeText(this, "Error Logging in :(", Toast.LENGTH_SHORT).show()
+            }
+        }
+    } else {
+        Toast.makeText(this, "Please fill up the credetianls", Toast.LENGTH_LONG).show()
+    }
+}
     private fun login() {
         val emailTxt = idEmail
         val passwordTxt = idPassword
@@ -50,7 +98,7 @@ class LoginActivity : AppCompatActivity() {
         if (!email.isEmpty() && !password.isEmpty()) {
             Auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    if (Auth.currentUser!!.isEmailVerified) {
+                    //if (Auth.currentUser!!.isEmailVerified) {
                         val ver = mAuth.collection("Users").document(Auth.currentUser!!.uid)
                         ver.get().addOnSuccessListener { document ->
 
@@ -81,9 +129,9 @@ class LoginActivity : AppCompatActivity() {
                                 Log.d("Login", "user ${Auth.currentUser?.uid}")
                             }
                         }
-                    } else {
-                        Toast.makeText(this, "verifique email", Toast.LENGTH_SHORT).show()
-                    }
+//                    } else {
+//                        Toast.makeText(this, "verifique email", Toast.LENGTH_SHORT).show()
+//                    }
                 } else {
                     Toast.makeText(this, "Error Logging in :(", Toast.LENGTH_SHORT).show()
                 }
@@ -98,6 +146,40 @@ class LoginActivity : AppCompatActivity() {
         val intent = Intent(this, RegistoUserActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.menu_direita_login, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+
+        val regTxt = bRegisto
+        val loginBtn = bLogin
+        val loginOrg = bLoginOrg
+
+
+
+        if (item!!.itemId == R.id.Cacador) {
+
+            regTxt.setVisibility(View.VISIBLE)
+            loginBtn.setVisibility(View.VISIBLE)
+            loginOrg.setVisibility(View.INVISIBLE)
+
+        }
+
+        if (item.itemId == R.id.Organizacao) {
+
+            regTxt.setVisibility(View.INVISIBLE)
+            loginBtn.setVisibility(View.INVISIBLE)
+            loginOrg.setVisibility(View.VISIBLE)
+        }
+
+
+
+        return super.onOptionsItemSelected(item)
     }
 
 

@@ -20,7 +20,9 @@
         android:roundIcon="@mipmap/ic_launcher_hunt_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".FiltrosActivity"></activity>
+        <activity android:name=".OrgActivity"></activity>
+        <activity android:name=".VerGrupoOrgActivity" />
+        <activity android:name=".FiltrosActivity" />
         <activity android:name=".ListaGruposActivity" />
         <activity android:name=".PreferenciasActivity" /> <!-- The meta-data tag is required if you support API level 15 and lower -->
         <!--
