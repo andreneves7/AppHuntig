@@ -20,7 +20,8 @@
         android:roundIcon="@mipmap/ic_launcher_hunt_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".OrgActivity"></activity>
+        <activity android:name=".CriarOrgEventoActivity"></activity>
+        <activity android:name=".OrgActivity" />
         <activity android:name=".VerGrupoOrgActivity" />
         <activity android:name=".FiltrosActivity" />
         <activity android:name=".ListaGruposActivity" />

@@ -97,8 +97,7 @@ class OrgActivity : AppCompatActivity() {
 
                                                 startActivity(
                                                     Intent(
-                                                        view.context,
-                                                        GrupoActivity::class.java
+                                                        view.context, CriarOrgEventoActivity::class.java
                                                     )
                                                 )
 
@@ -156,10 +155,7 @@ class OrgActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        if (item.itemId == R.id.profile2) {
 
-            startActivity(Intent(this, ProfileActivity::class.java))
-        }
 
         if (item.itemId == R.id.grupo2) {
 

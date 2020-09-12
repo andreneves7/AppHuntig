@@ -4,10 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".GrupoActivity">
-
+    tools:context=".CriarOrgEventoActivity">
     <ListView
-        android:id="@+id/ListView3"
+        android:id="@+id/ListView4"
         android:layout_width="411dp"
         android:layout_height="250dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -19,7 +18,7 @@
 
 
     <TextView
-        android:id="@+id/tNaoEventos"
+        android:id="@+id/tNaoEventos2"
         android:layout_width="360dp"
         android:layout_height="137dp"
         android:text="Nao tem eventos Disponiveis"
@@ -30,16 +29,16 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.44" />
 
-<!--    <Button-->
-<!--        android:id="@+id/bEvento"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:background="@drawable/botoes"-->
-<!--        android:text="Criar evento"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        app:layout_constraintVertical_bias="0.642" />-->
+    <Button
+        android:id="@+id/bEvento2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/botoes"
+        android:text="Criar evento"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.642" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

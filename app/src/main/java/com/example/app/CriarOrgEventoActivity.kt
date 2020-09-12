@@ -1,6 +1,5 @@
 package com.example.app
 
-import android.app.Application
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -14,93 +13,64 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.android.synthetic.main.activity_criar_org_evento.*
 import kotlinx.android.synthetic.main.activity_grupo.*
-import java.sql.Time
-import java.time.Year
 
-class VariaveisGlobais : Application() {
-    var Evento: String =""
-    var detalhes: String=""
-    var entrar: String=""
-    var ver :String=""
-    var nome : String=""
-    var Month: Int = 0
-    var Day : Int = 0
-    var Year : Int = 0
-    var MonthFim: Int = 0
-    var DayFim : Int = 0
-    var YearFim : Int = 0
-    var Lat : Double = 0.0
-    var Long : Double = 0.0
-    var check : String = ""
-    var Horas : String = ""
-    var privado : String = ""
-    var extra : String = ""
-    var Associacao : String = ""
-    var numSocio : Int = 0
-    var numEspanha : Int = 0
-
-
-}
-
-class GrupoActivity : AppCompatActivity() {
+class CriarOrgEventoActivity : AppCompatActivity() {
 
     lateinit var gv: VariaveisGlobais
     val Auth = FirebaseAuth.getInstance()
     val mAuth = FirebaseFirestore.getInstance()
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         gv = application as VariaveisGlobais
-        setContentView(R.layout.activity_grupo)
-
-        val lista = ListView3
-
-        val semEventos = tNaoEventos
-
-        //val evento = bEvento
+        setContentView(R.layout.activity_criar_org_evento)
 
 
+        val lista = ListView4
 
+        val semEventos = tNaoEventos2
+
+        val evento = bEvento2
 
         val user = Auth.currentUser
 
-//        val mail = mAuth.collection("Grupos").document(gv.ver)
-//        mail.get().addOnSuccessListener { document ->
-//            if (document != null) {
-//
-//                val admin = document.data?.get("admin").toString()
-//
-//                val buscarEvento = mAuth.collection("Users").document(user?.uid.toString())
-//                buscarEvento.get().addOnSuccessListener { document ->
-//                    if (document != null) {
-//
-//                        val nameUser = document.data?.get("name")
-//                        Log.d("grupo", "aaaa: $admin" +
-//                                "ffff: $nameUser")
-//
-//                        //apos separar retirar
-//                        if (admin == nameUser ) {
-//                            evento.isVisible = true
-//
-//                            Log.d("grupo", "aaaa: $admin" +
-//                                    "ffff: $nameUser"+ "\n" + "true")
-//                        }else{
-//                            evento.isVisible = false
-//                            Log.d("grupo", "aaaa: $admin" +
-//                                    "ffff: $nameUser"+ "\n" + "false")
-//                        }///
-//                    }
-//                }
-//
-//                Log.d(
-//                    "evento", "DocumentSnapshot data: ${document.data?.get("admin")} "
-//                )
-//            } else {
-//                Log.d("evento", "No such document")
-//            }
-//        }
+        val mail = mAuth.collection("Grupos").document(gv.ver)
+        mail.get().addOnSuccessListener { document ->
+            if (document != null) {
+
+                val admin = document.data?.get("admin").toString()
+
+                val buscarEvento = mAuth.collection("Users").document(user?.uid.toString())
+                buscarEvento.get().addOnSuccessListener { document ->
+                    if (document != null) {
+
+                        val nameUser = document.data?.get("name")
+                        Log.d("grupo", "aaaa: $admin" +
+                                "ffff: $nameUser")
+
+                        //apos separar retirar
+                        if (admin == nameUser ) {
+                            evento.isVisible = true
+
+                            Log.d("grupo", "aaaa: $admin" +
+                                    "ffff: $nameUser"+ "\n" + "true")
+                        }else{
+                            evento.isVisible = false
+                            Log.d("grupo", "aaaa: $admin" +
+                                    "ffff: $nameUser"+ "\n" + "false")
+                        }///
+                    }
+                }
+
+                Log.d(
+                    "evento", "DocumentSnapshot data: ${document.data?.get("admin")} "
+                )
+            } else {
+                Log.d("evento", "No such document")
+            }
+        }
 
 
 
@@ -209,51 +179,35 @@ class GrupoActivity : AppCompatActivity() {
 
 
 
-//        evento.setOnClickListener{
-//            startActivity(Intent (this, EventoActivity :: class.java ))
-//        }
-
+        evento.setOnClickListener{
+            startActivity(Intent (this, EventoActivity :: class.java ))
+        }
 
 
     }
 
-
-
-
-
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
-        inflater.inflate(R.menu.menu_direita, menu)
+        inflater.inflate(R.menu.menu_direita_org, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item!!.itemId == R.id.signOut) {
+        if (item!!.itemId == R.id.signOut2) {
             Auth.signOut()
             val intent = Intent(this, LoginActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
         }
 
-        if (item.itemId == R.id.profile) {
 
-            startActivity(Intent(this, ProfileActivity::class.java))
+
+        if (item.itemId == R.id.grupo2) {
+
+            startActivity(Intent(this, OrgActivity::class.java))
         }
 
-        if (item.itemId == R.id.grupo) {
 
-            startActivity(Intent(this,VerGrupoActivity::class.java))
-        }
-
-        if (item.itemId == R.id.Lis) {
-
-            startActivity(Intent(this, ListaGruposActivity::class.java))
-        }
-
-        if (item.itemId == R.id.home) {
-
-            startActivity(Intent(this, FiltrosActivity::class.java))
-        }
 
         return super.onOptionsItemSelected(item)
     }
