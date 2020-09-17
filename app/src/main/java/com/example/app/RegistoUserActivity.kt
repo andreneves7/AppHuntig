@@ -14,13 +14,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FieldValue
 import kotlinx.android.synthetic.main.activity_registo_user.*
 
 class RegistoUserActivity : AppCompatActivity() {
 
-    val mAuth = FirebaseFirestore.getInstance()
+//    val mAuth = FirebaseFirestore.getInstance()
+    val mAuth = FirebaseDatabase.getInstance();
     //val gAuth = FirebaseFirestore.getInstance().collection("Grupos")
     val Auth = FirebaseAuth.getInstance()
     //val mStorage = FirebaseStorage.getInstance().reference
@@ -405,107 +407,120 @@ class RegistoUserActivity : AppCompatActivity() {
         val uid = Auth.uid.toString()
 //        val ref = mAuth.document("$uid")
 //
-//        val NomeSeguradoraExtra = nomeSeguradoraExtra.text.toString()
-//        val NumApoliceExtra = numApoliceExtra.text.toString()
-//        val NumCaca = numCaca.text.toString()
+        val NomeSeguradoraExtra = nomeSeguradoraExtra.text.toString()
+        val NumApoliceExtra = numApoliceExtra.text.toString()
+        val NumCaca = numCaca.text.toString()
 
-        //val pessoa = HashMap<String, Any>()
-        val pessoa: MutableMap<String, Any> = HashMap()
+        val pessoa = HashMap<String, Any>()
+//        val pessoa: MutableMap<String, Any> = HashMap()
 
         pessoa["uid"] = uid
         pessoa["email"] = email
         pessoa["name"] = name
         pessoa["telemovel"] = tele
-//        pessoa["morada"] = morada
-//        pessoa["localidade"] = local
-//        pessoa["Codigo Postal"] = postal
-//        pessoa["Carta Caçadore"] = cartaCaca
-//        pessoa["Licença Arma"] = licencaArma
-//        pessoa["Nome Seguradora"] = nomeSeguradora
-//        pessoa["Numero Apolice"] = numApolice
-//        pessoa["grupo"] = ArrayList<String>()
-//        pessoa["Pais"] = g
+        pessoa["morada"] = morada
+        pessoa["localidade"] = local
+        pessoa["Codigo Postal"] = postal
+        pessoa["Carta Caçadore"] = cartaCaca
+        pessoa["Licença Arma"] = licencaArma
+        pessoa["Nome Seguradora"] = nomeSeguradora
+        pessoa["Numero Apolice"] = numApolice
+        //pessoa["grupo"] = ArrayList<String>()
+        pessoa["Pais"] = g
+        pessoa["FirstTime"] = true
+        pessoa["Org"] = false
+        pessoa["Controlo"] = false
+
+//        val pessoa = hashMapOf(
+//            "uid" to uid,
+//            "email" to email
+//        )
 
 
 
 
+        //mAuth.collection("Users").document("$uid").set(pessoa)
 
-        mAuth.collection("Users").document("$uid").set(pessoa)
-        Log.d("RegistoUser", "user firestore registo")
 
-//        if (g == "Portugal") {
-//
-//            val Bi = bi.text.toString()
-//            val Nif = nif.text.toString()
-//            val LicencaP = licencaP.text.toString()
-//
-//            if (!Bi.isEmpty() && !Nif.isEmpty() && !LicencaP.isEmpty()) {
-//
-//                pessoa["BI"] = Bi
-//                pessoa["Nif"] = Nif
-//                pessoa["Licenca Portugal"] = LicencaP
-//
-////                Log.d("RegistoUser", "user firestore registo")
-//                val LicencaEspanha = licencaEspanha.text.toString()
-//                if (e.isChecked) {
-//                    if (!LicencaEspanha.isEmpty() && !NomeSeguradoraExtra.isEmpty() && !NumApoliceExtra.isEmpty() && !NumCaca.isEmpty()) {
-//
-//                        pessoa["Licenca Espanha"] = LicencaEspanha
-//                        pessoa["nome Seguradora Extra"] = NomeSeguradoraExtra
-//                        pessoa["numero Apolice Extra"] = NumApoliceExtra
-//                        pessoa["Numero Passaporte Europeu"] = NumCaca
-//                        //mAuth.document("$uid").set(pessoa)
-//                        Log.d("RegistoUser", "user firestore registo")
-//
-//
-//                    }
-//                }
-//                else{
-//                    ref.set(pessoa)
-//                }
-//            }
-//
-//
-//        } else if (g == "Espanha") {
-//
-//            val Dni = dni.text.toString()
-//            val LicencaE = licencaE.text.toString()
-//
-//            if (!Dni.isEmpty() && !LicencaE.isEmpty()) {
-//
-//                pessoa["Dni"] = Dni
-//                pessoa["Licenca Espanha"] = LicencaE
-//                Log.d("RegistoUser", "user firestore registo")
-//
-//                val LicencaPortuguesa = linceca.text.toString()
-//
-//                if (p.isChecked) {
-//                    if (!LicencaPortuguesa.isEmpty() && !NomeSeguradoraExtra.isEmpty() && !NumApoliceExtra.isEmpty() && !NumCaca.isEmpty()) {
-//
-//                        pessoa["Licenca Portugal"] = LicencaPortuguesa
-//                        pessoa["nome Seguradora Extra"] = NomeSeguradoraExtra
-//                        pessoa["numero Apolice Extra"] = NumApoliceExtra
-//                        pessoa["Numero Passaporte Europeu"] = NumCaca
-//                        ref.set(pessoa)
-//                        Log.d("RegistoUser", "user firestore registo")
-//                    }
-//                }
-//                else{
-//                    ref.set(pessoa)
-//                }
-//            }
-//        } else {
-//
-//            val Passaporte = passaporte.text.toString()
-//            if (!Passaporte.isEmpty()){
-//
-//                pessoa["Passaporte"] = Passaporte
-//                ref.set(pessoa)
-//                Log.d("RegistoUser", "user firestore registo")
-//
-//            }
 
-        //}
+
+        if (g == "Portugal") {
+
+            val Bi = bi.text.toString()
+            val Nif = nif.text.toString()
+            val LicencaP = licencaP.text.toString()
+
+            if (!Bi.isEmpty() && !Nif.isEmpty() && !LicencaP.isEmpty()) {
+
+                pessoa["BI"] = Bi
+                pessoa["Nif"] = Nif
+                pessoa["Licenca Portugal"] = LicencaP
+
+//                mAuth.getReference(uid).setValue(pessoa)
+                Log.d("RegistoUser", "user firestore registo1")
+
+                val LicencaEspanha = licencaEspanha.text.toString()
+                if (e.isChecked) {
+                    if (!LicencaEspanha.isEmpty() && !NomeSeguradoraExtra.isEmpty() && !NumApoliceExtra.isEmpty()) {
+
+                        pessoa["Licenca Espanha"] = LicencaEspanha
+                        pessoa["nome Seguradora Extra"] = NomeSeguradoraExtra
+                        pessoa["numero Apolice Extra"] = NumApoliceExtra
+                        pessoa["Numero Passaporte Europeu"] = NumCaca
+                        mAuth.getReference("Users").child(uid).setValue(pessoa)
+                        Log.d("RegistoUser", "user firestore registo2")
+
+
+                    }
+                }
+                else{
+                    mAuth.getReference("Users").child(uid).setValue(pessoa)
+                    Log.d("RegistoUser", "user firestore registo3")
+                }
+            }
+
+
+        } else if (g == "Espanha") {
+
+            val Dni = dni.text.toString()
+            val LicencaE = licencaE.text.toString()
+
+            if (!Dni.isEmpty() && !LicencaE.isEmpty()) {
+
+                pessoa["Dni"] = Dni
+                pessoa["Licenca Espanha"] = LicencaE
+                Log.d("RegistoUser", "user firestore registo4")
+
+                val LicencaPortuguesa = linceca.text.toString()
+
+                if (p.isChecked) {
+                    if (!LicencaPortuguesa.isEmpty() && !NomeSeguradoraExtra.isEmpty() && !NumApoliceExtra.isEmpty()) {
+
+                        pessoa["Licenca Portugal"] = LicencaPortuguesa
+                        pessoa["nome Seguradora Extra"] = NomeSeguradoraExtra
+                        pessoa["numero Apolice Extra"] = NumApoliceExtra
+                        pessoa["Numero Passaporte Europeu"] = NumCaca
+                        mAuth.getReference(uid).setValue(pessoa)
+                        Log.d("RegistoUser", "user firestore registo5")
+                    }
+                }
+                else{
+                    mAuth.getReference(uid).setValue(pessoa)
+                    Log.d("RegistoUser", "user firestore registo6")
+                }
+            }
+        } else {
+
+            val Passaporte = passaporte.text.toString()
+            if (!Passaporte.isEmpty()){
+
+                pessoa["Passaporte"] = Passaporte
+                mAuth.getReference(uid).setValue(pessoa)
+                Log.d("RegistoUser", "user firestore registo7")
+
+            }
+
+        }
 
 
 

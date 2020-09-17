@@ -13,6 +13,10 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.core.view.isVisible
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_grupo.*
 import java.sql.Time
@@ -47,7 +51,7 @@ class GrupoActivity : AppCompatActivity() {
 
     lateinit var gv: VariaveisGlobais
     val Auth = FirebaseAuth.getInstance()
-    val mAuth = FirebaseFirestore.getInstance()
+    val mAuth = FirebaseDatabase.getInstance()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -109,15 +113,21 @@ class GrupoActivity : AppCompatActivity() {
 
 
         if (user != null) {
-            val mail = mAuth.collection("Grupos").document(gv.Evento)
-            mail.get().addOnSuccessListener { document ->
-                if (document != null) {
+
+
+
+            val mail = mAuth.getReference("Grupos").child(gv.Evento)
+            mail.addValueEventListener(object : ValueEventListener {
+                override  fun onDataChange(dataSnapshot: DataSnapshot) {
+//            val mail = mAuth.collection("Grupos").document(gv.Evento)
+//            mail.get().addOnSuccessListener { document ->
+//                if (document != null) {
 
 
                     val valu = ArrayList<String>()
 
 
-                    val refe = document.data?.get("Eventos") as List<String>
+                    val refe = dataSnapshot.child("Eventos").getValue() as List<String>
                     Log.d(
                         "Grupo",
                         " refe $refe"
@@ -156,7 +166,7 @@ class GrupoActivity : AppCompatActivity() {
                                 "values $d"
                             )
 
-                            val adapter = ArrayAdapter(this,R.layout.listview_item, valu)
+                            val adapter = ArrayAdapter(this@GrupoActivity ,R.layout.listview_item, valu)
 
                             lista.adapter = adapter
 
@@ -174,7 +184,7 @@ class GrupoActivity : AppCompatActivity() {
 
                                     startActivity(Intent (view.context, DetalhesEventoActivity :: class.java ))
 
-                                    Toast.makeText(applicationContext,
+                                    Toast.makeText(this@GrupoActivity,
                                         "Position :$position\nItem Value : $itemValue", Toast.LENGTH_LONG)
                                         .show()
 
@@ -189,19 +199,19 @@ class GrupoActivity : AppCompatActivity() {
 
                     Log.d(
                         "Grupo",
-                        " ${document.id} => ${document.data?.get("name")}, ${document.data?.get("grupo")}"
+                        "  => ${dataSnapshot.child("name").getValue()}, ${dataSnapshot.child("grupo").getValue()}"
                     )
 
 
                     Log.d(
-                        "Grupo", "DocumentSnapshot data: ${document.data?.get("name")}"
+                        "Grupo", "DocumentSnapshot data: ${dataSnapshot.child("name").getValue()}"
                     )
-                } else {
+                }
+                override fun onCancelled(error: DatabaseError) {
                     Log.d("Grupo", "No such document")
                 }
-            }
+            })
         }
-
 
 
 
@@ -216,10 +226,6 @@ class GrupoActivity : AppCompatActivity() {
 
 
     }
-
-
-
-
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater

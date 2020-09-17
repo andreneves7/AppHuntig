@@ -22,7 +22,7 @@
         android:theme="@style/AppTheme">
         <activity android:name=".CriarOrgEventoActivity"></activity>
         <activity android:name=".OrgActivity" />
-        <activity android:name=".VerGrupoOrgActivity" />
+<!--        <activity android:name=".VerGrupoOrgActivity" />-->
         <activity android:name=".FiltrosActivity" />
         <activity android:name=".ListaGruposActivity" />
         <activity android:name=".PreferenciasActivity" /> <!-- The meta-data tag is required if you support API level 15 and lower -->

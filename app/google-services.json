@@ -1,42 +1,34 @@
 {
   "project_info": {
-    "project_number": "155453896354",
-    "firebase_url": "https://appfirebaseproject-15078.firebaseio.com",
-    "project_id": "appfirebaseproject-15078",
-    "storage_bucket": "appfirebaseproject-15078.appspot.com"
+    "project_number": "451289624024",
+    "firebase_url": "https://huntingevents-82a58.firebaseio.com",
+    "project_id": "huntingevents-82a58",
+    "storage_bucket": "huntingevents-82a58.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:155453896354:android:24dcf437211b9965e6c9fb",
+        "mobilesdk_app_id": "1:451289624024:android:be23c04cdea4dd448716ad",
         "android_client_info": {
-          "package_name": "com.example.app"
+          "package_name": "com.company.HuntigEvents"
         }
       },
       "oauth_client": [
         {
-          "client_id": "155453896354-ans3sp97cg2ogu656k5urg2rt8p7khhj.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.app",
-            "certificate_hash": "120ab4a4b739dfdeb696df246073cce41b7a3634"
-          }
-        },
-        {
-          "client_id": "155453896354-83k0v863ikbptdotoejfblnnhjqg5tke.apps.googleusercontent.com",
+          "client_id": "451289624024-3fua9hdsilhs9jtolorgajfjg04brbl7.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCR_5PdNIjarIMG5-GBDPLvBj0rSbGu8bY"
+          "current_key": "AIzaSyDn9Rmk030peUfrV4tb2qz2SqGcJku_Rtw"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "155453896354-83k0v863ikbptdotoejfblnnhjqg5tke.apps.googleusercontent.com",
+              "client_id": "451289624024-3fua9hdsilhs9jtolorgajfjg04brbl7.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

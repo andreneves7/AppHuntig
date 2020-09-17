@@ -16,20 +16,20 @@ import com.google.android.gms.maps.model.LatLng
 
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_detalhes_evento.*
 import java.util.HashMap
 import androidx.core.view.isVisible as isVisible
 
-class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback  {
+class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback {
 
     val Auth = FirebaseAuth.getInstance()
-    val mAuth = FirebaseFirestore.getInstance()
+    val mAuth = FirebaseDatabase.getInstance()
     lateinit var gv: VariaveisGlobais
 
     private lateinit var mMap: GoogleMap
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,33 +46,30 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback  {
 
 
 
-        desativar()
+        //desativar()
 
         marcar.setOnClickListener {
             marcarPresença()
-            startActivity(Intent(this, HomeActivity::class.java))
+            startActivity(Intent(this, FiltrosActivity::class.java))
         }
 
         val user = Auth.currentUser
 
         if (user != null) {
-            val mail = mAuth.collection("Eventos").document(gv.detalhes)
-            mail.get().addOnSuccessListener { document ->
-                if (document != null) {
+            val mail = mAuth.getReference("Eventos").child(gv.detalhes)
+            mail.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
 
-                    val name = document.data?.get("nome")
-                    val dateDia = document.data?.get("dia")
-                    val dateMes = document.data?.get("mes")
-                    val dateAno = document.data?.get("ano")
-                    val time = document.data?.get("horas")
-                    val tipo = document.data?.get("Tipo")
+                    val name = dataSnapshot.child("nome").getValue().toString()
+                    val dateDia = dataSnapshot.child("dia").getValue().toString()
+                    val dateMes = dataSnapshot.child("mes").getValue().toString()
+                    val dateAno = dataSnapshot.child("ano").getValue().toString()
+                    val time = dataSnapshot.child("horas").getValue().toString()
+                    val tipo = dataSnapshot.child("Tipo").getValue().toString()
 
 
                     showDetalhe.text =
                         "nome: " + name + "\n" + "data: " + dateDia + "/" + dateMes + "/" + dateAno + "\n" + "horas: " + time + "\n" + "tipo: " + tipo
-
-
-
 
 
 //                    Log.d(
@@ -82,10 +79,12 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback  {
 //                        )}" +
 //                                " \n ${document.data?.get("hora")} \n ${document.data?.get("local")}"
 //                    )
-                } else {
-                    Log.d("evento", "No such document")
                 }
-            }
+
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+            })
         }
 
     }
@@ -93,19 +92,24 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback  {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-        val mail = mAuth.collection("Eventos").document(gv.detalhes)
-        mail.get().addOnSuccessListener { document ->
-            val placeLat = document.data?.get("Latitude")
-            val placeLog = document.data?.get("Longitude")
-            val P = LatLng(placeLat.toString().toDouble(), placeLog.toString().toDouble())
+        val mail = mAuth.getReference("Eventos").child(gv.detalhes)
+        mail.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val placeLat = dataSnapshot.child("Latitude").getValue()
+                val placeLog = dataSnapshot.child("Longitude").getValue()
+                val P = LatLng(placeLat.toString().toDouble(), placeLog.toString().toDouble())
 
-            placeMarkerOnMap(P)
-            mMap.mapType = GoogleMap.MAP_TYPE_HYBRID
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(P, 18f))
-        }
+                placeMarkerOnMap(P)
+                mMap.mapType = GoogleMap.MAP_TYPE_HYBRID
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(P, 18f))
+            }
 
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+        })
     }
-
 
 
     private fun placeMarkerOnMap(location: LatLng) {
@@ -116,82 +120,121 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback  {
         mMap.addMarker(markerOptions)
     }
 
-    fun desativar() {
-
-        val marcar = bPresença
-
-        val user = Auth.currentUser
-        if (user != null) {
-            val mail = mAuth.collection("Eventos").document(gv.detalhes)
-            mail.get().addOnSuccessListener { document ->
-                if (document != null) {
-
-                    val pre = document.data?.get("Presenças") as List<String>
-
-                    val buscarNome = mAuth.collection("Users").document(user.uid)
-                    buscarNome.get().addOnSuccessListener { document ->
-                        if (document != null) {
-
-                            val nameUser = document.data?.get("name")
-                            if (pre.contains(nameUser)) {
-
-                                marcar.isVisible = false
-                                Log.d(
-                                    "detalhes", "detalhe: $pre" +
-                                            "ffff: $nameUser" + "\n" + "false"
-                                )
-                            } else {
-
-                                marcar.isVisible = true
-                                Log.d(
-                                    "detalhes", "detalhe: $pre" +
-                                            "ffff: $nameUser" + "\n" + "true"
-                                )
-                            }
-                        }
-                    }
-
-                    Log.d(
-                        "evento", "DocumentSnapshot data: ${document.data?.get("admin")} "
-                    )
-                } else {
-                    Log.d("evento", "No such document")
-                }
-            }
-        }
-
-    }
+//    fun desativar() {
+//
+//        val marcar = bPresença
+//
+//        val user = Auth.currentUser
+//        if (user != null) {
+//            val mail = mAuth.getReference("Eventos").child(gv.detalhes)
+//            Log.d(
+//                "detalhes", "detalhe: ${gv.detalhes}"
+//            )
+//            val m = object : ChildEventListener {
+//                override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
+//
+//                    var pre = dataSnapshot.child("Presenças").getValue() as List<String>
+//                    Log.d(
+//                        "detalhes", "detalhe: $pre"
+//                    )
+//
+//                    val buscarNome = mAuth.getReference("Users").child(user.uid)
+//                    buscarNome.addListenerForSingleValueEvent(object : ValueEventListener {
+//                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+//
+//                            val nameUser = dataSnapshot.child("nome").getValue()
+//
+//                            if (pre.contains(nameUser)) {
+//
+//                                marcar.isVisible = false
+//                                Log.d(
+//                                    "detalhes", "detalhe: $pre" +
+//                                            "ffff: $nameUser" + "\n" + "false"
+//                                )
+//                            } else {
+//
+//                                marcar.isVisible = true
+//                                Log.d(
+//                                    "detalhes", "detalhe: $pre" +
+//                                            "ffff: $nameUser" + "\n" + "true"
+//                                )
+//                            }
+//                            Log.d(
+//                                "evento", "DocumentSnapshot data: ${dataSnapshot.child("admin").getValue()} "
+//                            )
+//                        }
+//
+//                        override fun onCancelled(error: DatabaseError) {
+//                            TODO("Not yet implemented")
+//                        }
+//                    })
+//
+//
+//                }
+//
+//                override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+//                    startActivity(Intent(this@DetalhesEventoActivity, HomeActivity::class.java))
+//                }
+//
+//                override fun onChildRemoved(snapshot: DataSnapshot) {
+//                    TODO("Not yet implemented")
+//                }
+//
+//                override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+//                    TODO("Not yet implemented")
+//                }
+//
+//                override fun onCancelled(error: DatabaseError) {
+//                    TODO("Not yet implemented")
+//                }
+//
+//
+//            }
+//            mail.addChildEventListener(m)
+//        }
+//
+//    }
 
 
     fun marcarPresença() {
 
         val user = Auth.currentUser
         if (user != null) {
-            val mail = mAuth.collection("Eventos").document(gv.detalhes)
-            mail.get().addOnSuccessListener { document ->
-                if (document != null) {
+            val mail = mAuth.getReference("Eventos").child(gv.detalhes)
+            mail.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
 
-                    val buscarNome = mAuth.collection("Users").document(user.uid)
-                    buscarNome.get().addOnSuccessListener { document ->
-                        if (document != null) {
 
-                            val nameUser = document.data?.get("name")
+                    val buscarNome = mAuth.getReference("Users").child(user.uid)
+                    buscarNome.addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+
+
                             val update = HashMap<String, Any>()
-                            update["Presenças"] = arrayListOf(nameUser)
+                            update["Presenças"] = arrayListOf(user.uid)
 
-                            mAuth.collection("Eventos").document(gv.detalhes)
-                                .update("Presenças", FieldValue.arrayUnion(nameUser))
+                            mAuth.getReference("Eventos").child(gv.detalhes)
+                                .setValue(update)
+
+                            Log.d(
+                                "evento", "DocumentSnapshot data: ${dataSnapshot.child("admin").getValue()} "
+                            )
 
                         }
-                    }
 
-                    Log.d(
-                        "evento", "DocumentSnapshot data: ${document.data?.get("admin")} "
-                    )
-                } else {
-                    Log.d("evento", "No such document")
+                        override fun onCancelled(error: DatabaseError) {
+                            TODO("Not yet implemented")
+                        }
+                    })
+
+
                 }
-            }
+
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+            })
         }
     }
 
@@ -216,7 +259,7 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback  {
 
         if (item.itemId == R.id.grupo) {
 
-            startActivity(Intent(this,VerGrupoActivity::class.java))
+            startActivity(Intent(this, VerGrupoActivity::class.java))
         }
 
         if (item.itemId == R.id.Lis) {
@@ -234,3 +277,4 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback  {
     }
 
 }
+

@@ -14,38 +14,46 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.core.view.isVisible
-
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 
 class VerificarLoginActivity : AppCompatActivity() {
 
-        val a = FirebaseAuth.getInstance().currentUser
-        val b = FirebaseFirestore.getInstance()
+    val a = FirebaseAuth.getInstance().currentUser
+    val b = FirebaseDatabase.getInstance()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val c = b.collection("Users").document(a?.uid.toString())
-            if (a == null) {
-                startActivity<LoginActivity>()
-            } else {
+        if (a == null) {
+            startActivity<LoginActivity>()
+        } else {
 
 
-                c.get().addOnSuccessListener { document ->
-                if (document != null) {
-                    val org = document.data?.get("Org")
+        val c = b.getReference("Users").child(a!!.uid)
+            c.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    val org = dataSnapshot.child("Org").getValue()
 
-                    if (org == false){
+
+                    if (org == false) {
 
                         startActivity<FiltrosActivity>()
-                    }
-                    else{
+                    } else {
                         startActivity<OrgActivity>()
                     }
                 }
-            }
+
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+            })
         }
-        finish()
+    finish()
     }
 }
+
 
 
 

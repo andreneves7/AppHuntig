@@ -12,12 +12,13 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_preferencias.*
 
 class PreferenciasActivity : AppCompatActivity() {
     val Auth = FirebaseAuth.getInstance()
-    val mAuth = FirebaseFirestore.getInstance()
+    val mAuth = FirebaseDatabase.getInstance()
     lateinit var gv: VariaveisGlobais
 
 
@@ -40,22 +41,33 @@ class PreferenciasActivity : AppCompatActivity() {
 
         listView = findViewById(R.id.listViewPre)
 
-        var d = mAuth.collection("Grupos")
-        d.get().addOnSuccessListener { result ->
-            if (result != null) {
+        var d = mAuth.getReference("Grupos")
+        var list = ArrayList<String>()
+
+        val c = object : ChildEventListener {
+            override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
 
 
-                var list = ArrayList<String>()
+                val grupo = dataSnapshot.getValue()
 
-                for (grupo in result) {
+                val g = dataSnapshot.child("nome").getValue().toString()
+                list.add(
+                    "${g}"
+                )
 
-                    list.add(
-                        "${grupo.get("nome").toString()}"
-                    )
-
-                }
-
-                val adapter3 = ArrayAdapter(this, R.layout.listview_item, list)
+                Log.d(
+                    "Preferencias",
+                    " pref $grupo"
+                )
+                Log.d(
+                    "Preferencias",
+                    " pref $g"
+                )
+                Log.d(
+                    "Preferencias",
+                    " pref $list"
+                )
+                val adapter3 = ArrayAdapter(this@PreferenciasActivity, R.layout.listview_item, list)
 
                 listView.adapter = adapter3
 
@@ -73,9 +85,12 @@ class PreferenciasActivity : AppCompatActivity() {
                             val itemValue = listView.getItemAtPosition(position)
                             val message = itemValue as String
                             Log.d("Preferencias", "mensagem: $message" + "item: $itemValue ")
-                            var b = mAuth.collection("Grupos").document(itemValue.toString())
-                            b.get().addOnSuccessListener { result ->
-                                if (result != null) {
+
+                            var b = mAuth.getReference("Grupos").child(itemValue.toString())
+
+                            //var b = mAuth.collection("Grupos").document(itemValue.toString())
+                            b.addValueEventListener(object : ValueEventListener {
+                                override fun onDataChange(snapshot: DataSnapshot) {
 
 
                                     startActivity(
@@ -85,14 +100,36 @@ class PreferenciasActivity : AppCompatActivity() {
                                     )
                                 }
 
-                            }
+                                override fun onCancelled(error: DatabaseError) {
+                                    TODO("Not yet implemented")
+                                }
+
+                            })
                         }
                     }
 
             }
 
+            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+                startActivity(Intent(this@PreferenciasActivity, PreferenciasActivity::class.java))
+            }
+
+            override fun onChildRemoved(snapshot: DataSnapshot) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
 
         }
+        d.addChildEventListener(c)
+
     }
 
 

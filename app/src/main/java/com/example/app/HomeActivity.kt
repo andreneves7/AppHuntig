@@ -15,6 +15,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_evento.*
 //import kotlinx.android.synthetic.main.activity_evento.checkDiasCaça
@@ -33,7 +34,7 @@ import kotlin.collections.ArrayList
 class HomeActivity : AppCompatActivity() {
 
     val Auth = FirebaseAuth.getInstance()
-    val mAuth = FirebaseFirestore.getInstance()
+    val mAuth = FirebaseDatabase.getInstance()
     lateinit var gv: VariaveisGlobais
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,79 +62,76 @@ class HomeActivity : AppCompatActivity() {
         val pesquisa = SearchEvento
         val filtro = intent.getStringExtra(EXTRA_MESSAGE)
         val values = ArrayList<String>()
-        var ListaEventosPrivat = mAuth.collection("Eventos")
-        var ListaEventosPublic = mAuth.collection("Eventos")
+        var ListaEventosPrivat = mAuth.getReference("Eventos")
+        var ListaEventosPublic = mAuth.getReference("Eventos")
 
 
-        ListaEventosPublic.get().addOnSuccessListener { result ->
-            if (result != null) {
+        val public = object : ChildEventListener {
+            override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
 
 
-                for (evento in result) {
+                var tipo = dataSnapshot.child("Tipo").getValue().toString()
+
+                if (tipo == filtro || filtro == "tudo") {
+
+                    semEventos.isVisible = false
+                    val anoAtual =
+                        Calendar.getInstance().get(Calendar.YEAR)
+                    val mesAtual =
+                        Calendar.getInstance().get(Calendar.MONTH) + 1
+                    val diaAtual =
+                        Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+                    val ano = dataSnapshot.child("anoFim").getValue().toString().toInt()
+                    val mes = dataSnapshot.child("mesFim").getValue().toString().toInt()
+                    val dia = dataSnapshot.child("diaFim").getValue().toString().toInt()
 
 
-                    var tipo = evento.get("Tipo").toString()
+                    // PROBLEMA NA VERIFICAÇAO DO DIA
+                    if (anoAtual < ano) {
 
-                    if (tipo == filtro || filtro == "tudo") {
+                        val f = dataSnapshot.child("Forma").getValue().toString()
+                        if (f == "publico") {
+                            Log.d(
+                                "home2",
+                                "${
+                                    dataSnapshot.child("nome").getValue()
+                                        .toString()
+                                },$anoAtual ,$mesAtual,$diaAtual, $ano, $mes, $dia"
+                            )
+                            values.add(dataSnapshot.child("nome").getValue().toString())
+                        }
 
-                        semEventos.isVisible = false
-                        val anoAtual =
-                            Calendar.getInstance().get(Calendar.YEAR)
-                        val mesAtual =
-                            Calendar.getInstance().get(Calendar.MONTH) + 1
-                        val diaAtual =
-                            Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
-                        val ano = evento.get("anoFim").toString().toInt()
-                        val mes = evento.get("mesFim").toString().toInt()
-                        val dia = evento.get("diaFim").toString().toInt()
+                    } else if (anoAtual == ano) {
 
-
-                        // PROBLEMA NA VERIFICAÇAO DO DIA
-                        if (anoAtual < ano) {
-
-                            val f = evento.get("Forma").toString()
+                        if (mesAtual < mes) {
+                            val f = dataSnapshot.child("Forma").getValue().toString()
                             if (f == "publico") {
                                 Log.d(
                                     "home2",
                                     "${
-                                        evento.get("nome")
+                                        dataSnapshot.child("nome").getValue()
                                             .toString()
                                     },$anoAtual ,$mesAtual,$diaAtual, $ano, $mes, $dia"
                                 )
-                                values.add(evento.get("nome").toString())
+                                values.add(dataSnapshot.child("nome").getValue().toString())
                             }
-
-                        } else if (anoAtual == ano) {
-
-                            if (mesAtual < mes) {
-                                val f = evento.get("Forma").toString()
+                        } else if (mesAtual == mes) {
+                            if (diaAtual <= dia) {
+                                val f = dataSnapshot.child("Forma").getValue().toString()
                                 if (f == "publico") {
                                     Log.d(
                                         "home2",
                                         "${
-                                            evento.get("nome")
+                                            dataSnapshot.child("nome").getValue()
                                                 .toString()
                                         },$anoAtual ,$mesAtual,$diaAtual, $ano, $mes, $dia"
                                     )
-                                    values.add(evento.get("nome").toString())
-                                }
-                            } else if (mesAtual == mes) {
-                                if (diaAtual <= dia) {
-                                    val f = evento.get("Forma").toString()
-                                    if (f == "publico") {
-                                        Log.d(
-                                            "home2",
-                                            "${
-                                                evento.get("nome")
-                                                    .toString()
-                                            },$anoAtual ,$mesAtual,$diaAtual, $ano, $mes, $dia"
-                                        )
-                                        values.add(evento.get("nome").toString())
-                                    }
+                                    values.add(dataSnapshot.child("nome").getValue().toString())
                                 }
                             }
-
                         }
+
+                    }
 
 
 //                                    val f = evento.get("Forma")
@@ -149,13 +147,13 @@ class HomeActivity : AppCompatActivity() {
 //                                    }
 
 
-                    }
                 }
+
                 Log.d("home5", "$values")
 
 
                 val adapter =
-                    ArrayAdapter(this, R.layout.listview_itemhome, values)
+                    ArrayAdapter(this@HomeActivity, R.layout.listview_itemhome, values)
 
                 lista.adapter = adapter
 
@@ -191,9 +189,9 @@ class HomeActivity : AppCompatActivity() {
                             gv.detalhes = itemValue
                             val uid = Auth.currentUser?.uid
                             var eventoclick2 =
-                                mAuth.collection("Eventos").document(itemValue)
-                            eventoclick2.get().addOnSuccessListener { result ->
-                                if (result != null) {
+                                mAuth.getReference("Eventos").child(itemValue)
+                            eventoclick2.addValueEventListener(object : ValueEventListener {
+                                override fun onDataChange(snapshot: DataSnapshot) {
 
                                     startActivity(
                                         Intent(
@@ -204,7 +202,11 @@ class HomeActivity : AppCompatActivity() {
 
 
                                 }
-                            }
+
+                                override fun onCancelled(error: DatabaseError) {
+                                    TODO("Not yet implemented")
+                                }
+                            })
 
 
 //                                            Toast.makeText(
@@ -217,47 +219,118 @@ class HomeActivity : AppCompatActivity() {
                         }
 
                     }
+//                var x = 0
+//                for (evento in result) {
+//
+//                    x += 1
+//                }
+//                if (x > 0) {
+//                    semEventos.isVisible = false
+//                } else {
+//
+//                    semEventos.isVisible = true
+//                    Toast.makeText(
+//                        applicationContext,
+//                        "Sem eventos disponiveis", Toast.LENGTH_LONG
+//                    ).show()
+//                }
             }
-            var x = 0
-            for (evento in result) {
 
-                x += 1
+            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+                startActivity(Intent(this@HomeActivity, HomeActivity::class.java))
             }
-            if (x > 0) {
-                semEventos.isVisible = false
-            } else {
 
-                semEventos.isVisible = true
-                Toast.makeText(
-                    applicationContext,
-                    "Sem eventos disponiveis", Toast.LENGTH_LONG
-                ).show()
+            override fun onChildRemoved(snapshot: DataSnapshot) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
             }
 
         }
+        ListaEventosPublic.addChildEventListener(public)
 
-        var gruposMemmbros = mAuth.collection("Grupos")
-        gruposMemmbros.get().addOnSuccessListener { result ->
-            if (result != null) {
+        var gruposMemmbros = mAuth.getReference("Grupos")
+
+
+        val teste = ArrayList<String>()
+        val gm = object : ChildEventListener {
+            override fun onChildAdded(
+                dataSnapshot: DataSnapshot,
+                previousChildName: String?
+            ) {
 
                 val uid = Auth.currentUser?.uid
-                for (grupo in result) {
-                    val listEventos = grupo.get("Eventos") as List<String>
+
+                val g = dataSnapshot.child("nome").getValue().toString()
+                Log.d(
+                    "home75",
+                    "g : ${
+                        g
+                    }"
+                )
+
+                teste.add(g)
 
 
-                    var fazParte = grupo.get("membros") as List<String>
-                    if (fazParte.contains(uid)) {
+                var m = dataSnapshot.child(g).child("Eventos").getValue()
 
 
-                        ListaEventosPrivat.get().addOnSuccessListener { result ->
-                            if (result != null) {
 
 
-                                for (evento in result) {
-                                    val l = evento.get("nome")
+                var t = mAuth.getReference("Grupos").child(g).child("membros")
 
-                                    if (listEventos.contains(l)) {
-                                        var tipo = evento.get("Tipo").toString()
+//                Log.d(
+//                    "home75",
+//                    "t : ${
+//                       t
+//                    }"
+//                )
+
+                    val f = object : ChildEventListener {
+                        override fun onChildAdded(
+                            dataSnapshot: DataSnapshot,
+                            previousChildName: String?
+                        ) {
+                            var j = dataSnapshot.child("uid").getValue().toString()
+
+
+                            var fazParte = ArrayList<String>()
+
+                            fazParte.add(j)
+
+                            Log.d(
+                                "home75",
+                                "f : ${
+                                    fazParte
+                                }"
+                            )
+
+                            if (fazParte.contains(uid)) {
+
+
+                                val private = object : ChildEventListener {
+                                    override fun onChildAdded(
+                                        dataSnapshot: DataSnapshot,
+                                        previousChildName: String?
+                                    ) {
+
+
+                                        val l = dataSnapshot.child("nome").getValue()
+
+                                        Log.d(
+                                            "home75",
+                                            "l :${
+                                                l
+                                            }"
+                                        )
+                                        // if (listEventos.contains(l)) {
+                                        var tipo = dataSnapshot.child("Tipo").toString()
 
                                         if (tipo == filtro || filtro == "tudo") {
 
@@ -268,33 +341,52 @@ class HomeActivity : AppCompatActivity() {
                                                 Calendar.getInstance().get(Calendar.MONTH) + 1
                                             val diaAtual =
                                                 Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
-                                            val ano = evento.get("anoFim").toString().toInt()
-                                            val mes = evento.get("mesFim").toString().toInt()
-                                            val dia = evento.get("diaFim").toString().toInt()
+                                            val ano =
+                                                dataSnapshot.child("anoFim").toString().toInt()
+                                            val mes =
+                                                dataSnapshot.child("mesFim").getValue().toString()
+                                                    .toInt()
+                                            val dia =
+                                                dataSnapshot.child("diaFim").getValue().toString()
+                                                    .toInt()
 
 
                                             // PROBLEMA NA VERIFICAÇAO DO DIA
                                             if (anoAtual < ano) {
-                                                val f = evento.get("Forma").toString()
+                                                val f =
+                                                    dataSnapshot.child("Forma").getValue()
+                                                        .toString()
                                                 if (f == "privado") {
-                                                    values.add(evento.get("nome").toString())
+                                                    values.add(
+                                                        dataSnapshot.child("nome").getValue()
+                                                            .toString()
+                                                    )
 
                                                 }
 
                                             } else if (anoAtual == ano) {
                                                 if (mesAtual < mes) {
-                                                    val f = evento.get("Forma").toString()
+                                                    val f =
+                                                        dataSnapshot.child("Forma").getValue()
+                                                            .toString()
                                                     if (f == "privado") {
-                                                        values.add(evento.get("nome").toString())
+                                                        values.add(
+                                                            dataSnapshot.child("nome").getValue()
+                                                                .toString()
+                                                        )
 
                                                     }
                                                 } else if (mesAtual == mes) {
                                                     if (diaAtual <= dia) {
 
-                                                        val f = evento.get("Forma").toString()
+                                                        val f =
+                                                            dataSnapshot.child("Forma").getValue()
+                                                                .toString()
                                                         if (f == "privado") {
                                                             values.add(
-                                                                evento.get("nome").toString()
+                                                                dataSnapshot.child("nome")
+                                                                    .getValue()
+                                                                    .toString()
                                                             )
 
                                                         }
@@ -304,60 +396,71 @@ class HomeActivity : AppCompatActivity() {
                                             }
 
                                         }
-                                    }
-                                }
-                                Log.d("home9", "$values")
+                                        //}
+
+                                        Log.d("home9", "$values")
 
 
-                                val adapter = ArrayAdapter(this, R.layout.listview_item, values)
+                                        val adapter =
+                                            ArrayAdapter(
+                                                this@HomeActivity,
+                                                R.layout.listview_item,
+                                                values
+                                            )
 
-                                lista.adapter = adapter
-                                pesquisa.setOnQueryTextListener(object :
-                                    SearchView.OnQueryTextListener {
-                                    override fun onQueryTextSubmit(query: String): Boolean {
+                                        lista.adapter = adapter
+                                        pesquisa.setOnQueryTextListener(object :
+                                            SearchView.OnQueryTextListener {
+                                            override fun onQueryTextSubmit(query: String): Boolean {
 
-                                        return false
-                                    }
-
-                                    override fun onQueryTextChange(newText: String): Boolean {
-
-                                        adapter.filter.filter(newText)
-                                        return false
-                                    }
-                                })
-
-                                lista.onItemClickListener =
-                                    object : AdapterView.OnItemClickListener {
-
-
-                                        override fun onItemClick(
-                                            parent: AdapterView<*>,
-                                            view: View,
-                                            position: Int,
-                                            id: Long
-                                        ) {
-
-
-                                            val itemValue =
-                                                lista.getItemAtPosition(position) as String
-                                            Log.d("home44", "grupoID to search: $itemValue")
-                                            gv.detalhes = itemValue
-                                            val uid = Auth.currentUser?.uid
-                                            var eventoClick =
-                                                mAuth.collection("Eventos").document(itemValue)
-                                            eventoClick.get().addOnSuccessListener { result ->
-                                                if (result != null) {
-
-                                                    startActivity(
-                                                        Intent(
-                                                            view.context,
-                                                            DetalhesEventoActivity::class.java
-                                                        )
-                                                    )
-
-
-                                                }
+                                                return false
                                             }
+
+                                            override fun onQueryTextChange(newText: String): Boolean {
+
+                                                adapter.filter.filter(newText)
+                                                return false
+                                            }
+                                        })
+
+                                        lista.onItemClickListener =
+                                            object : AdapterView.OnItemClickListener {
+
+
+                                                override fun onItemClick(
+                                                    parent: AdapterView<*>,
+                                                    view: View,
+                                                    position: Int,
+                                                    id: Long
+                                                ) {
+
+
+                                                    val itemValue =
+                                                        lista.getItemAtPosition(position) as String
+                                                    Log.d("home44", "grupoID to search: $itemValue")
+                                                    gv.detalhes = itemValue
+                                                    val uid = Auth.currentUser?.uid
+                                                    var eventoClick =
+                                                        mAuth.getReference("Eventos")
+                                                            .child(itemValue)
+                                                    eventoClick.addValueEventListener(object :
+                                                        ValueEventListener {
+                                                        override fun onDataChange(snapshot: DataSnapshot) {
+
+                                                            startActivity(
+                                                                Intent(
+                                                                    view.context,
+                                                                    DetalhesEventoActivity::class.java
+                                                                )
+                                                            )
+
+
+                                                        }
+
+                                                        override fun onCancelled(error: DatabaseError) {
+                                                            TODO("Not yet implemented")
+                                                        }
+                                                    })
 
 
 //                                            Toast.makeText(
@@ -367,197 +470,174 @@ class HomeActivity : AppCompatActivity() {
 //                                            ).show()
 
 
-                                        }
+                                                }
 
+                                            }
                                     }
-                            }
-                            var x = 0
-                            for (evento in result) {
 
-                                x += 1
-                            }
-                            if (x > 0) {
-                                semEventos.isVisible = false
-                            } else {
+                                    override fun onChildChanged(
+                                        snapshot: DataSnapshot,
+                                        previousChildName: String?
+                                    ) {
+                                        startActivity(
+                                            Intent(
+                                                this@HomeActivity,
+                                                HomeActivity::class.java
+                                            )
+                                        )
+                                    }
 
-                                semEventos.isVisible = true
-                                Toast.makeText(
-                                    applicationContext,
-                                    "Sem eventos disponiveis", Toast.LENGTH_LONG
-                                ).show()
-                            }
+                                    override fun onChildRemoved(snapshot: DataSnapshot) {
+                                        TODO("Not yet implemented")
+                                    }
 
+                                    override fun onChildMoved(
+                                        snapshot: DataSnapshot,
+                                        previousChildName: String?
+                                    ) {
+                                        TODO("Not yet implemented")
+                                    }
+
+                                    override fun onCancelled(error: DatabaseError) {
+                                        TODO("Not yet implemented")
+                                    }
+
+//                            var x = 0
+//                            for (evento in result) {
+//
+//                                x += 1
+//                            }
+//                            if (x > 0) {
+//                                semEventos.isVisible = false
+//                            } else {
+//
+//                                semEventos.isVisible = true
+//                                Toast.makeText(
+//                                    applicationContext,
+//                                    "Sem eventos disponiveis", Toast.LENGTH_LONG
+//                                ).show()
+//                            }
+//
+//                        }
+                                }//apagar
+
+//
+//
+
+                                ListaEventosPrivat.addChildEventListener(private)
+
+
+                                //fim
+
+
+                            }//
                         }
-                    }//apagar
 
-//
-//
-//
+                        override fun onChildChanged(
+                            snapshot: DataSnapshot,
+                            previousChildName: String?
+                        ) {
+                            TODO("Not yet implemented")
+                        }
 
+                        override fun onChildRemoved(snapshot: DataSnapshot) {
+                            TODO("Not yet implemented")
+                        }
 
-                }
+                        override fun onChildMoved(
+                            snapshot: DataSnapshot,
+                            previousChildName: String?
+                        ) {
+                            TODO("Not yet implemented")
+                        }
 
-                //fim
-
+                        override fun onCancelled(error: DatabaseError) {
+                            TODO("Not yet implemented")
+                        }
+                    }
+                t.addChildEventListener(f)
 
             }
+
+            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onChildRemoved(snapshot: DataSnapshot) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+
         }
-    }
+        gruposMemmbros.addChildEventListener(gm)
 
 
-    // filtros de pesquisa
+        // filtros de pesquisa
 
-    /* val checkedTiposArray = booleanArrayOf(false, false, false, false, false)
-     private fun showFiltros() {
- //        val inflater = layoutInflater
- //        val inflate_view = inflater.inflate(R.layout.filtros_custom_view, null)
-
-
-         val uid = Auth.currentUser?.uid
-         val semEventos = NaoEventos
-         val lista = ListView4
-         val tipos = arrayOf("Montaria", "Espera", "Tordos", "Rolas", "Dias Caça")
+        /* val checkedTiposArray = booleanArrayOf(false, false, false, false, false)
+         private fun showFiltros() {
+     //        val inflater = layoutInflater
+     //        val inflate_view = inflater.inflate(R.layout.filtros_custom_view, null)
 
 
-
- //        val diainflate = inflate_view.edDia
- //        val mesinflate = inflate_view.edMes
- //        val anoinflate = inflate_view.edAno
- //
- //        val dia = diainflate.text.toString()
- //        val mes = mesinflate.text.toString()
- //        val ano = anoinflate.text.toString()
+             val uid = Auth.currentUser?.uid
+             val semEventos = NaoEventos
+             val lista = ListView4
+             val tipos = arrayOf("Montaria", "Espera", "Tordos", "Rolas", "Dias Caça")
 
 
-         val alertDialog = AlertDialog.Builder(this)
-         alertDialog.setTitle("Filtros por Tipo")
-         //alertDialog.setView(inflate_view)
-         alertDialog.setCancelable(false)
 
-         alertDialog.setNegativeButton("Limpar") { dialog, which ->
-             Toast.makeText(this, "Limpar", Toast.LENGTH_LONG).show()
-             eventos()
-
-         }
-         alertDialog.setMultiChoiceItems(tipos, checkedTiposArray) { dialog, which, isChecked ->
-             checkedTiposArray[which] = isChecked
-
-         }
+     //        val diainflate = inflate_view.edDia
+     //        val mesinflate = inflate_view.edMes
+     //        val anoinflate = inflate_view.edAno
+     //
+     //        val dia = diainflate.text.toString()
+     //        val mes = mesinflate.text.toString()
+     //        val ano = anoinflate.text.toString()
 
 
-         alertDialog.setPositiveButton("Done") { dialog, which ->
-             var gruposMemmbros = mAuth.collection("Grupos")
-             gruposMemmbros.get().addOnSuccessListener { result ->
-                 if (result != null) {
-                     for (grupo in result) {
+             val alertDialog = AlertDialog.Builder(this)
+             alertDialog.setTitle("Filtros por Tipo")
+             //alertDialog.setView(inflate_view)
+             alertDialog.setCancelable(false)
 
-                         var fazParte = grupo.get("membros") as List<String>
-                         if (fazParte.contains(uid)) {
+             alertDialog.setNegativeButton("Limpar") { dialog, which ->
+                 Toast.makeText(this, "Limpar", Toast.LENGTH_LONG).show()
+                 eventos()
 
-                             var ListaEventosPrivat = mAuth.collection("Eventos")
-                             ListaEventosPrivat.get().addOnSuccessListener { result ->
-                                 if (result != null) {
-                                     val values = ArrayList<String>()
+             }
+             alertDialog.setMultiChoiceItems(tipos, checkedTiposArray) { dialog, which, isChecked ->
+                 checkedTiposArray[which] = isChecked
 
-                                     for (evento in result) {
-                                         semEventos.isVisible = false
+             }
 
 
-                                         for (i in checkedTiposArray.indices) {
-                                             val checked = checkedTiposArray[i]
-                                             if (checked) {
-                                                 val x = tipos[i]
+             alertDialog.setPositiveButton("Done") { dialog, which ->
+                 var gruposMemmbros = mAuth.collection("Grupos")
+                 gruposMemmbros.get().addOnSuccessListener { result ->
+                     if (result != null) {
+                         for (grupo in result) {
 
-                                                 if (evento.get("Tipo").toString() == x) {
-                                                     Log.d("merda", x)
-                                                     values.add(evento.get("nome").toString())
-                                                 }
-                                             }
-                                         }
+                             var fazParte = grupo.get("membros") as List<String>
+                             if (fazParte.contains(uid)) {
 
-                                     }
-                                     Log.d("home", "$values")
+                                 var ListaEventosPrivat = mAuth.collection("Eventos")
+                                 ListaEventosPrivat.get().addOnSuccessListener { result ->
+                                     if (result != null) {
+                                         val values = ArrayList<String>()
 
-
-                                     val adapter = ArrayAdapter(this, R.layout.listview_item, values)
-
-                                     lista.adapter = adapter
+                                         for (evento in result) {
+                                             semEventos.isVisible = false
 
 
-                                     lista.onItemClickListener =
-                                         object : AdapterView.OnItemClickListener {
-
-
-                                             override fun onItemClick(
-                                                 parent: AdapterView<*>,
-                                                 view: View,
-                                                 position: Int,
-                                                 id: Long
-                                             ) {
-
-
-                                                 val itemValue =
-                                                     lista.getItemAtPosition(position) as String
-                                                 Log.d("home", "grupoID to search: $itemValue")
-                                                 gv.detalhes = itemValue
-                                                 val uid = Auth.currentUser?.uid
-                                                 var eventoClick =
-                                                     mAuth.collection("Eventos").document(itemValue)
-                                                 eventoClick.get().addOnSuccessListener { result ->
-                                                     if (result != null) {
-
-                                                         startActivity(
-                                                             Intent(
-                                                                 view.context,
-                                                                 DetalhesEventoActivity::class.java
-                                                             )
-                                                         )
-
-
-                                                     }
-                                                 }
-
-
- //                                            Toast.makeText(
- //                                                applicationContext,
- //                                                "Position :$position\nItem Value : $itemValue",
- //                                                Toast.LENGTH_LONG
- //                                            ).show()
-
-
-                                             }
-
-                                         }
-                                 }
-                                 var x = 0
-                                 for (evento in result) {
-
-                                     x += 1
-                                 }
-                                 if (x > 0) {
-                                     semEventos.isVisible = false
-                                 } else {
-
-                                     semEventos.isVisible = true
-                                     Toast.makeText(
-                                         applicationContext,
-                                         "Sem eventos disponiveis", Toast.LENGTH_LONG
-                                     ).show()
-                                 }
-
-                             }
-
-                         } else {
-                             var ListaEventosPublic = mAuth.collection("Eventos")
-                             ListaEventosPublic.get().addOnSuccessListener { result ->
-                                 if (result != null) {
-                                     val values = ArrayList<String>()
-
-                                     for (evento in result) {
-                                         semEventos.isVisible = false
-
-                                         val f = evento.get("Forma")
-                                         if (f == "publico") {
                                              for (i in checkedTiposArray.indices) {
                                                  val checked = checkedTiposArray[i]
                                                  if (checked) {
@@ -571,65 +651,161 @@ class HomeActivity : AppCompatActivity() {
                                              }
 
                                          }
-
-                                     }
-                                     Log.d("home44", "$values")
-                                     val adapter = ArrayAdapter(this, R.layout.listview_item, values)
-
-                                     lista.adapter = adapter
-                                     lista.onItemClickListener =
-                                         object : AdapterView.OnItemClickListener {
+                                         Log.d("home", "$values")
 
 
-                                             override fun onItemClick(
-                                                 parent: AdapterView<*>,
-                                                 view: View,
-                                                 position: Int,
-                                                 id: Long
-                                             ) {
+                                         val adapter = ArrayAdapter(this, R.layout.listview_item, values)
+
+                                         lista.adapter = adapter
 
 
-                                                 val itemValue =
-                                                     lista.getItemAtPosition(position) as String
-                                                 Log.d("home", "grupoID to search: $itemValue")
-                                                 gv.detalhes = itemValue
-                                                 val uid = Auth.currentUser?.uid
-                                                 var eventoclick2 =
-                                                     mAuth.collection("Eventos").document(itemValue)
-                                                 eventoclick2.get().addOnSuccessListener { result ->
-                                                     if (result != null) {
+                                         lista.onItemClickListener =
+                                             object : AdapterView.OnItemClickListener {
 
-                                                         startActivity(
-                                                             Intent(
-                                                                 view.context,
-                                                                 DetalhesEventoActivity::class.java
+
+                                                 override fun onItemClick(
+                                                     parent: AdapterView<*>,
+                                                     view: View,
+                                                     position: Int,
+                                                     id: Long
+                                                 ) {
+
+
+                                                     val itemValue =
+                                                         lista.getItemAtPosition(position) as String
+                                                     Log.d("home", "grupoID to search: $itemValue")
+                                                     gv.detalhes = itemValue
+                                                     val uid = Auth.currentUser?.uid
+                                                     var eventoClick =
+                                                         mAuth.collection("Eventos").document(itemValue)
+                                                     eventoClick.get().addOnSuccessListener { result ->
+                                                         if (result != null) {
+
+                                                             startActivity(
+                                                                 Intent(
+                                                                     view.context,
+                                                                     DetalhesEventoActivity::class.java
+                                                                 )
                                                              )
-                                                         )
 
 
+                                                         }
+                                                     }
+
+
+     //                                            Toast.makeText(
+     //                                                applicationContext,
+     //                                                "Position :$position\nItem Value : $itemValue",
+     //                                                Toast.LENGTH_LONG
+     //                                            ).show()
+
+
+                                                 }
+
+                                             }
+                                     }
+                                     var x = 0
+                                     for (evento in result) {
+
+                                         x += 1
+                                     }
+                                     if (x > 0) {
+                                         semEventos.isVisible = false
+                                     } else {
+
+                                         semEventos.isVisible = true
+                                         Toast.makeText(
+                                             applicationContext,
+                                             "Sem eventos disponiveis", Toast.LENGTH_LONG
+                                         ).show()
+                                     }
+
+                                 }
+
+                             } else {
+                                 var ListaEventosPublic = mAuth.collection("Eventos")
+                                 ListaEventosPublic.get().addOnSuccessListener { result ->
+                                     if (result != null) {
+                                         val values = ArrayList<String>()
+
+                                         for (evento in result) {
+                                             semEventos.isVisible = false
+
+                                             val f = evento.get("Forma")
+                                             if (f == "publico") {
+                                                 for (i in checkedTiposArray.indices) {
+                                                     val checked = checkedTiposArray[i]
+                                                     if (checked) {
+                                                         val x = tipos[i]
+
+                                                         if (evento.get("Tipo").toString() == x) {
+                                                             Log.d("merda", x)
+                                                             values.add(evento.get("nome").toString())
+                                                         }
                                                      }
                                                  }
 
                                              }
 
                                          }
+                                         Log.d("home44", "$values")
+                                         val adapter = ArrayAdapter(this, R.layout.listview_item, values)
 
+                                         lista.adapter = adapter
+                                         lista.onItemClickListener =
+                                             object : AdapterView.OnItemClickListener {
+
+
+                                                 override fun onItemClick(
+                                                     parent: AdapterView<*>,
+                                                     view: View,
+                                                     position: Int,
+                                                     id: Long
+                                                 ) {
+
+
+                                                     val itemValue =
+                                                         lista.getItemAtPosition(position) as String
+                                                     Log.d("home", "grupoID to search: $itemValue")
+                                                     gv.detalhes = itemValue
+                                                     val uid = Auth.currentUser?.uid
+                                                     var eventoclick2 =
+                                                         mAuth.collection("Eventos").document(itemValue)
+                                                     eventoclick2.get().addOnSuccessListener { result ->
+                                                         if (result != null) {
+
+                                                             startActivity(
+                                                                 Intent(
+                                                                     view.context,
+                                                                     DetalhesEventoActivity::class.java
+                                                                 )
+                                                             )
+
+
+                                                         }
+                                                     }
+
+                                                 }
+
+                                             }
+
+                                     }
                                  }
                              }
                          }
                      }
                  }
+
+
              }
 
 
-         }
+             val dialog = alertDialog.create()
+             dialog.show()
 
+         }*/
 
-         val dialog = alertDialog.create()
-         dialog.show()
-
-     }*/
-
+    }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
@@ -673,4 +849,5 @@ class HomeActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 }
+
 

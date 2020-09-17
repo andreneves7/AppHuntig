@@ -8,6 +8,10 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_adesao.*
@@ -16,7 +20,7 @@ import kotlinx.android.synthetic.main.activity_adesao.*
 class AdesaoActivity : AppCompatActivity() {
 
     val Auth = FirebaseAuth.getInstance()
-    val mAuth = FirebaseFirestore.getInstance()
+    val mAuth = FirebaseDatabase.getInstance()
     lateinit var gv: VariaveisGlobais
 
 
@@ -33,24 +37,26 @@ class AdesaoActivity : AppCompatActivity() {
         val message = intent.getStringExtra(EXTRA_MESSAGE)
 
         if (user != null) {
-            val mail = mAuth.collection("Grupos").document(message)
-            mail.get().addOnSuccessListener { document ->
-                if (document != null) {
+            val mail = mAuth.getReference("Grupos").child(message)
+            mail.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
 
-                    val name = document.data?.get("nome")
-                    val numero = document.data?.get("Numero")
+                    val name = dataSnapshot.child("nome").getValue().toString()
+                    val numero = dataSnapshot.child("Numero").getValue().toString()
 
 
 
                     texto.text = "nome: " + name + "\n"+ "numero de associativa:" + numero
 
                     Log.d(
-                        "adesao", "DocumentSnapshot data: ${document.data?.get("nome")} }"
+                        "adesao", "DocumentSnapshot data: ${name} }"
                     )
-                } else {
+                }
+
+                override fun onCancelled(error: DatabaseError) {
                     Log.d("adesao", "No such document")
                 }
-            }
+            })
         }
 
         botao.setOnClickListener {
@@ -68,19 +74,19 @@ class AdesaoActivity : AppCompatActivity() {
         val codigo = cod.text.toString()
         val message = intent.getStringExtra(EXTRA_MESSAGE)
 
-        val c = mAuth.collection("Grupos").document(message)
-        c.get().addOnSuccessListener { document ->
-            if (document != null) {
+        val c = mAuth.getReference("Grupos").child(message)
+        c.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
 
                     val use = Auth.currentUser
                 val socio: MutableMap<String, Any> = HashMap()
                 socio["numero socio"] = codigo
 
-                    mAuth.collection("Grupos").document(message).collection("Pendentes")
-                        .document(use!!.uid).set(socio)
+                    c.child("Pendentes")
+                        .child(use!!.uid).setValue(socio)
 
 
-                    val intent = Intent(this, FiltrosActivity::class.java)
+                    val intent = Intent(this@AdesaoActivity, FiltrosActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
                     startActivity(intent)
 
@@ -90,8 +96,12 @@ class AdesaoActivity : AppCompatActivity() {
 
             }
 
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
 
-        }
+
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
