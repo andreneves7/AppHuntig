@@ -3,6 +3,7 @@ package com.example.app
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.AlarmClock
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -46,11 +47,15 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
 
-        //desativar()
+        desativar()
 
         marcar.setOnClickListener {
             marcarPresença()
-            startActivity(Intent(this, FiltrosActivity::class.java))
+            val marca = 1
+            val intent = Intent(this, FiltrosActivity::class.java).apply {
+                putExtra(AlarmClock.EXTRA_MESSAGE, marca)
+            }
+            startActivity(intent)
         }
 
         val user = Auth.currentUser
@@ -120,80 +125,77 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap.addMarker(markerOptions)
     }
 
-//    fun desativar() {
-//
-//        val marcar = bPresença
-//
-//        val user = Auth.currentUser
-//        if (user != null) {
-//            val mail = mAuth.getReference("Eventos").child(gv.detalhes)
-//            Log.d(
-//                "detalhes", "detalhe: ${gv.detalhes}"
-//            )
-//            val m = object : ChildEventListener {
-//                override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
-//
-//                    var pre = dataSnapshot.child("Presenças").getValue() as List<String>
-//                    Log.d(
-//                        "detalhes", "detalhe: $pre"
-//                    )
-//
-//                    val buscarNome = mAuth.getReference("Users").child(user.uid)
-//                    buscarNome.addListenerForSingleValueEvent(object : ValueEventListener {
-//                        override fun onDataChange(dataSnapshot: DataSnapshot) {
-//
-//                            val nameUser = dataSnapshot.child("nome").getValue()
-//
-//                            if (pre.contains(nameUser)) {
-//
-//                                marcar.isVisible = false
-//                                Log.d(
-//                                    "detalhes", "detalhe: $pre" +
-//                                            "ffff: $nameUser" + "\n" + "false"
-//                                )
-//                            } else {
-//
-//                                marcar.isVisible = true
-//                                Log.d(
-//                                    "detalhes", "detalhe: $pre" +
-//                                            "ffff: $nameUser" + "\n" + "true"
-//                                )
-//                            }
+    fun desativar() {
+
+        val marcar = bPresença
+        val uid = Auth.currentUser?.uid
+        var fazParte = ArrayList<String>()
+
+        val user = Auth.currentUser
+        if (user != null) {
+            val mail = mAuth.getReference("Eventos").child(gv.detalhes).child("Presenças")
+            Log.d(
+                "detalhes", "detalhe: ${gv.detalhes}"
+            )
+            val m = object : ChildEventListener {
+                override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
+
+                    var pre = dataSnapshot.getValue().toString()
+                    Log.d(
+                        "detalhes", "detalhe: $pre"
+                    )
+
+                    fazParte.add(pre)
+
+
+
+
+
+                            if (fazParte.contains(uid)) {
+
+                                marcar.isVisible = false
+                                Log.d(
+                                    "detalhes", "detalhe: $pre" +
+                                            "ffff: $uid" + "\n" + "false"
+                                )
+                            } else {
+
+                                marcar.isVisible = true
+                                Log.d(
+                                    "detalhes", "detalhe: $pre" +
+                                            "ffff: $uid" + "\n" + "true"
+                                )
+                            }
 //                            Log.d(
 //                                "evento", "DocumentSnapshot data: ${dataSnapshot.child("admin").getValue()} "
 //                            )
-//                        }
-//
-//                        override fun onCancelled(error: DatabaseError) {
-//                            TODO("Not yet implemented")
-//                        }
-//                    })
-//
-//
-//                }
-//
-//                override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-//                    startActivity(Intent(this@DetalhesEventoActivity, HomeActivity::class.java))
-//                }
-//
-//                override fun onChildRemoved(snapshot: DataSnapshot) {
-//                    TODO("Not yet implemented")
-//                }
-//
-//                override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
-//                    TODO("Not yet implemented")
-//                }
-//
-//                override fun onCancelled(error: DatabaseError) {
-//                    TODO("Not yet implemented")
-//                }
-//
-//
-//            }
-//            mail.addChildEventListener(m)
-//        }
-//
-//    }
+
+
+
+                }
+
+                override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+                    startActivity(Intent(this@DetalhesEventoActivity,DetalhesEventoActivity::class.java))
+                }
+
+                override fun onChildRemoved(snapshot: DataSnapshot) {
+                    startActivity(Intent(this@DetalhesEventoActivity, FiltrosActivity::class.java))
+                }
+
+                override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+
+
+            }
+            mail.addChildEventListener(m)
+        }
+
+    }
 
 
     fun marcarPresença() {
@@ -215,7 +217,7 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback {
                             update["Presenças"] = arrayListOf(user.uid)
 
                             mAuth.getReference("Eventos").child(gv.detalhes)
-                                .setValue(update)
+                                .updateChildren(update)
 
                             Log.d(
                                 "evento", "DocumentSnapshot data: ${dataSnapshot.child("admin").getValue()} "
@@ -225,11 +227,11 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback {
 
                         override fun onCancelled(error: DatabaseError) {
                             TODO("Not yet implemented")
-                        }
-                    })
-
-
                 }
+            })
+
+
+        }
 
                 override fun onCancelled(error: DatabaseError) {
                     TODO("Not yet implemented")

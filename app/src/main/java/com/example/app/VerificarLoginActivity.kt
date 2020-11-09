@@ -6,6 +6,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import org.jetbrains.anko.startActivity
 import android.content.Intent
+import android.provider.AlarmClock
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -39,7 +40,13 @@ class VerificarLoginActivity : AppCompatActivity() {
 
                     if (org == false) {
 
-                        startActivity<FiltrosActivity>()
+                        val marca = 0
+                        val intent = Intent(this@VerificarLoginActivity, FiltrosActivity::class.java).apply {
+                            putExtra(AlarmClock.EXTRA_MESSAGE, marca)
+                        }
+                        startActivity(intent)
+
+
                     } else {
                         startActivity<OrgActivity>()
                     }

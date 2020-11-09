@@ -2,6 +2,7 @@ package com.example.app
 
 import android.content.Intent
 import android.os.Bundle
+import android.provider.AlarmClock
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -180,11 +181,15 @@ class LoginActivity : AppCompatActivity() {
 //                                                    ver.updateChildren(p)
                                                     } else {
 
+                                                        val marca = 0
+
                                                         val intent =
                                                             Intent(
                                                                 this@LoginActivity,
                                                                 FiltrosActivity::class.java
-                                                            )
+                                                            ).apply {
+                                                                putExtra(AlarmClock.EXTRA_MESSAGE, marca)
+                                                            }
                                                         intent.flags =
                                                             Intent.FLAG_ACTIVITY_CLEAR_TASK.or(
                                                                 Intent.FLAG_ACTIVITY_NEW_TASK

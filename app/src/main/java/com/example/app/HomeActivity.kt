@@ -86,7 +86,7 @@ class HomeActivity : AppCompatActivity() {
                     val dia = dataSnapshot.child("diaFim").getValue().toString().toInt()
 
 
-                    // PROBLEMA NA VERIFICAÇAO DO DIA
+
                     if (anoAtual < ano) {
 
                         val f = dataSnapshot.child("Forma").getValue().toString()
@@ -157,19 +157,7 @@ class HomeActivity : AppCompatActivity() {
 
                 lista.adapter = adapter
 
-                /*pesquisa.setOnQueryTextListener(object :
-                SearchView.OnQueryTextListener {
-                override fun onQueryTextSubmit(query: String): Boolean {
 
-                    return false
-                }
-
-                override fun onQueryTextChange(newText: String): Boolean {
-
-                    adapter.filter.filter(newText)
-                    return false
-                }
-            })*/
 
                 lista.onItemClickListener =
                     object : AdapterView.OnItemClickListener {
@@ -256,7 +244,12 @@ class HomeActivity : AppCompatActivity() {
         ListaEventosPublic.addChildEventListener(public)
 
         var gruposMemmbros = mAuth.getReference("Grupos")
-
+        Log.d(
+            "home75",
+            "gr : ${
+                gruposMemmbros
+            }"
+        )
 
         val teste = ArrayList<String>()
         val gm = object : ChildEventListener {
@@ -277,190 +270,250 @@ class HomeActivity : AppCompatActivity() {
 
                 teste.add(g)
 
+                Log.d(
+                    "home75",
+                    "teste: ${
+                        teste
+                    }"
+                )
 
-                var m = dataSnapshot.child(g).child("Eventos").getValue()
-
-
+                var m = mAuth.getReference("Grupos").child(g)
 
 
                 var t = mAuth.getReference("Grupos").child(g).child("membros")
 
-//                Log.d(
-//                    "home75",
-//                    "t : ${
-//                       t
-//                    }"
-//                )
+                Log.d(
+                    "home75",
+                    "m : ${
+                        m
+                    }"
+                )
 
-                    val f = object : ChildEventListener {
-                        override fun onChildAdded(
-                            dataSnapshot: DataSnapshot,
-                            previousChildName: String?
-                        ) {
-                            var j = dataSnapshot.child("uid").getValue().toString()
-
-
-                            var fazParte = ArrayList<String>()
-
-                            fazParte.add(j)
-
-                            Log.d(
-                                "home75",
-                                "f : ${
-                                    fazParte
-                                }"
-                            )
-
-                            if (fazParte.contains(uid)) {
+                val f = object : ChildEventListener {
+                    override fun onChildAdded(
+                        dataSnapshot: DataSnapshot,
+                        previousChildName: String?
+                    ) {
+                        var j = dataSnapshot.getValue().toString()
 
 
-                                val private = object : ChildEventListener {
-                                    override fun onChildAdded(
-                                        dataSnapshot: DataSnapshot,
-                                        previousChildName: String?
-                                    ) {
+                        Log.d(
+                            "home75",
+                            "j : ${
+                                j
+                            }"
+                        )
+
+                        var fazParte = ArrayList<String>()
+
+                        fazParte.add(j)
+
+                        Log.d(
+                            "home75",
+                            "f : ${
+                                fazParte
+                            }"
+                        )
+
+                        if (fazParte.contains(uid)) {
 
 
-                                        val l = dataSnapshot.child("nome").getValue()
+                            m.addValueEventListener(object : ValueEventListener {
+                                override fun onDataChange(snapshot: DataSnapshot) {
 
-                                        Log.d(
-                                            "home75",
-                                            "l :${
-                                                l
-                                            }"
-                                        )
-                                        // if (listEventos.contains(l)) {
-                                        var tipo = dataSnapshot.child("Tipo").toString()
 
-                                        if (tipo == filtro || filtro == "tudo") {
+                                    val n = snapshot.child("Numero").getValue().toString().toInt()
 
-                                            semEventos.isVisible = false
-                                            val anoAtual =
-                                                Calendar.getInstance().get(Calendar.YEAR)
-                                            val mesAtual =
-                                                Calendar.getInstance().get(Calendar.MONTH) + 1
-                                            val diaAtual =
-                                                Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+
+                                    val private = object : ChildEventListener {
+                                        override fun onChildAdded(
+                                            dataSnapshot: DataSnapshot,
+                                            previousChildName: String?
+                                        ) {
+
+
+                                            val l = dataSnapshot.child("numeroGrupo").getValue()
+                                                .toString().toInt()
+
+                                            Log.d(
+                                                "home75",
+                                                "l :${
+                                                    l
+                                                }"
+                                            )
+
                                             val ano =
-                                                dataSnapshot.child("anoFim").toString().toInt()
+                                                dataSnapshot.child("anoFim").getValue().toString()
+                                                    .toInt()
                                             val mes =
                                                 dataSnapshot.child("mesFim").getValue().toString()
                                                     .toInt()
                                             val dia =
                                                 dataSnapshot.child("diaFim").getValue().toString()
                                                     .toInt()
+                                            var tipo =
+                                                dataSnapshot.child("Tipo").getValue().toString()
+
+                                            val f =
+                                                dataSnapshot.child("Forma").getValue()
+                                                    .toString()
 
 
-                                            // PROBLEMA NA VERIFICAÇAO DO DIA
-                                            if (anoAtual < ano) {
-                                                val f =
-                                                    dataSnapshot.child("Forma").getValue()
-                                                        .toString()
-                                                if (f == "privado") {
-                                                    values.add(
-                                                        dataSnapshot.child("nome").getValue()
-                                                            .toString()
-                                                    )
+                                            val nome = dataSnapshot.child("nome").getValue()
+                                                .toString()
 
-                                                }
 
-                                            } else if (anoAtual == ano) {
-                                                if (mesAtual < mes) {
-                                                    val f =
-                                                        dataSnapshot.child("Forma").getValue()
-                                                            .toString()
-                                                    if (f == "privado") {
-                                                        values.add(
-                                                            dataSnapshot.child("nome").getValue()
-                                                                .toString()
-                                                        )
+//                                            val fodasse = m.child(n)
 
-                                                    }
-                                                } else if (mesAtual == mes) {
-                                                    if (diaAtual <= dia) {
 
-                                                        val f =
-                                                            dataSnapshot.child("Forma").getValue()
-                                                                .toString()
+                                            if (n == l) {
+
+                                                Log.d(
+                                                    "home75",
+                                                    "n :${
+                                                        n
+                                                    }"
+                                                )
+
+
+
+                                                if (tipo == filtro || filtro == "tudo") {
+
+
+
+                                                    semEventos.isVisible = false
+                                                    val anoAtual =
+                                                        Calendar.getInstance().get(Calendar.YEAR)
+                                                    val mesAtual =
+                                                        Calendar.getInstance()
+                                                            .get(Calendar.MONTH) + 1
+                                                    val diaAtual =
+                                                        Calendar.getInstance()
+                                                            .get(Calendar.DAY_OF_MONTH)
+
+
+                                                    // PROBLEMA NA VERIFICAÇAO DO DIA
+                                                    if (anoAtual < ano) {
+
                                                         if (f == "privado") {
                                                             values.add(
-                                                                dataSnapshot.child("nome")
-                                                                    .getValue()
-                                                                    .toString()
+                                                                nome
                                                             )
 
                                                         }
+
+                                                    } else if (anoAtual == ano) {
+                                                        if (mesAtual < mes) {
+//                                                    val f =
+//                                                        dataSnapshot.child("Forma").getValue()
+//                                                            .toString()
+                                                            if (f == "privado") {
+                                                                values.add(
+                                                                    nome
+                                                                )
+
+                                                            }
+                                                        } else if (mesAtual == mes) {
+                                                            if (diaAtual <= dia) {
+
+//                                                        val f =
+//                                                            dataSnapshot.child("Forma").getValue()
+//                                                                .toString()
+                                                                if (f == "privado") {
+                                                                    Log.d(
+                                                                        "home75",
+                                                                        "nome :${
+                                                                            nome
+                                                                        }"
+                                                                    )
+                                                                    values.add(
+                                                                        nome
+                                                                    )
+                                                                    Log.d(
+                                                                        "home75",
+                                                                        "v :${
+                                                                            values
+                                                                        }"
+                                                                    )
+
+                                                                }
+                                                            }
+                                                        }
+
                                                     }
+
                                                 }
 
-                                            }
 
-                                        }
-                                        //}
-
-                                        Log.d("home9", "$values")
+                                            }//
 
 
-                                        val adapter =
-                                            ArrayAdapter(
-                                                this@HomeActivity,
-                                                R.layout.listview_item,
-                                                values
-                                            )
-
-                                        lista.adapter = adapter
-                                        pesquisa.setOnQueryTextListener(object :
-                                            SearchView.OnQueryTextListener {
-                                            override fun onQueryTextSubmit(query: String): Boolean {
-
-                                                return false
-                                            }
-
-                                            override fun onQueryTextChange(newText: String): Boolean {
-
-                                                adapter.filter.filter(newText)
-                                                return false
-                                            }
-                                        })
-
-                                        lista.onItemClickListener =
-                                            object : AdapterView.OnItemClickListener {
+                                            Log.d("home75", "$values")
 
 
-                                                override fun onItemClick(
-                                                    parent: AdapterView<*>,
-                                                    view: View,
-                                                    position: Int,
-                                                    id: Long
-                                                ) {
+                                            val adapter =
+                                                ArrayAdapter(
+                                                    this@HomeActivity,
+                                                    R.layout.listview_item,
+                                                    values
+                                                )
+
+                                            lista.adapter = adapter
+                                            pesquisa.setOnQueryTextListener(object :
+                                                SearchView.OnQueryTextListener {
+                                                override fun onQueryTextSubmit(query: String): Boolean {
+
+                                                    return false
+                                                }
+
+                                                override fun onQueryTextChange(newText: String): Boolean {
+
+                                                    adapter.filter.filter(newText)
+                                                    return false
+                                                }
+                                            })
+
+                                            lista.onItemClickListener =
+                                                object : AdapterView.OnItemClickListener {
 
 
-                                                    val itemValue =
-                                                        lista.getItemAtPosition(position) as String
-                                                    Log.d("home44", "grupoID to search: $itemValue")
-                                                    gv.detalhes = itemValue
-                                                    val uid = Auth.currentUser?.uid
-                                                    var eventoClick =
-                                                        mAuth.getReference("Eventos")
-                                                            .child(itemValue)
-                                                    eventoClick.addValueEventListener(object :
-                                                        ValueEventListener {
-                                                        override fun onDataChange(snapshot: DataSnapshot) {
+                                                    override fun onItemClick(
+                                                        parent: AdapterView<*>,
+                                                        view: View,
+                                                        position: Int,
+                                                        id: Long
+                                                    ) {
 
-                                                            startActivity(
-                                                                Intent(
-                                                                    view.context,
-                                                                    DetalhesEventoActivity::class.java
+
+                                                        val itemValue =
+                                                            lista.getItemAtPosition(position) as String
+                                                        Log.d(
+                                                            "home44",
+                                                            "grupoID to search: $itemValue"
+                                                        )
+                                                        gv.detalhes = itemValue
+                                                        val uid = Auth.currentUser?.uid
+                                                        var eventoClick =
+                                                            mAuth.getReference("Eventos")
+                                                                .child(itemValue)
+                                                        eventoClick.addValueEventListener(object :
+                                                            ValueEventListener {
+                                                            override fun onDataChange(snapshot: DataSnapshot) {
+
+                                                                startActivity(
+                                                                    Intent(
+                                                                        view.context,
+                                                                        DetalhesEventoActivity::class.java
+                                                                    )
                                                                 )
-                                                            )
 
 
-                                                        }
+                                                            }
 
-                                                        override fun onCancelled(error: DatabaseError) {
-                                                            TODO("Not yet implemented")
-                                                        }
-                                                    })
+                                                            override fun onCancelled(error: DatabaseError) {
+                                                                TODO("Not yet implemented")
+                                                            }
+                                                        })
 
 
 //                                            Toast.makeText(
@@ -470,37 +523,39 @@ class HomeActivity : AppCompatActivity() {
 //                                            ).show()
 
 
+                                                    }
+
                                                 }
 
-                                            }
-                                    }
 
-                                    override fun onChildChanged(
-                                        snapshot: DataSnapshot,
-                                        previousChildName: String?
-                                    ) {
-                                        startActivity(
-                                            Intent(
-                                                this@HomeActivity,
-                                                HomeActivity::class.java
+                                        }
+
+                                        override fun onChildChanged(
+                                            snapshot: DataSnapshot,
+                                            previousChildName: String?
+                                        ) {
+                                            startActivity(
+                                                Intent(
+                                                    this@HomeActivity,
+                                                    HomeActivity::class.java
+                                                )
                                             )
-                                        )
-                                    }
+                                        }
 
-                                    override fun onChildRemoved(snapshot: DataSnapshot) {
-                                        TODO("Not yet implemented")
-                                    }
+                                        override fun onChildRemoved(snapshot: DataSnapshot) {
+                                            TODO("Not yet implemented")
+                                        }
 
-                                    override fun onChildMoved(
-                                        snapshot: DataSnapshot,
-                                        previousChildName: String?
-                                    ) {
-                                        TODO("Not yet implemented")
-                                    }
+                                        override fun onChildMoved(
+                                            snapshot: DataSnapshot,
+                                            previousChildName: String?
+                                        ) {
+                                            TODO("Not yet implemented")
+                                        }
 
-                                    override fun onCancelled(error: DatabaseError) {
-                                        TODO("Not yet implemented")
-                                    }
+                                        override fun onCancelled(error: DatabaseError) {
+                                            TODO("Not yet implemented")
+                                        }
 
 //                            var x = 0
 //                            for (evento in result) {
@@ -519,48 +574,54 @@ class HomeActivity : AppCompatActivity() {
 //                            }
 //
 //                        }
-                                }//apagar
-
+                                    }
 //
 //
 
-                                ListaEventosPrivat.addChildEventListener(private)
+                                    ListaEventosPrivat.addChildEventListener(private)
+
+                                }
+
+                                override fun onCancelled(error: DatabaseError) {
+                                    TODO("Not yet implemented")
+                                }
 
 
-                                //fim
+
+                            })
 
 
-                            }//
-                        }
-
-                        override fun onChildChanged(
-                            snapshot: DataSnapshot,
-                            previousChildName: String?
-                        ) {
-                            TODO("Not yet implemented")
-                        }
-
-                        override fun onChildRemoved(snapshot: DataSnapshot) {
-                            TODO("Not yet implemented")
-                        }
-
-                        override fun onChildMoved(
-                            snapshot: DataSnapshot,
-                            previousChildName: String?
-                        ) {
-                            TODO("Not yet implemented")
-                        }
-
-                        override fun onCancelled(error: DatabaseError) {
-                            TODO("Not yet implemented")
-                        }
+                        }//
                     }
+
+                    override fun onChildChanged(
+                        snapshot: DataSnapshot,
+                        previousChildName: String?
+                    ) {
+                        TODO("Not yet implemented")
+                    }
+
+                    override fun onChildRemoved(snapshot: DataSnapshot) {
+                        TODO("Not yet implemented")
+                    }
+
+                    override fun onChildMoved(
+                        snapshot: DataSnapshot,
+                        previousChildName: String?
+                    ) {
+                        TODO("Not yet implemented")
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
+                }
                 t.addChildEventListener(f)
 
             }
 
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-                TODO("Not yet implemented")
+                startActivity(Intent(this@HomeActivity, HomeActivity::class.java))
             }
 
             override fun onChildRemoved(snapshot: DataSnapshot) {
@@ -835,7 +896,7 @@ class HomeActivity : AppCompatActivity() {
 
         if (item.itemId == R.id.grupo) {
 
-            startActivity(Intent(this, CriarGrupoActivity::class.java))
+            startActivity(Intent(this, VerGrupoActivity::class.java))
         }
 
 
@@ -849,5 +910,3 @@ class HomeActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 }
-
-

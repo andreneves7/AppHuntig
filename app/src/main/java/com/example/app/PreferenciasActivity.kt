@@ -29,12 +29,30 @@ class PreferenciasActivity : AppCompatActivity() {
         setContentView(R.layout.activity_preferencias)
 
         val pular = bPular
+        val change = Auth.currentUser?.uid.toString()
 
         pular.setOnClickListener {
             val intent = Intent(this, FiltrosActivity::class.java)
-            intent.flags =
-                Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-            startActivity(intent)
+
+            val first = mAuth.getReference("Users").child(change)
+                first.addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+
+                        val pessoa = HashMap<String, Any>()
+                        pessoa["FirstTime"] = false
+                        mAuth.getReference("Users").child(change).updateChildren(pessoa)
+
+                        intent.flags =
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+                        startActivity(intent)
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
+                })
+
         }
 
 

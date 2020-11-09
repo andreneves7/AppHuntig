@@ -57,7 +57,7 @@ class VerGrupoActivity : AppCompatActivity() {
 
 
 
-                    val ref = document.data!!.get("grupo") as List<String>
+                    val ref = document.data!!.get("grupo") as ArrayList<String>
                     Log.d(
                         "VerGrupo",
                         " ref $ref"
