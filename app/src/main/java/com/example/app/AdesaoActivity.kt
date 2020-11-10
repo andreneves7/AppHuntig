@@ -46,7 +46,7 @@ class AdesaoActivity : AppCompatActivity() {
 
 
 
-                    texto.text = "nome: " + name + "\n"+ "numero de associativa:" + numero
+                    texto.text = "nome: $name\nnumero de associativa:$numero"
 
                     Log.d(
                         "adesao", "DocumentSnapshot data: ${name} }"
@@ -134,8 +134,11 @@ class AdesaoActivity : AppCompatActivity() {
         }
 
         if (item.itemId == R.id.home) {
-
-            startActivity(Intent(this, FiltrosActivity::class.java))
+            val marca = 0
+            val intent = Intent(this, FiltrosActivity::class.java).apply {
+                putExtra(EXTRA_MESSAGE, marca)
+            }
+            startActivity(intent)
         }
 
 

@@ -29,17 +29,18 @@ class ListaGruposActivity : AppCompatActivity() {
         setContentView(R.layout.activity_lista_grupos)
         listView = findViewById(R.id.listViewLista)
 
-        var d = mAuth.collection("Grupos")
+        val d = mAuth.collection("Grupos")
         d.get().addOnSuccessListener { result ->
             if (result != null) {
 
 
-                var list = ArrayList<String>()
+                val list = ArrayList<String>()
 
                 for (grupo in result) {
 
                     list.add(
-                        "${grupo.get("nome").toString()}"
+                        "${grupo.get("nome")//.toString()
+                             }"
                     )
 
                 }
@@ -64,7 +65,7 @@ class ListaGruposActivity : AppCompatActivity() {
                             Log.d("Preferencias", "mensagem: $message" + "item: $itemValue ")
 
 
-                            var b = mAuth.collection("Grupos").document(itemValue)
+                            val b = mAuth.collection("Grupos").document(itemValue)
                             b.get().addOnSuccessListener { result ->
                                 if (result != null) {
                                     var p = result.data?.get("membros") as List<String>
@@ -144,8 +145,11 @@ class ListaGruposActivity : AppCompatActivity() {
 
 
         if (item.itemId == R.id.home) {
-
-            startActivity(Intent(this, FiltrosActivity::class.java))
+            val marca = 0
+            val intent = Intent(this, FiltrosActivity::class.java).apply {
+                putExtra(AlarmClock.EXTRA_MESSAGE, marca)
+            }
+            startActivity(intent)
         }
 
         return super.onOptionsItemSelected(item)

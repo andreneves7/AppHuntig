@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.AlarmClock
 import android.provider.MediaStore
 import android.text.method.PasswordTransformationMethod
 import android.util.Log
@@ -25,6 +26,7 @@ import kotlinx.android.synthetic.main.custom_view.view.*
 import kotlinx.android.synthetic.main.pass_custom_view.view.*
 import java.util.*
 
+@Suppress("DEPRECATION")
 class ProfileActivity : AppCompatActivity() {
 
     val Auth = FirebaseAuth.getInstance()
@@ -125,7 +127,7 @@ class ProfileActivity : AppCompatActivity() {
             mail.get().addOnSuccessListener { document ->
                 if (document != null) {
                     val nome = document.data?.get("name")
-                    show.text = "email: " + userEmail + "\n" + "name: " + nome
+                    show.text = "email: $userEmail\nname: $nome"
 
                     Log.d("Profile", "DocumentSnapshot data: ${document.data?.get("name")}")
                 } else {
@@ -395,8 +397,11 @@ class ProfileActivity : AppCompatActivity() {
         }
 
         if (item.itemId == R.id.home) {
-
-            startActivity(Intent(this, FiltrosActivity::class.java))
+            val marca = 0
+            val intent = Intent(this, FiltrosActivity::class.java).apply {
+                putExtra(AlarmClock.EXTRA_MESSAGE, marca)
+            }
+            startActivity(intent)
         }
 
         return super.onOptionsItemSelected(item)
@@ -415,7 +420,7 @@ class ProfileActivity : AppCompatActivity() {
                 Toast.makeText(
                     applicationContext,
                     android.R.string.yes, Toast.LENGTH_SHORT
-                )
+                ).show()
                 startActivity(Intent(this, LoginActivity::class.java))
             }
         }

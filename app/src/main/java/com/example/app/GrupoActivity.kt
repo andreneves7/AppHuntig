@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.AlarmClock
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -257,8 +258,11 @@ class GrupoActivity : AppCompatActivity() {
         }
 
         if (item.itemId == R.id.home) {
-
-            startActivity(Intent(this, FiltrosActivity::class.java))
+            val marca = 0
+            val intent = Intent(this, FiltrosActivity::class.java).apply {
+                putExtra(AlarmClock.EXTRA_MESSAGE, marca)
+            }
+            startActivity(intent)
         }
 
         return super.onOptionsItemSelected(item)

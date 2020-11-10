@@ -174,8 +174,11 @@ class FiltrosActivity : AppCompatActivity() {
 
 
         if (item.itemId == R.id.home) {
-
-            startActivity(Intent(this, FiltrosActivity::class.java))
+            val marca = 0
+            val intent = Intent(this, FiltrosActivity::class.java).apply {
+                putExtra(EXTRA_MESSAGE, marca)
+            }
+            startActivity(intent)
         }
 
         return super.onOptionsItemSelected(item)

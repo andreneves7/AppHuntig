@@ -2,6 +2,7 @@ package com.example.app
 
 import android.content.Intent
 import android.os.Bundle
+import android.provider.AlarmClock
 import android.provider.AlarmClock.EXTRA_MESSAGE
 import android.util.Log
 import android.view.Menu
@@ -62,15 +63,15 @@ class HomeActivity : AppCompatActivity() {
         val pesquisa = SearchEvento
         val filtro = intent.getStringExtra(EXTRA_MESSAGE)
         val values = ArrayList<String>()
-        var ListaEventosPrivat = mAuth.getReference("Eventos")
-        var ListaEventosPublic = mAuth.getReference("Eventos")
+        val ListaEventosPrivat = mAuth.getReference("Eventos")
+        val ListaEventosPublic = mAuth.getReference("Eventos")
 
 
         val public = object : ChildEventListener {
             override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
 
 
-                var tipo = dataSnapshot.child("Tipo").getValue().toString()
+                val tipo = dataSnapshot.child("Tipo").getValue().toString()
 
                 if (tipo == filtro || filtro == "tudo") {
 
@@ -175,8 +176,8 @@ class HomeActivity : AppCompatActivity() {
                                 lista.getItemAtPosition(position) as String
                             Log.d("home", "grupoID to search: $itemValue")
                             gv.detalhes = itemValue
-                            val uid = Auth.currentUser?.uid
-                            var eventoclick2 =
+//                            val uid = Auth.currentUser?.uid
+                            val eventoclick2 =
                                 mAuth.getReference("Eventos").child(itemValue)
                             eventoclick2.addValueEventListener(object : ValueEventListener {
                                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -243,7 +244,7 @@ class HomeActivity : AppCompatActivity() {
         }
         ListaEventosPublic.addChildEventListener(public)
 
-        var gruposMemmbros = mAuth.getReference("Grupos")
+        val gruposMemmbros = mAuth.getReference("Grupos")
         Log.d(
             "home75",
             "gr : ${
@@ -277,10 +278,10 @@ class HomeActivity : AppCompatActivity() {
                     }"
                 )
 
-                var m = mAuth.getReference("Grupos").child(g)
+                val m = mAuth.getReference("Grupos").child(g)
 
 
-                var t = mAuth.getReference("Grupos").child(g).child("membros")
+                val t = mAuth.getReference("Grupos").child(g).child("membros")
 
                 Log.d(
                     "home75",
@@ -294,7 +295,7 @@ class HomeActivity : AppCompatActivity() {
                         dataSnapshot: DataSnapshot,
                         previousChildName: String?
                     ) {
-                        var j = dataSnapshot.getValue().toString()
+                        val j = dataSnapshot.getValue().toString()
 
 
                         Log.d(
@@ -304,7 +305,7 @@ class HomeActivity : AppCompatActivity() {
                             }"
                         )
 
-                        var fazParte = ArrayList<String>()
+                        val fazParte = ArrayList<String>()
 
                         fazParte.add(j)
 
@@ -351,7 +352,7 @@ class HomeActivity : AppCompatActivity() {
                                             val dia =
                                                 dataSnapshot.child("diaFim").getValue().toString()
                                                     .toInt()
-                                            var tipo =
+                                            val tipo =
                                                 dataSnapshot.child("Tipo").getValue().toString()
 
                                             val f =
@@ -492,8 +493,8 @@ class HomeActivity : AppCompatActivity() {
                                                             "grupoID to search: $itemValue"
                                                         )
                                                         gv.detalhes = itemValue
-                                                        val uid = Auth.currentUser?.uid
-                                                        var eventoClick =
+//                                                        val uid = Auth.currentUser?.uid
+                                                        val eventoClick =
                                                             mAuth.getReference("Eventos")
                                                                 .child(itemValue)
                                                         eventoClick.addValueEventListener(object :
@@ -903,8 +904,11 @@ class HomeActivity : AppCompatActivity() {
 
 
         if (item.itemId == R.id.home) {
-
-            startActivity(Intent(this, FiltrosActivity::class.java))
+            val marca = 0
+            val intent = Intent(this, FiltrosActivity::class.java).apply {
+                putExtra(EXTRA_MESSAGE, marca)
+            }
+            startActivity(intent)
         }
 
         return super.onOptionsItemSelected(item)

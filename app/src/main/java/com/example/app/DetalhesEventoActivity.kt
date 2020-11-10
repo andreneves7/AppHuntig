@@ -74,7 +74,7 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
                     showDetalhe.text =
-                        "nome: " + name + "\n" + "data: " + dateDia + "/" + dateMes + "/" + dateAno + "\n" + "horas: " + time + "\n" + "tipo: " + tipo
+                        "nome: $name\ndata: $dateDia/$dateMes/$dateAno\nhoras: $time\ntipo: $tipo"
 
 
 //                    Log.d(
@@ -129,7 +129,7 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback {
 
         val marcar = bPresença
         val uid = Auth.currentUser?.uid
-        var fazParte = ArrayList<String>()
+        val fazParte = ArrayList<String>()
 
         val user = Auth.currentUser
         if (user != null) {
@@ -140,7 +140,7 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback {
             val m = object : ChildEventListener {
                 override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
 
-                    var pre = dataSnapshot.getValue().toString()
+                    val pre = dataSnapshot.getValue().toString()
                     Log.d(
                         "detalhes", "detalhe: $pre"
                     )
@@ -270,8 +270,11 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         if (item.itemId == R.id.home) {
-
-            startActivity(Intent(this, FiltrosActivity::class.java))
+            val marca = 0
+            val intent = Intent(this, FiltrosActivity::class.java).apply {
+                putExtra(AlarmClock.EXTRA_MESSAGE, marca)
+            }
+            startActivity(intent)
         }
 
 
