@@ -78,17 +78,19 @@ class AdesaoActivity : AppCompatActivity() {
         c.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
 
-                    val use = Auth.currentUser
+                val use = Auth.currentUser
                 val socio: MutableMap<String, Any> = HashMap()
                 socio["numero socio"] = codigo
 
-                    c.child("Pendentes")
-                        .child(use!!.uid).setValue(socio)
+                c.child("Pendentes")
+                    .child(use!!.uid).setValue(socio)
 
+                val marca = 0
 
-                    val intent = Intent(this@AdesaoActivity, FiltrosActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    startActivity(intent)
+                val intent = Intent(this@AdesaoActivity, FiltrosActivity::class.java).apply {
+                    putExtra(EXTRA_MESSAGE, marca)
+                }
+                startActivity(intent)
 
 
 
@@ -125,7 +127,7 @@ class AdesaoActivity : AppCompatActivity() {
 
         if (item.itemId == R.id.grupo) {
 
-            startActivity(Intent(this,VerGrupoActivity::class.java))
+            startActivity(Intent(this, VerGrupoActivity::class.java))
         }
 
         if (item.itemId == R.id.Lis) {

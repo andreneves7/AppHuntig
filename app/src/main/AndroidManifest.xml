@@ -50,9 +50,9 @@
         <activity
             android:name=".VerGrupoActivity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".CriarGrupoActivity"
-            android:screenOrientation="portrait" />
+<!--        <activity-->
+<!--            android:name=".CriarGrupoActivity"-->
+<!--            android:screenOrientation="portrait" />-->
         <activity
             android:name=".EventoActivity"
             android:screenOrientation="portrait" />

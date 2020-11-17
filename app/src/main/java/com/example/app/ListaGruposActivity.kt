@@ -13,12 +13,13 @@ import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
 import com.google.firebase.firestore.FirebaseFirestore
 
 class ListaGruposActivity : AppCompatActivity() {
 
     val Auth = FirebaseAuth.getInstance()
-    val mAuth = FirebaseFirestore.getInstance()
+    val mAuth = FirebaseDatabase.getInstance()
     lateinit var gv: VariaveisGlobais
 
 
@@ -29,25 +30,34 @@ class ListaGruposActivity : AppCompatActivity() {
         setContentView(R.layout.activity_lista_grupos)
         listView = findViewById(R.id.listViewLista)
 
-        val d = mAuth.collection("Grupos")
-        d.get().addOnSuccessListener { result ->
-            if (result != null) {
+        val GruposMemebro = mAuth.getReference("Grupos")
+        val list = ArrayList<String>()
 
+        val membro = object : ChildEventListener {
+            override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
 
-                val list = ArrayList<String>()
+                val grupo = dataSnapshot.getValue()
 
-                for (grupo in result) {
+                val g = dataSnapshot.child("nome").getValue().toString()
+                list.add(
+                    "${g}"
+                )
 
-                    list.add(
-                        "${grupo.get("nome")//.toString()
-                             }"
-                    )
+                Log.d(
+                    "ListaGruposActivity",
+                    " pref $grupo"
+                )
+                Log.d(
+                    "ListaGruposActivity",
+                    " pref $g"
+                )
+                Log.d(
+                    "ListaGruposActivity",
+                    " pref $list"
+                )
+                val adapter3 = ArrayAdapter(this@ListaGruposActivity, R.layout.listview_item, list)
 
-                }
-
-                val adapter2 = ArrayAdapter(this, R.layout.listview_item, list)
-
-                listView.adapter = adapter2
+                listView.adapter = adapter3
 
                 listView.onItemClickListener =
                     object : AdapterView.OnItemClickListener {
@@ -60,54 +70,53 @@ class ListaGruposActivity : AppCompatActivity() {
                             id: Long
                         ) {
 
-                            val itemValue = listView.getItemAtPosition(position) as String
-                            val message = itemValue
-                            Log.d("Preferencias", "mensagem: $message" + "item: $itemValue ")
+                            val itemValue = listView.getItemAtPosition(position)
+                            val message = itemValue as String
+                            Log.d("ListaGruposActivity", "mensagem: $message" + "item: $itemValue ")
+
+                            var b = mAuth.getReference("Grupos").child(itemValue.toString())
+
+                            //var b = mAuth.collection("Grupos").document(itemValue.toString())
+                            b.addValueEventListener(object : ValueEventListener {
+                                override fun onDataChange(snapshot: DataSnapshot) {
 
 
-                            val b = mAuth.collection("Grupos").document(itemValue)
-                            b.get().addOnSuccessListener { result ->
-                                if (result != null) {
-                                    var p = result.data?.get("membros") as List<String>
-
-
-                                    val user = Auth.currentUser!!.uid
-
-                                    var controlo = 0
-                                    for (m in p) {
-
-                                        if (m.contains(user)) {
-                                            controlo = 1
+                                    startActivity(
+                                        Intent(view.context, AdesaoActivity::class.java).apply {
+                                            putExtra(AlarmClock.EXTRA_MESSAGE, message)
                                         }
-                                    }
-                                    if (controlo == 0) {
-                                        startActivity(
-                                            Intent(
-                                                view.context,
-                                                AdesaoActivity::class.java
-                                            ).apply {
-                                                putExtra(AlarmClock.EXTRA_MESSAGE, message)
-                                            }
-                                        )
-                                    } else {
-                                        Toast.makeText(
-                                            this@ListaGruposActivity,
-                                            "ja esta presente neste grupo",
-                                            Toast.LENGTH_LONG
-                                        ).show()
-                                    }
-
-
+                                    )
                                 }
 
-                            }
+                                override fun onCancelled(error: DatabaseError) {
+                                    TODO("Not yet implemented")
+                                }
+
+                            })
                         }
                     }
 
             }
 
+            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+                startActivity(Intent(this@ListaGruposActivity, PreferenciasActivity::class.java))
+            }
+
+            override fun onChildRemoved(snapshot: DataSnapshot) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
 
         }
+        GruposMemebro.addChildEventListener(membro)
     }
 
 
