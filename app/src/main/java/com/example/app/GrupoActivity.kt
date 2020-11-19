@@ -14,36 +14,33 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.core.view.isVisible
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_grupo.*
 import java.sql.Time
 import java.time.Year
 
 class VariaveisGlobais : Application() {
-    var Evento: String =""
-    var detalhes: String=""
-    var entrar: String=""
-    var ver :String=""
-    var nome : String=""
+    var Evento: String = ""
+    var detalhes: String = ""
+    var entrar: String = ""
+    var ver: String = ""
+    var nome: String = ""
     var Month: Int = 0
-    var Day : Int = 0
-    var Year : Int = 0
+    var Day: Int = 0
+    var Year: Int = 0
     var MonthFim: Int = 0
-    var DayFim : Int = 0
-    var YearFim : Int = 0
-    var Lat : Double = 0.0
-    var Long : Double = 0.0
-    var check : String = ""
-    var Horas : String = ""
-    var privado : String = ""
-    var extra : String = ""
-    var Associacao : String = ""
-    var numSocio : Int = 0
-    var numEspanha : Int = 0
+    var DayFim: Int = 0
+    var YearFim: Int = 0
+    var Lat: Double = 0.0
+    var Long: Double = 0.0
+    var check: String = ""
+    var Horas: String = ""
+    var privado: String = ""
+    var extra: String = ""
+    var Associacao: String = ""
+    var numSocio: Int = 0
+    var numEspanha: Int = 0
 
 
 }
@@ -64,84 +61,40 @@ class GrupoActivity : AppCompatActivity() {
 
         val semEventos = tNaoEventos
 
-        //val evento = bEvento
-
-
-
 
         val user = Auth.currentUser
-
-//        val mail = mAuth.collection("Grupos").document(gv.ver)
-//        mail.get().addOnSuccessListener { document ->
-//            if (document != null) {
-//
-//                val admin = document.data?.get("admin").toString()
-//
-//                val buscarEvento = mAuth.collection("Users").document(user?.uid.toString())
-//                buscarEvento.get().addOnSuccessListener { document ->
-//                    if (document != null) {
-//
-//                        val nameUser = document.data?.get("name")
-//                        Log.d("grupo", "aaaa: $admin" +
-//                                "ffff: $nameUser")
-//
-//                        //apos separar retirar
-//                        if (admin == nameUser ) {
-//                            evento.isVisible = true
-//
-//                            Log.d("grupo", "aaaa: $admin" +
-//                                    "ffff: $nameUser"+ "\n" + "true")
-//                        }else{
-//                            evento.isVisible = false
-//                            Log.d("grupo", "aaaa: $admin" +
-//                                    "ffff: $nameUser"+ "\n" + "false")
-//                        }///
-//                    }
-//                }
-//
-//                Log.d(
-//                    "evento", "DocumentSnapshot data: ${document.data?.get("admin")} "
-//                )
-//            } else {
-//                Log.d("evento", "No such document")
-//            }
-//        }
-
-
-
 
 
 
 
         if (user != null) {
 
+            val valu = ArrayList<String>()
+
+            val t = intent.getStringExtra(AlarmClock.EXTRA_MESSAGE).toInt()
+            val mail = mAuth.getReference("Eventos")
+            val m = object : ChildEventListener {
+                override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
 
 
-            val mail = mAuth.getReference("Grupos").child(gv.Evento)
-            mail.addValueEventListener(object : ValueEventListener {
-                override  fun onDataChange(dataSnapshot: DataSnapshot) {
-//            val mail = mAuth.collection("Grupos").document(gv.Evento)
-//            mail.get().addOnSuccessListener { document ->
-//                if (document != null) {
+
+                    val refe = dataSnapshot.child("numeroGrupo").getValue().toString().toInt()
 
 
-                    val valu = ArrayList<String>()
 
 
-                    val refe = dataSnapshot.child("Eventos").getValue() as List<String>
                     Log.d(
                         "Grupo",
                         " refe $refe"
                     )
 
-                    if (refe.isEmpty()) {
+                    if (refe != t) {
                         Log.d(
                             "Grupo",
                             " sem grupos deste user"
                         )
 
                         semEventos.isVisible = true
-
 
 
                     } else {
@@ -151,79 +104,82 @@ class GrupoActivity : AppCompatActivity() {
                         )
 
                         semEventos.isVisible = false
+                        valu.add(dataSnapshot.child("nome").getValue().toString())
 
 
+                        val adapter = ArrayAdapter(this@GrupoActivity, R.layout.listview_item, valu)
 
-                        for (evento in refe) {
-                            Log.d(
-                                "Grupo",
-                                "grupo  $evento"
-                            )
+                        lista.adapter = adapter
 
-
-                            var d = valu.add(evento).toString()
-                            Log.d(
-                                "Grupo",
-                                "values $d"
-                            )
-
-                            val adapter = ArrayAdapter(this@GrupoActivity ,R.layout.listview_item, valu)
-
-                            lista.adapter = adapter
-
-                            lista.onItemClickListener = object : AdapterView.OnItemClickListener {
+                        lista.onItemClickListener = object : AdapterView.OnItemClickListener {
 
 
+                            override fun onItemClick(
+                                parent: AdapterView<*>, view: View,
+                                position: Int, id: Long
+                            ) {
 
-                                override fun onItemClick(parent: AdapterView<*>, view: View,
-                                                         position: Int, id: Long){
+                                val itemValue = lista.getItemAtPosition(position)
+                                gv.detalhes = itemValue as String
+                                Log.d(
+                                    "Grupo",
+                                    "ffff :$itemValue"
+                                )
 
-                                    val itemValue = lista.getItemAtPosition(position) as String
-                                    gv.detalhes = itemValue
-                                    Log.d("Grupo",
-                                        "ffff :$itemValue")
+                                var eve = mAuth.getReference("Eventos").child(itemValue.toString())
 
-                                    startActivity(Intent (view.context, DetalhesEventoActivity :: class.java ))
+                                eve.addValueEventListener(object : ValueEventListener {
+                                    override fun onDataChange(snapshot: DataSnapshot) {
+                                        startActivity(
+                                            Intent(
+                                                view.context,
+                                                DetalhesEventoActivity::class.java
+                                            )
+                                        )
+                                    }
 
-                                    Toast.makeText(this@GrupoActivity,
-                                        "Position :$position\nItem Value : $itemValue", Toast.LENGTH_LONG)
-                                        .show()
+                                    override fun onCancelled(error: DatabaseError) {
+                                        TODO("Not yet implemented")
+                                    }
+                                })
 
 
-                                }
+//                                Toast.makeText(
+//                                    this@GrupoActivity,
+//                                    "Position :$position\nItem Value : $itemValue",
+//                                    Toast.LENGTH_LONG
+//                                )
+//                                    .show()
+
 
                             }
 
-
                         }
+
+
                     }
 
-                    Log.d(
-                        "Grupo",
-                        "  => ${dataSnapshot.child("name").getValue()}, ${dataSnapshot.child("grupo").getValue()}"
-                    )
 
-
-                    Log.d(
-                        "Grupo", "DocumentSnapshot data: ${dataSnapshot.child("name").getValue()}"
-                    )
                 }
+
+                override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onChildRemoved(snapshot: DataSnapshot) {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+                    TODO("Not yet implemented")
+                }
+
                 override fun onCancelled(error: DatabaseError) {
                     Log.d("Grupo", "No such document")
                 }
-            })
+            }
+            mail.addChildEventListener(m)
         }
-
-
-
-
-
-
-
-//        evento.setOnClickListener{
-//            startActivity(Intent (this, EventoActivity :: class.java ))
-//        }
-
 
 
     }
@@ -249,7 +205,7 @@ class GrupoActivity : AppCompatActivity() {
 
         if (item.itemId == R.id.grupo) {
 
-            startActivity(Intent(this,VerGrupoActivity::class.java))
+            startActivity(Intent(this, VerGrupoActivity::class.java))
         }
 
         if (item.itemId == R.id.Lis) {

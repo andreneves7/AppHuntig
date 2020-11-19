@@ -299,7 +299,7 @@ class HomeActivity : AppCompatActivity() {
 
 
                         Log.d(
-                            "home75",
+                            "home755",
                             "j : ${
                                 j
                             }"

@@ -36,17 +36,17 @@ class ListaGruposActivity : AppCompatActivity() {
         val membro = object : ChildEventListener {
             override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
 
-                val grupo = dataSnapshot.getValue()
+                //val grupo = dataSnapshot.getValue()
 
                 val g = dataSnapshot.child("nome").getValue().toString()
                 list.add(
                     "${g}"
                 )
 
-                Log.d(
-                    "ListaGruposActivity",
-                    " pref $grupo"
-                )
+//                Log.d(
+//                    "ListaGruposActivity",
+//                    " pref $grupo"
+//                )
                 Log.d(
                     "ListaGruposActivity",
                     " pref $g"

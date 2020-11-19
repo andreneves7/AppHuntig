@@ -13,21 +13,19 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.core.view.isVisible
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_grupo.*
 import kotlinx.android.synthetic.main.activity_ver_grupo.*
 
 
-
-
 class VerGrupoActivity : AppCompatActivity() {
 
-    val mAuth = FirebaseFirestore.getInstance()
+    //    val mAuth = FirebaseFirestore.getInstance()
+    val mAuth = FirebaseDatabase.getInstance()
     val Auth = FirebaseAuth.getInstance()
 
     lateinit var gv: VariaveisGlobais
-
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,118 +34,197 @@ class VerGrupoActivity : AppCompatActivity() {
         setContentView(R.layout.activity_ver_grupo)
 
 
-
-
         val semGrupos = tNaoGrupos
         val list = ListView2
 
-        val user = Auth.currentUser
+        val user = Auth.currentUser?.uid
         if (user != null) {
-            val mail = mAuth.collection("Users").document(user?.uid)
-            mail.get().addOnSuccessListener { document ->
-                if (document != null) {
+            val mail = mAuth.getReference("Grupos")
 
+            val values = ArrayList<String>()
+            val valor = ArrayList<String>()
 
-                    val values = ArrayList<String>()
+            val m = object : ChildEventListener {
+                override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
+
+                    val g = dataSnapshot.child("nome").getValue().toString()
 
                     Log.d(
                         "VerGrupo2",
-                        "${user?.uid}"
+                        "${user}"
                     )
-                    
 
+                    values.add(g)
 
+                    val m = mAuth.getReference("Grupos").child(g)
 
-                    val ref = document.data!!.get("grupo") as ArrayList<String>
                     Log.d(
-                        "VerGrupo",
-                        " ref $ref"
+                        "VerGrupo2",
+                        " ${m}"
                     )
 
-                    if (ref.isEmpty()) {
-                        Log.d(
-                            "VerGrupo",
-                            " sem grupos deste user"
-                        )
+                    val t = mAuth.getReference("Grupos").child(g).child("membros")
 
-                        semGrupos.isVisible = true
 
-                    } else {
-                        Log.d(
-                            "VerGrupo",
-                            " grupos deste user"
-                        )
+                    val f = object : ChildEventListener {
+                        override fun onChildAdded(
+                            dataSnapshot: DataSnapshot,
+                            previousChildName: String?
+                        ) {
+                            val j = dataSnapshot.getValue().toString()
+                            val fazParte = ArrayList<String>()
 
-                        semGrupos.isVisible = false
-
-                        gv = application as VariaveisGlobais
-                        for (grupo in ref) {
                             Log.d(
-                                "VerGrupo",
-                                "grupo  $grupo"
+                                "VerGrupo2",
+                                "j : ${
+                                    j
+                                }"
+                            )
+                            fazParte.add(j)
+
+                            Log.d(
+                                "VerGrupo2",
+                                "f : ${
+                                    fazParte
+                                }"
                             )
 
-
-                            var d = values.add(grupo).toString()
-                            Log.d(
-                                "VerGrupo",
-                                "values $d"
-                            )
-
-                            val adapter = ArrayAdapter(this,R.layout.listview_item, values)
-
-                            list.adapter = adapter
-                           Log.d("VerGrupo",
-                                "Position :$adapter")
-
-                            
-                            list.onItemClickListener = object : AdapterView.OnItemClickListener {
+                            if (fazParte.contains(user)) {
 
 
+                                m.addValueEventListener(object : ValueEventListener {
+                                    override fun onDataChange(snapshot: DataSnapshot) {
 
-                                override fun onItemClick(parent: AdapterView<*>, view: View,
-                                                         position: Int, id: Long){
+                                        val n =
+                                            snapshot.child("Numero").getValue()
+                                        Log.d(
+                                            "VerGrupo",
+                                            " grupos deste user"
+                                        )
+
+                                        Log.d(
+                                            "VerGrupo2",
+                                            " n: ${n}"
+                                        )
+
+                                        semGrupos.isVisible = false
+
+                                        gv = application as VariaveisGlobais
+
+                                        valor.add(g)
+                                        val adapter =
+                                            ArrayAdapter(this@VerGrupoActivity, R.layout.listview_item, valor)
+
+                                        list.adapter = adapter
 
 
-                                    val itemValue = list.getItemAtPosition(position) as String
 
-                                    gv.Evento = itemValue
-                                    gv.ver = itemValue
-
-
-                                    startActivity(Intent (view.context, GrupoActivity :: class.java ))
-
-//                                    Toast.makeText(applicationContext,
-//                                        "Position :$position\nItem Value : $itemValue", Toast.LENGTH_LONG)
-//                                        .show()
-                                    Log.d("VerGrupo",
-                                        "Positionffff :$list")
+                                        list.onItemClickListener =
+                                            object : AdapterView.OnItemClickListener {
 
 
-                                }
+                                                override fun onItemClick(
+                                                    parent: AdapterView<*>, view: View,
+                                                    position: Int, id: Long
+                                                ) {
 
+
+                                                    val itemValue =
+                                                        list.getItemAtPosition(position) as String
+
+                                                   val message = n.toString()
+
+
+                                                    startActivity(
+                                                        Intent(
+                                                            view.context,
+                                                            GrupoActivity::class.java
+                                                        ).apply {
+                                                            putExtra(AlarmClock.EXTRA_MESSAGE, message)
+                                                        }
+                                                    )
+
+
+                                                    Log.d(
+                                                        "VerGrupo2",
+                                                        "messagem: $message"
+                                                    )
+
+
+                                                }
+
+                                            }
+
+
+                                    }
+
+
+                                    override fun onCancelled(error: DatabaseError) {
+                                        TODO("Not yet implemented")
+                                    }
+                                })
+                            } else {
+                                Log.d(
+                                    "VerGrupo",
+                                    " sem grupos deste user"
+                                )
+
+                                semGrupos.isVisible = true
                             }
+                        }
 
-                            
+                        override fun onChildChanged(
+                            snapshot: DataSnapshot,
+                            previousChildName: String?
+                        ) {
+                            TODO("Not yet implemented")
+                        }
+
+                        override fun onChildRemoved(snapshot: DataSnapshot) {
+                            TODO("Not yet implemented")
+                        }
+
+                        override fun onChildMoved(
+                            snapshot: DataSnapshot,
+                            previousChildName: String?
+                        ) {
+                            TODO("Not yet implemented")
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {
+                            TODO("Not yet implemented")
                         }
                     }
 
-                    Log.d(
-                        "VerGrupo",
-                        " ${document.id} => ${document.data?.get("name")}, ${document.data?.get("grupo")}"
-                    )
+                    t.addChildEventListener(f)
 
 
-                    Log.d(
-                        "VerGrupo", "DocumentSnapshot data: ${document.data?.get("name")}"
-                    )
-                } else {
-                    Log.d("VerGrupo", "No such document")
+                }
+
+                override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onChildRemoved(snapshot: DataSnapshot) {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
                 }
             }
-        }
+            mail.addChildEventListener(m)
 
+
+        } else {
+            Log.d("VerGrupo", "No such document")
+        }
     }
+
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
@@ -171,7 +248,7 @@ class VerGrupoActivity : AppCompatActivity() {
 
         if (item.itemId == R.id.grupo) {
 
-            startActivity(Intent(this,VerGrupoActivity::class.java))
+            startActivity(Intent(this, VerGrupoActivity::class.java))
         }
 
         if (item.itemId == R.id.Lis) {

@@ -69,6 +69,7 @@ class RegistoUserActivity : AppCompatActivity() {
         licencaEspanha.setVisibility(View.INVISIBLE)
         licencaE.setVisibility(View.INVISIBLE)
 
+
         e.setVisibility(View.INVISIBLE)
         p.setVisibility(View.INVISIBLE)
 

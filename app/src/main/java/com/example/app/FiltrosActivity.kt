@@ -61,6 +61,12 @@ class FiltrosActivity : AppCompatActivity() {
                         putExtra(EXTRA_MESSAGE, filtro)
                     }
                     startActivity(intent)
+                    Log.d(
+                        "filtro",
+                        "g : ${
+                            filtro
+                        }"
+                    )
                 })
 
                 montaria.setOnClickListener(View.OnClickListener { view ->
