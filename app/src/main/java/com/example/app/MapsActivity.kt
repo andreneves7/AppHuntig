@@ -236,8 +236,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickListe
         val builder = LocationSettingsRequest.Builder()
             .addLocationRequest(locationRequest)
 
-        // 4
-        val client = LocationServices.getSettingsClient(this)
         val task = client.checkLocationSettings(builder.build())
 
         // 5
@@ -288,6 +286,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickListe
             startLocationUpdates()
         }
     }
+    // 4
+        val client = LocationServices.getSettingsClient(this)
 
 
     private fun placeMarkerOnMap(location: LatLng) {

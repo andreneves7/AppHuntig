@@ -15,26 +15,24 @@ import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.FieldValue
 import kotlinx.android.synthetic.main.activity_registo_user.*
 
 class RegistoUserActivity : AppCompatActivity() {
 
-//    val mAuth = FirebaseFirestore.getInstance()
+    //    val mAuth = FirebaseFirestore.getInstance()
     val mAuth = FirebaseDatabase.getInstance();
+
     //val gAuth = FirebaseFirestore.getInstance().collection("Grupos")
     val Auth = FirebaseAuth.getInstance()
+
     //val mStorage = FirebaseStorage.getInstance().reference
     lateinit var gv: VariaveisGlobais
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_registo_user)
         gv = application as VariaveisGlobais
-
 
 
         val outros = addPais_Outros
@@ -201,6 +199,7 @@ class RegistoUserActivity : AppCompatActivity() {
 
         buttonRegistar.setOnClickListener {
 
+
             val email = addEmail.text.toString()
             val password = addPass.text.toString()
             val name = addNome.text.toString()
@@ -230,51 +229,83 @@ class RegistoUserActivity : AppCompatActivity() {
                 nif,
                 licencaP,
                 passaporte,
-                dni,
-                licencaE,
+                dni, licencaE,
                 e,
                 p,
                 nomeSeguradoraExtra,
                 numApoliceExtra,
                 numCaca,
-                linceca, licencaEspanha
+                linceca,
+                licencaEspanha
+
             )
+
+
         }
     }
 
 
-   private fun registoAuth(
-       password: String,
-       email: String,
-       name: String,
-       tele: String,
-       morada: String,
-       local: String,
-       postal: String,
-       cartaCaca: String,
-       licencaArma: String,
-       nomeSeguradora: String,
-       numApolice: String,
-       g: String,
-       bi: EditText,
-       nif: EditText,
-       licencaP: EditText,
-       passaporte: EditText,
-       dni: EditText,
-       licencaE: EditText,
-       e: Switch,
-       p: Switch,
-       nomeSeguradoraExtra: EditText,
-       numApoliceExtra: EditText,
-       numCaca: EditText,
-       linceca: EditText,
-       licencaEspanha: EditText
-   ) {
+    private fun registoAuth(
+        password: String,
+        email: String,
+        name: String,
+        tele: String,
+        morada: String,
+        local: String,
+        postal: String,
+        cartaCaca: String,
+        licencaArma: String,
+        nomeSeguradora: String,
+        numApolice: String,
+        g: String,
+        bi: EditText,
+        nif: EditText,
+        licencaP: EditText,
+        passaporte: EditText,
+        dni: EditText,
+        licencaE: EditText,
+        e: Switch,
+        p: Switch,
+        nomeSeguradoraExtra: EditText,
+        numApoliceExtra: EditText,
+        numCaca: EditText,
+        linceca: EditText,
+        licencaEspanha: EditText
+    ) {
+
+        val teste = arrayListOf<EditText>(
+            addPass,
+            addEmail,
+            addNome,
+            addTele,
+            addLocalidade,
+            addMorada,
+            addPostal,
+            addCartaCaca,
+            addLicencaArma,
+            addNomeSeguradora,
+            addNumeroApolice
+//                bi,
+//                nif,
+//                licencaP,
+//                passaporte,
+//                dni,
+//                licencaE,
+//                nomeSeguradoraExtra,
+//                numApoliceExtra,
+//                numCaca,
+//                linceca,
+//                licencaEspanha
+        )
 
 
-        if (!password.isEmpty() && !email.isEmpty() && !name.isEmpty() && !tele.isEmpty() && !morada.isEmpty() && !local.isEmpty()
-            && !postal.isEmpty() && !cartaCaca.isEmpty() && !licencaArma.isEmpty() && !nomeSeguradora.isEmpty() && !numApolice.isEmpty()
-        ) {
+
+        if (verificaCampos(teste) == true) {
+
+//
+//        if (!password.isEmpty() && !email.isEmpty() && !name.isEmpty() && !tele.isEmpty() && !morada.isEmpty() && !local.isEmpty()
+//            && !postal.isEmpty() && !cartaCaca.isEmpty() && !licencaArma.isEmpty() && !nomeSeguradora.isEmpty() && !numApolice.isEmpty()
+//        ) {
 
             if (tele.length == 9 && postal.length == 7 && cartaCaca.length == 6 && licencaArma.length == 5 && numApolice.length == 10) {
                 if (!g.isEmpty()) {
@@ -319,7 +350,7 @@ class RegistoUserActivity : AppCompatActivity() {
                                         "Registo COM sucesso",
                                         Toast.LENGTH_SHORT
                                     ).show()
-                                    Auth.signOut()
+
                                 }
                                 else -> {
                                     Toast.makeText(
@@ -341,7 +372,7 @@ class RegistoUserActivity : AppCompatActivity() {
 
 
                 } else {
-                    //Toast.makeText(this, "Numero mal introduzido ", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Selecione um pais ", Toast.LENGTH_SHORT).show()
                 }
 
 
@@ -370,11 +401,14 @@ class RegistoUserActivity : AppCompatActivity() {
 //                        Toast.makeText(this, exception.toString(), Toast.LENGTH_LONG).show()
 //                    }
             } else {
-                Toast.makeText(this, "Preencha todos os campos", Toast.LENGTH_LONG).show()
+                // Toast.makeText(this, "Preencha todos os campos", Toast.LENGTH_LONG).show()
                 Log.d("RegistoUser", "nao registo")
             }
 
         }
+        //        else if (email.isEmpty()) {
+//            addEmail.error = "This is error"
+//        }
     }
 
 
@@ -438,11 +472,7 @@ class RegistoUserActivity : AppCompatActivity() {
 //        )
 
 
-
-
         //mAuth.collection("Users").document("$uid").set(pessoa)
-
-
 
 
         if (g == "Portugal") {
@@ -450,34 +480,72 @@ class RegistoUserActivity : AppCompatActivity() {
             val Bi = bi.text.toString()
             val Nif = nif.text.toString()
             val LicencaP = licencaP.text.toString()
+            val teste = arrayListOf<EditText>(
+                bi,
+                nif,
+                licencaP
+            )
 
-            if (!Bi.isEmpty() && !Nif.isEmpty() && !LicencaP.isEmpty()) {
+            if (verificaCampos(teste) == true) {
+
 
                 pessoa["BI"] = Bi
                 pessoa["Nif"] = Nif
                 pessoa["Licenca Portugal"] = LicencaP
 
-//                mAuth.getReference(uid).setValue(pessoa)
+
                 Log.d("RegistoUser", "user firestore registo1")
 
                 val LicencaEspanha = licencaEspanha.text.toString()
                 if (e.isChecked) {
-                    if (!LicencaEspanha.isEmpty() && !NomeSeguradoraExtra.isEmpty() && !NumApoliceExtra.isEmpty()) {
+                    val teste2 = arrayListOf<EditText>(
+
+                        nomeSeguradoraExtra,
+                        numApoliceExtra,
+                        numCaca,
+                        licencaEspanha
+                    )
+
+                    if (verificaCampos(teste2) == true) {
+
 
                         pessoa["Licenca Espanha"] = LicencaEspanha
                         pessoa["nome Seguradora Extra"] = NomeSeguradoraExtra
                         pessoa["numero Apolice Extra"] = NumApoliceExtra
                         pessoa["Numero Passaporte Europeu"] = NumCaca
                         mAuth.getReference("Users").child(uid).setValue(pessoa)
+
+                        sendEmailVerification()
+                        Log.d("RegistoUser", "email enviado")
+                        clearInputs()
+                        val intent = Intent(this, LoginActivity::class.java)
+                        intent.flags =
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        startActivity(intent)
+                        Auth.signOut()
+
                         Log.d("RegistoUser", "user firestore registo2")
 
 
                     }
-                }
-                else{
+
+
+                } else {
                     mAuth.getReference("Users").child(uid).setValue(pessoa)
+
+                    sendEmailVerification()
+                    Log.d("RegistoUser", "email enviado")
+                    clearInputs()
+                    val intent = Intent(this, LoginActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(intent)
+
                     Log.d("RegistoUser", "user firestore registo3")
                 }
+            } else {
+
+                val user = Auth.currentUser
+                user?.delete()
             }
 
 
@@ -485,8 +553,18 @@ class RegistoUserActivity : AppCompatActivity() {
 
             val Dni = dni.text.toString()
             val LicencaE = licencaE.text.toString()
+            val teste = arrayListOf<EditText>(
+//                passaporte,
+                dni,
+                licencaE
+//                nomeSeguradoraExtra,
+//                numApoliceExtra,
+//                numCaca,
+//                linceca,
+//                licencaEspanha
+            )
 
-            if (!Dni.isEmpty() && !LicencaE.isEmpty()) {
+            if (verificaCampos(teste) == true) {
 
                 pessoa["Dni"] = Dni
                 pessoa["Licenca Espanha"] = LicencaE
@@ -494,46 +572,80 @@ class RegistoUserActivity : AppCompatActivity() {
 
                 val LicencaPortuguesa = linceca.text.toString()
 
+
+//
+
                 if (p.isChecked) {
-                    if (!LicencaPortuguesa.isEmpty() && !NomeSeguradoraExtra.isEmpty() && !NumApoliceExtra.isEmpty()) {
+                    val teste2 = arrayListOf<EditText>(
+
+                        nomeSeguradoraExtra,
+                        numApoliceExtra,
+                        numCaca,
+                        linceca
+                    )
+                    if (verificaCampos(teste2) == true) {
 
                         pessoa["Licenca Portugal"] = LicencaPortuguesa
                         pessoa["nome Seguradora Extra"] = NomeSeguradoraExtra
                         pessoa["numero Apolice Extra"] = NumApoliceExtra
                         pessoa["Numero Passaporte Europeu"] = NumCaca
                         mAuth.getReference(uid).setValue(pessoa)
+
+
+                        sendEmailVerification()
+                        Log.d("RegistoUser", "email enviado")
+                        clearInputs()
+                        val intent = Intent(this, LoginActivity::class.java)
+                        intent.flags =
+                            Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        startActivity(intent)
+                        Auth.signOut()
+
+
                         Log.d("RegistoUser", "user firestore registo5")
                     }
-                }
-                else{
+                } else {
                     mAuth.getReference(uid).setValue(pessoa)
+
+                    sendEmailVerification()
+                    Log.d("RegistoUser", "email enviado")
+                    clearInputs()
+                    val intent = Intent(this, LoginActivity::class.java)
+                    intent.flags =
+                        Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(intent)
+                    Auth.signOut()
+
                     Log.d("RegistoUser", "user firestore registo6")
                 }
+            } else {
+
+                val user = Auth.currentUser
+                user?.delete()
             }
         } else {
 
             val Passaporte = passaporte.text.toString()
-            if (!Passaporte.isEmpty()){
+            if (!Passaporte.isEmpty()) {
 
                 pessoa["Passaporte"] = Passaporte
                 mAuth.getReference(uid).setValue(pessoa)
+
+                sendEmailVerification()
+                Log.d("RegistoUser", "email enviado")
+                clearInputs()
+                val intent = Intent(this, LoginActivity::class.java)
+                intent.flags =
+                    Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+                Auth.signOut()
+
+
                 Log.d("RegistoUser", "user firestore registo7")
 
             }
 
         }
-
-
-
-
-
-
-        sendEmailVerification()
-        Log.d("RegistoUser", "email enviado")
-        clearInputs()
-        val intent = Intent(this, LoginActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-        startActivity(intent)
 
 
     }
@@ -559,16 +671,31 @@ class RegistoUserActivity : AppCompatActivity() {
     }
 
 
+    fun verificaCampos(
+        array: ArrayList<EditText>
+    ): Boolean {
+
+        var cont = 0
+        var valido = false
+        for (item in array) {
+            if (item.text.isEmpty()) {
+                item.error = "Falta Preencher"
+                cont++;
+            }
+        }
+        if (cont == 0) {
+            valido = true
+        }
+        return valido
+    }
+
+
     private fun clearInputs() {
         addNome.text.clear()
         addEmail.text.clear()
         addPass.text.clear()
     }
 
-    private fun validar() {
-        val texto_erros = ""
-
-    }
 
 }
 

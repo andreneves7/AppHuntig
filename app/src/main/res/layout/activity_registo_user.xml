@@ -99,7 +99,6 @@
                     android:layout_height="44dp"
                     android:background="@drawable/botoes"
                     android:text="Pais" />
-
                 <EditText
                     android:id="@+id/addPais_Outros"
                     android:layout_width="224dp"

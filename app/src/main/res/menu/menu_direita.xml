@@ -20,11 +20,11 @@
 
         <item
             android:id="@+id/grupo"
-            android:title="Grupo"
+            android:title="Grupos onde pertence"
             app:showAsAction="never" />
         <item
             android:id="@+id/Lis"
-            android:title="Lista Grupos"
+            android:title="Lista Grupos Disponivies"
             app:showAsAction="never" />
 
 

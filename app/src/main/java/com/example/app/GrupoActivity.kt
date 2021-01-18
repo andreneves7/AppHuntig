@@ -2,7 +2,6 @@ package com.example.app
 
 import android.app.Application
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.AlarmClock
 import android.util.Log
@@ -11,14 +10,12 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_grupo.*
-import java.sql.Time
-import java.time.Year
 
 class VariaveisGlobais : Application() {
     var Evento: String = ""
@@ -63,7 +60,7 @@ class GrupoActivity : AppCompatActivity() {
 
 
         val user = Auth.currentUser
-
+        semEventos.isInvisible= true
 
 
 
@@ -88,7 +85,7 @@ class GrupoActivity : AppCompatActivity() {
                         " refe $refe"
                     )
 
-                    if (refe != t) {
+                    if (refe != t.toInt()) {
                         Log.d(
                             "Grupo",
                             " sem grupos deste user"
@@ -103,7 +100,7 @@ class GrupoActivity : AppCompatActivity() {
                             " grupos deste user"
                         )
 
-                        semEventos.isVisible = false
+                        semEventos.isInvisible= true
                         valu.add(dataSnapshot.child("nome").getValue().toString())
 
 
@@ -187,6 +184,8 @@ class GrupoActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
         inflater.inflate(R.menu.menu_direita, menu)
+
+
         return true
     }
 
