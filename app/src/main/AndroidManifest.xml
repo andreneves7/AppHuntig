@@ -77,7 +77,7 @@
         <activity
             android:name=".RegistoUserActivity"
             android:screenOrientation="portrait"
-        android:windowSoftInputMode="adjustResize" />
+        android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".LoginActivity"
             android:screenOrientation="portrait" />

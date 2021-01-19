@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.AlarmClock
+import android.provider.AlarmClock.EXTRA_MESSAGE
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -131,24 +132,40 @@ class VerGrupoActivity : AppCompatActivity() {
 
                                                     val itemValue =
                                                         list.getItemAtPosition(position) as String
+                                                    mAuth.getReference("Grupos").child(itemValue).addValueEventListener(object : ValueEventListener {
+                                                        override fun onDataChange(snapshot: DataSnapshot) {
+                                                            val num =
+                                                                snapshot.child("Numero").getValue()
+                                                            val message = num.toString()
+                                                            Log.d(
+                                                                "VerGrupo2",
+                                                                " num: ${num}"
+                                                            )
 
-                                                   val message = n.toString()
+                                                            startActivity(
+                                                                Intent(
+                                                                    view.context,
+                                                                    GrupoActivity::class.java
+                                                                ).apply {
+                                                                    putExtra(EXTRA_MESSAGE, message)
+                                                                    putExtra(EXTRA_MESSAGE, message)
+                                                                }
+                                                            )
 
 
-                                                    startActivity(
-                                                        Intent(
-                                                            view.context,
-                                                            GrupoActivity::class.java
-                                                        ).apply {
-                                                            putExtra(AlarmClock.EXTRA_MESSAGE, message)
+                                                            Log.d(
+                                                                "VerGrupo2",
+                                                                "messagem: $message"
+                                                            )
                                                         }
-                                                    )
+
+                                                        override fun onCancelled(error: DatabaseError) {
+                                                            TODO("Not yet implemented")
+                                                        }
+
+                                                    })
 
 
-                                                    Log.d(
-                                                        "VerGrupo2",
-                                                        "messagem: $message"
-                                                    )
 
 
                                                 }

@@ -171,7 +171,7 @@
                 android:layout_height="51dp"
                 android:layout_marginTop="16dp"
                 android:ems="10"
-                android:hint="Carta Caça"
+                android:hint="Numero Carta Caçador"
                 android:inputType="numberSigned"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -181,7 +181,7 @@
                 android:layout_height="51dp"
                 android:layout_marginTop="16dp"
                 android:ems="10"
-                android:hint="Licença Arma"
+                android:hint="Licença U0so e Porte Arma"
                 android:inputType="numberSigned"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -208,7 +208,7 @@
                 android:layout_width="349dp"
                 android:layout_height="50dp"
                 android:ems="10"
-                android:hint="Linceça Portugal"
+                android:hint="Numero Linceça Portugal"
                 android:inputType="numberSigned" />
             <EditText
                 android:id="@+id/addLicencaCacaEspanha"
@@ -332,7 +332,7 @@
                     android:layout_width="289dp"
                     android:layout_height="49dp"
                     android:ems="10"
-                    android:hint="Licença Portuguesa"
+                    android:hint="Numero Licença Portuguesa"
                     android:inputType="numberSigned"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -374,7 +374,7 @@
                     android:layout_width="289dp"
                     android:layout_height="49dp"
                     android:ems="10"
-                    android:hint="Numero Passaporte Caca"
+                    android:hint="Numero Passaporte Europeu "
                     android:inputType="numberSigned"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"

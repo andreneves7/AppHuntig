@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Intent
 import android.os.Bundle
 import android.provider.AlarmClock
+import android.provider.AlarmClock.EXTRA_MESSAGE
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -53,92 +54,100 @@ class GrupoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         gv = application as VariaveisGlobais
         setContentView(R.layout.activity_grupo)
-
-        val lista = ListView3
-
         val semEventos = tNaoEventos
 
+        semEventos.isInvisible = true
 
+
+        busca()
+
+
+    }
+
+
+    fun busca() {
+        val semEventos = tNaoEventos
+        semEventos.isInvisible = true
         val user = Auth.currentUser
-        semEventos.isInvisible= true
-
-
-
         if (user != null) {
 
             val valu = ArrayList<String>()
 
-            val t = intent.getStringExtra(AlarmClock.EXTRA_MESSAGE).toInt()
+            val t = intent.getStringExtra(EXTRA_MESSAGE).toInt()
             val mail = mAuth.getReference("Eventos")
             val m = object : ChildEventListener {
                 override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
 
+                    val nome = dataSnapshot.child("nome").getValue().toString()
+
+                    mAuth.getReference("Eventos").child(nome)
+                        .addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(snapshot: DataSnapshot) {
+
+                                val refe =
+                                    snapshot.child("numeroGrupo").getValue().toString().toInt()
 
 
-                    val refe = dataSnapshot.child("numeroGrupo").getValue().toString().toInt()
 
 
 
-
-                    Log.d(
-                        "Grupo",
-                        " refe $refe"
-                    )
-
-                    if (refe != t.toInt()) {
-                        Log.d(
-                            "Grupo",
-                            " sem grupos deste user"
-                        )
-
-                        semEventos.isVisible = true
-
-
-                    } else {
-                        Log.d(
-                            "Grupo",
-                            " grupos deste user"
-                        )
-
-                        semEventos.isInvisible= true
-                        valu.add(dataSnapshot.child("nome").getValue().toString())
-
-
-                        val adapter = ArrayAdapter(this@GrupoActivity, R.layout.listview_item, valu)
-
-                        lista.adapter = adapter
-
-                        lista.onItemClickListener = object : AdapterView.OnItemClickListener {
-
-
-                            override fun onItemClick(
-                                parent: AdapterView<*>, view: View,
-                                position: Int, id: Long
-                            ) {
-
-                                val itemValue = lista.getItemAtPosition(position)
-                                gv.detalhes = itemValue as String
                                 Log.d(
                                     "Grupo",
-                                    "ffff :$itemValue"
+                                    " refe $refe"
                                 )
 
-                                var eve = mAuth.getReference("Eventos").child(itemValue.toString())
+                                if (refe == t) {
+                                    Log.d(
+                                        "Grupo",
+                                        " grupos deste user"
+                                    )
 
-                                eve.addValueEventListener(object : ValueEventListener {
-                                    override fun onDataChange(snapshot: DataSnapshot) {
-                                        startActivity(
-                                            Intent(
-                                                view.context,
-                                                DetalhesEventoActivity::class.java
-                                            )
-                                        )
-                                    }
+                                    semEventos.isVisible = false
+                                    valu.add(snapshot.child("nome").getValue().toString())
 
-                                    override fun onCancelled(error: DatabaseError) {
-                                        TODO("Not yet implemented")
-                                    }
-                                })
+
+                                    val adapter = ArrayAdapter(
+                                        this@GrupoActivity,
+                                        R.layout.listview_item,
+                                        valu
+                                    )
+                                    val lista = ListView3
+                                    lista.adapter = adapter
+
+                                    lista.onItemClickListener =
+                                        object : AdapterView.OnItemClickListener {
+
+
+                                            override fun onItemClick(
+                                                parent: AdapterView<*>, view: View,
+                                                position: Int, id: Long
+                                            ) {
+
+                                                val itemValue = lista.getItemAtPosition(position)
+                                                gv.detalhes = itemValue as String
+                                                Log.d(
+                                                    "Grupo",
+                                                    "ffff :$itemValue"
+                                                )
+
+                                                var eve = mAuth.getReference("Eventos")
+                                                    .child(itemValue.toString())
+
+                                                eve.addValueEventListener(object :
+                                                    ValueEventListener {
+                                                    override fun onDataChange(snapshot: DataSnapshot) {
+                                                        startActivity(
+                                                            Intent(
+                                                                view.context,
+                                                                DetalhesEventoActivity::class.java
+                                                            )
+                                                        )
+                                                    }
+
+                                                    override fun onCancelled(error: DatabaseError) {
+                                                        TODO("Not yet implemented")
+                                                    }
+                                                })
 
 
 //                                Toast.makeText(
@@ -149,14 +158,30 @@ class GrupoActivity : AppCompatActivity() {
 //                                    .show()
 
 
+                                            }
+
+                                        }
+
+
+                                } else {
+                                    Log.d(
+                                        "Grupo",
+                                        " sem grupos deste user ${valu.size}"
+                                    )
+                                    if (valu.size == 0) {
+
+                                        semEventos.isVisible = true
+                                    }
+
+                                }
+
+
                             }
 
-                        }
-
-
-                    }
-
-
+                            override fun onCancelled(error: DatabaseError) {
+                                TODO("Not yet implemented")
+                            }
+                        })
                 }
 
                 override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
@@ -177,8 +202,6 @@ class GrupoActivity : AppCompatActivity() {
             }
             mail.addChildEventListener(m)
         }
-
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

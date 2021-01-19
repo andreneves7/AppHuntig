@@ -17,6 +17,10 @@ import android.widget.ImageView
 import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_profile.*
@@ -30,7 +34,7 @@ import java.util.*
 class ProfileActivity : AppCompatActivity() {
 
     val Auth = FirebaseAuth.getInstance()
-    val mAuth = FirebaseFirestore.getInstance()
+    val mAuth = FirebaseDatabase.getInstance();
     val mStorage = FirebaseStorage.getInstance()
 
 
@@ -43,7 +47,7 @@ class ProfileActivity : AppCompatActivity() {
 
 
 
-        verificarImagem()
+       // verificarImagem()
 
 
 
@@ -57,85 +61,90 @@ class ProfileActivity : AppCompatActivity() {
 
         })
 
-        bFotoAdd.setOnClickListener {
+//        bFotoAdd.setOnClickListener {
+//
+//            uploadImageToFirebaseStorage()
+//            verImagem()
+//
+//
+//
+//        }
 
-            uploadImageToFirebaseStorage()
-            verImagem()
 
-
-
-        }
-
-
-        bAdd.setOnClickListener {
-            Log.d("Profile", "Try to show photo selector")
-            val intent = Intent(Intent.ACTION_PICK)
-            intent.type = "image/*"
-            startActivityForResult(intent, 0)
-        }
+//        bAdd.setOnClickListener {
+//            Log.d("Profile", "Try to show photo selector")
+//            val intent = Intent(Intent.ACTION_PICK)
+//            intent.type = "image/*"
+//            startActivityForResult(intent, 0)
+//        }
 
         old()
 
     }
+//
+//    private fun verificarImagem() {
+//        val imageUser = Auth.currentUser?.uid.toString()
+//        val consulta = mAuth.collection("Users").document(imageUser)
+//        consulta.get().addOnSuccessListener { task ->
+//            if (task != null) {
+//                Log.d("Profile", "imagem1: $imageUser")
+//
+//                val image = task.data?.get("Photo").toString()
+//                if (image != null) {
+//                    Log.d("Profile", "imagem2: $image")
+//                    //val m = mStorage.getReference(image)
+//                    //Log.d("Profile", "imagem3: $m")
+//                    val imageView = findViewById<ImageView>(R.id.imageViewUser)
+//                    Glide.with(this/*context*/).load(image).into(imageView)
+//                }
+//            }
+//        }
+//    }
 
-    private fun verificarImagem() {
-        val imageUser = Auth.currentUser?.uid.toString()
-        val consulta = mAuth.collection("Users").document(imageUser)
-        consulta.get().addOnSuccessListener { task ->
-            if (task != null) {
-                Log.d("Profile", "imagem1: $imageUser")
 
-                val image = task.data?.get("Photo").toString()
-                if (image != null) {
-                    Log.d("Profile", "imagem2: $image")
-                    //val m = mStorage.getReference(image)
-                    //Log.d("Profile", "imagem3: $m")
-                    val imageView = findViewById<ImageView>(R.id.imageViewUser)
-                    Glide.with(this/*context*/).load(image).into(imageView)
-                }
-            }
-        }
-    }
-
-
-    private fun verImagem() {
-        val imageUser = Auth.currentUser?.uid.toString()
-
-        val consulta = mAuth.collection("Users").document(imageUser)
-        consulta.get().addOnSuccessListener { task ->
-            if (task != null) {
-                Log.d("Profile", "imagem1: $imageUser")
-
-                val image = task.data?.get("Photo").toString()
-                Log.d("Profile", "imagem2: $image")
-                //val m = mStorage.getReference(image)
-                //Log.d("Profile", "imagem3: $m")
-                val imageView = findViewById<ImageView>(R.id.imageViewUser)
-                Glide.with(this/*context*/).load(image).into(imageView)
-            }
-        }
-    }
+//    private fun verImagem() {
+//        val imageUser = Auth.currentUser?.uid.toString()
+//
+//        val consulta = mAuth.collection("Users").document(imageUser)
+//        consulta.get().addOnSuccessListener { task ->
+//            if (task != null) {
+//                Log.d("Profile", "imagem1: $imageUser")
+//
+//                val image = task.data?.get("Photo").toString()
+//                Log.d("Profile", "imagem2: $image")
+//                //val m = mStorage.getReference(image)
+//                //Log.d("Profile", "imagem3: $m")
+//                val imageView = findViewById<ImageView>(R.id.imageViewUser)
+//                Glide.with(this/*context*/).load(image).into(imageView)
+//            }
+//        }
+//    }
 
     private fun old() {
         val show = textView
         val user = Auth.currentUser
+        val uid = Auth.currentUser?.uid.toString()
         val userEmail = Auth.currentUser?.email
+        val mail = mAuth.getReference("Users").child(uid)
 
-        // buscar nome ao firestore do user
+
+
+        // buscar nome ao firebase realtime do user
         if (user != null) {
-            val mail = mAuth.collection("Users").document(user.uid)
-            mail.get().addOnSuccessListener { document ->
-                if (document != null) {
-                    val nome = document.data?.get("name")
-                    show.text = "email: $userEmail\nname: $nome"
-
-                    Log.d("Profile", "DocumentSnapshot data: ${document.data?.get("name")}")
-                } else {
-                    Log.d("Profile", "No such document")
+          mail.addValueEventListener(
+          object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val n = snapshot.child("name").getValue().toString()
+                    Log.d("Profile", "valor nome = $n")
+                    show.text = "email: $userEmail\nname: $n"
                 }
-            }
-            //show.setText("email: "+ userEmail)
-            Log.d("Profile", "show email")
+
+                override fun onCancelled(databaseError: DatabaseError) {
+
+                }
+            })
+
+
         }
     }
 
@@ -213,15 +222,16 @@ class ProfileActivity : AppCompatActivity() {
 
             val user = FirebaseAuth.getInstance().currentUser
             val userEmail = userEmailEdt.text.toString()
+            val uid = user?.uid.toString()
+            val mail = mAuth.getReference("Users").child(uid)
 
             if (user != null) {
                 if (!userEmail.isEmpty()) {
 
                     user.updateEmail(userEmail).addOnCompleteListener { task2 ->
                         if (task2.isSuccessful) {
-                            val pessoa = HashMap<String, Any>()
-                            pessoa["email"] = userEmail
-                            mAuth.collection("Users").document(user.uid).update(pessoa)
+
+                           mail.child("email").setValue( userEmail)
                             Toast.makeText(this, "Update email Success", Toast.LENGTH_LONG).show()
                             Log.d("Profile", "email update auth")
                             old()
@@ -315,56 +325,56 @@ class ProfileActivity : AppCompatActivity() {
     }
 
 
-    var selectedPhotoUri: Uri? = null
+   // var selectedPhotoUri: Uri? = null
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//
+//        if (requestCode == 0 && resultCode == Activity.RESULT_OK && data != null) {
+//            Log.d("Profile", "Photo was selected")
+//
+//            selectedPhotoUri = data.data
+//
+//            val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, selectedPhotoUri)
+//
+//            vImg.setImageBitmap(bitmap)
+//
+//            bAdd.alpha = 0f
+//
+//        }
+//    }
 
-        if (requestCode == 0 && resultCode == Activity.RESULT_OK && data != null) {
-            Log.d("Profile", "Photo was selected")
-
-            selectedPhotoUri = data.data
-
-            val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, selectedPhotoUri)
-
-            vImg.setImageBitmap(bitmap)
-
-            bAdd.alpha = 0f
-
-        }
-    }
-
-    private fun uploadImageToFirebaseStorage() {
-        if (selectedPhotoUri == null) return
-
-        val filename = UUID.randomUUID().toString()
-        val ref = mStorage.getReference("/images/$filename")
-        val user = Auth.currentUser
-
-
-
-        ref.putFile(selectedPhotoUri!!)
-            .addOnSuccessListener {
-                Log.d("Profile", "Successfully upload image: ${it.metadata?.path}")
-
-                ref.downloadUrl.addOnSuccessListener {
-                    Log.d("Profile", "File localition: $it")
-
-                    val p = it.toString()
-
-                    if (user != null) {
-                        val pessoa = HashMap<String, Any>()
-                        pessoa["Photo"] = p
-                        mAuth.collection("Users").document(user.uid).update(pessoa)
-                        Toast.makeText(this, "Imagem guardada", Toast.LENGTH_LONG).show()
-                        verImagem()
-                    }
-
-                }
-
-            }
-
-    }
+//    private fun uploadImageToFirebaseStorage() {
+//        if (selectedPhotoUri == null) return
+//
+//        val filename = UUID.randomUUID().toString()
+//        val ref = mStorage.getReference("/images/$filename")
+//        val user = Auth.currentUser
+//
+//
+//
+//        ref.putFile(selectedPhotoUri!!)
+//            .addOnSuccessListener {
+//                Log.d("Profile", "Successfully upload image: ${it.metadata?.path}")
+//
+//                ref.downloadUrl.addOnSuccessListener {
+//                    Log.d("Profile", "File localition: $it")
+//
+//                    val p = it.toString()
+//
+//                    if (user != null) {
+//                        val pessoa = HashMap<String, Any>()
+//                        pessoa["Photo"] = p
+//                        mAuth.collection("Users").document(user.uid).update(pessoa)
+//                        Toast.makeText(this, "Imagem guardada", Toast.LENGTH_LONG).show()
+//                        verImagem()
+//                    }
+//
+//                }
+//
+//            }
+//
+//    }
 
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
