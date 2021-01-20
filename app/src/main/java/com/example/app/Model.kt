@@ -1,4 +1,4 @@
 package com.example.app
 
 
-class Model(val title:String, val desc:String, val photo: String)
+class Model(val Nome:String, val NumeroCC:Int, val NumeroSocio: Int)

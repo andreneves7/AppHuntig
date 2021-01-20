@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.AlarmClock
+import android.provider.AlarmClock.EXTRA_MESSAGE
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -53,7 +54,7 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback {
             marcarPresença()
             val marca = 1
             val intent = Intent(this, FiltrosActivity::class.java).apply {
-                putExtra(AlarmClock.EXTRA_MESSAGE, marca)
+                putExtra(EXTRA_MESSAGE, marca)
             }
             startActivity(intent)
         }
@@ -151,31 +152,35 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
 
-                            if (fazParte.contains(uid)) {
+                    if (fazParte.contains(uid)) {
 
-                                marcar.isVisible = false
-                                Log.d(
-                                    "detalhes", "detalhe: $pre" +
-                                            "ffff: $uid" + "\n" + "false"
-                                )
-                            } else {
+                        marcar.isVisible = false
+                        Log.d(
+                            "detalhes", "detalhe: $pre" +
+                                    "ffff: $uid" + "\n" + "false"
+                        )
+                    } else {
 
-                                marcar.isVisible = true
-                                Log.d(
-                                    "detalhes", "detalhe: $pre" +
-                                            "ffff: $uid" + "\n" + "true"
-                                )
-                            }
+                        marcar.isVisible = true
+                        Log.d(
+                            "detalhes", "detalhe: $pre" +
+                                    "ffff: $uid" + "\n" + "true"
+                        )
+                    }
 //                            Log.d(
 //                                "evento", "DocumentSnapshot data: ${dataSnapshot.child("admin").getValue()} "
 //                            )
 
 
-
                 }
 
                 override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-                    startActivity(Intent(this@DetalhesEventoActivity,DetalhesEventoActivity::class.java))
+                    startActivity(
+                        Intent(
+                            this@DetalhesEventoActivity,
+                            DetalhesEventoActivity::class.java
+                        )
+                    )
                 }
 
                 override fun onChildRemoved(snapshot: DataSnapshot) {
@@ -199,6 +204,8 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
     fun marcarPresença() {
+        var num = 0
+        val valu = ArrayList<String>()
 
         val user = Auth.currentUser
         if (user != null) {
@@ -206,32 +213,39 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback {
             mail.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
 
+                    val a = dataSnapshot.child("Presenças").value.toString()
+                    valu.add(a)
 
-                    val buscarNome = mAuth.getReference("Users").child(user.uid)
-                    buscarNome.addListenerForSingleValueEvent(object : ValueEventListener {
-                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    Log.d(
+                        "evento",
+                        "DocumentSnapshot data: ${valu.size} "
+                    )
+                    Log.d(
+                        "evento",
+                        "DocumentSnapshot data: ${valu} "
+                    )
 
 
+                    num = valu.size
 
-                            val update = HashMap<String, Any>()
-                            update["Presenças"] = arrayListOf(user.uid)
+                    Log.d(
+                        "evento",
+                        "DocumentSnapshot data: ${num }"
+                    )
 
-                            mAuth.getReference("Eventos").child(gv.detalhes)
-                                .updateChildren(update)
+                    val update = HashMap<String, Any>()
+                    update["$num"] = user.uid
 
-                            Log.d(
-                                "evento", "DocumentSnapshot data: ${dataSnapshot.child("admin").getValue()} "
-                            )
+                    mAuth.getReference("Eventos").child(gv.detalhes).child("Presenças")
+                        .updateChildren(update)
 
-                        }
+                    Log.d(
+                        "evento",
+                        "DocumentSnapshot data: ${dataSnapshot.child("admin").getValue()} "
+                    )
 
-                        override fun onCancelled(error: DatabaseError) {
-                            TODO("Not yet implemented")
+
                 }
-            })
-
-
-        }
 
                 override fun onCancelled(error: DatabaseError) {
                     TODO("Not yet implemented")

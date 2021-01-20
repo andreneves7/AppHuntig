@@ -3,6 +3,8 @@ package com.example.app
 
 import android.content.Intent
 import android.os.Bundle
+import android.provider.AlarmClock
+import android.provider.AlarmClock.EXTRA_MESSAGE
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -22,7 +24,7 @@ class EventoActivity : AppCompatActivity() {
 
     //val gAuth = FirebaseFirestore.getInstance().collection("Grupo")
     lateinit var gv: VariaveisGlobais
-
+var num = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -102,7 +104,10 @@ class EventoActivity : AppCompatActivity() {
         val horas = edTime.text.toString()
         val on = switchForma
 
+        var numero = intent.getStringExtra(EXTRA_MESSAGE).toInt()
+        Log.d("Numero", "ola2 = $numero")
 
+        num = numero
 
         val user = Auth.currentUser
 
@@ -119,7 +124,15 @@ class EventoActivity : AppCompatActivity() {
                     gv.privado = "publico"
                 }
                 if (gv.check != "") {
-                    val intent = Intent(this, MapsActivity::class.java)
+
+
+
+
+                    val intent = Intent(this, MapsActivity::class.java).apply {
+                        putExtra(
+                            EXTRA_MESSAGE,
+                            num.toString())
+                    }
                     startActivity(intent)
                 } else {
                     Toast.makeText(this, "Selecionar Tipo", Toast.LENGTH_SHORT).show()

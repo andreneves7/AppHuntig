@@ -60,9 +60,3 @@ class VerificarLoginActivity : AppCompatActivity() {
     finish()
     }
 }
-
-
-
-
-
-

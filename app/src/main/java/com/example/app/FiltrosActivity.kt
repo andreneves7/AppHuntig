@@ -3,6 +3,7 @@ package com.example.app
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.AlarmClock
 import android.provider.AlarmClock.EXTRA_MESSAGE
 import android.util.Log
 import android.view.Menu
@@ -32,10 +33,16 @@ class FiltrosActivity : AppCompatActivity() {
         val rolas = bRolas
         val dias = bDias
 
-        var marca = intent.getIntExtra(EXTRA_MESSAGE, -1)
+        val marca = intent.getIntExtra(EXTRA_MESSAGE, -1)
 
         if (marca == 1) {
-            startActivity(Intent(this@FiltrosActivity, FiltrosActivity::class.java))
+            //startActivity(Intent(this@FiltrosActivity, FiltrosActivity::class.java))
+            val marca = 0
+            val intent = Intent(this, FiltrosActivity::class.java).apply {
+                putExtra(EXTRA_MESSAGE, marca)
+            }
+            startActivity(intent)
+
         }
 
         rolas.setVisibility(View.INVISIBLE)
@@ -44,9 +51,8 @@ class FiltrosActivity : AppCompatActivity() {
         esperas.setVisibility(View.INVISIBLE)
         dias.setVisibility(View.INVISIBLE)
 
-
         if (marca == 0) {
-            maior.setOnClickListener(View.OnClickListener { view ->
+            maior.setOnClickListener(View.OnClickListener {
 
 
                 rolas.setVisibility(View.INVISIBLE)
@@ -55,7 +61,7 @@ class FiltrosActivity : AppCompatActivity() {
                 montaria.setVisibility(View.VISIBLE)
                 esperas.setVisibility(View.VISIBLE)
 
-                esperas.setOnClickListener(View.OnClickListener { view ->
+                esperas.setOnClickListener{ view ->
                     val filtro = "esperas"
                     val intent = Intent(this, HomeActivity::class.java).apply {
                         putExtra(EXTRA_MESSAGE, filtro)
@@ -67,9 +73,9 @@ class FiltrosActivity : AppCompatActivity() {
                             filtro
                         }"
                     )
-                })
+                }
 
-                montaria.setOnClickListener(View.OnClickListener { view ->
+                montaria.setOnClickListener {
                     val filtro = "montaria"
                     val intent = Intent(this, HomeActivity::class.java).apply {
                         putExtra(EXTRA_MESSAGE, filtro)
@@ -81,7 +87,7 @@ class FiltrosActivity : AppCompatActivity() {
                             filtro
                         }"
                     )
-                })
+                }
 
             })
 

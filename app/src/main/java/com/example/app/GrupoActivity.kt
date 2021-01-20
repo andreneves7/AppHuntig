@@ -41,6 +41,7 @@ class VariaveisGlobais : Application() {
     var numEspanha: Int = 0
 
 
+
 }
 
 class GrupoActivity : AppCompatActivity() {

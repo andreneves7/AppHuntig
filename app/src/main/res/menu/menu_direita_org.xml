@@ -9,7 +9,10 @@
 
 
 
-
+        <item
+            android:id="@+id/pendente"
+            android:title="Socios"
+            app:showAsAction="never" />
 
 
         <item

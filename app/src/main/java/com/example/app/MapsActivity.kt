@@ -12,6 +12,8 @@ import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
+import android.provider.AlarmClock
+import android.provider.AlarmClock.EXTRA_MESSAGE
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -33,6 +35,7 @@ import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.GeoPoint
@@ -52,7 +55,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickListe
     lateinit var gv: VariaveisGlobais
 
     val Auth = FirebaseAuth.getInstance()
-    val mAuth = FirebaseFirestore.getInstance()
+    val mAuth = FirebaseDatabase.getInstance()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -131,7 +134,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickListe
                 Log.d(
                     "Mapa",
                     "Place: " + place.getName()
-                        .toString() + ", " + place.getId() + "," + gv.Lat + ", "+ gv.Long
+                        .toString() + ", " + place.getId() + "," + gv.Lat + ", " + gv.Long
                 )
             }
 
@@ -236,6 +239,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickListe
         val builder = LocationSettingsRequest.Builder()
             .addLocationRequest(locationRequest)
 
+        val client = LocationServices.getSettingsClient(this)
+
         val task = client.checkLocationSettings(builder.build())
 
         // 5
@@ -286,8 +291,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickListe
             startLocationUpdates()
         }
     }
-    // 4
-        val client = LocationServices.getSettingsClient(this)
 
 
     private fun placeMarkerOnMap(location: LatLng) {
@@ -299,75 +302,62 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickListe
     }
 
     private fun evento() {
-
-
         val user = Auth.currentUser
-
         if (user != null) {
-            val mail = mAuth.collection("Users").document(user.uid)
-            mail.get().addOnSuccessListener { document ->
-                if (document != null) {
-
-                    val name = document.data?.get("name")
 
 
-                    if (gv.Lat != 0.0 && gv.Long != 0.0) {
+            var numero = intent.getStringExtra(EXTRA_MESSAGE).toInt()
+            Log.d("Numero", "ola3 = $numero")
 
 
-                        val evento = HashMap<String, Any>()
-                        evento["nome"] = gv.nome
-                        evento["Presenças"] = ArrayList<String>()
-                        evento["horas"] = gv.Horas
-                        evento["dia"] = gv.Day
-                        evento["mes"] = gv.Month
-                        evento["ano"] = gv.Year
-                        evento["diaFim"] = gv.DayFim
-                        evento["mesFim"] = gv.MonthFim
-                        evento["anoFim"] = gv.YearFim
-                        evento["Tipo"] = gv.check
-                        evento["Forma"] = gv.privado
-                        evento["Latitude"] = gv.Lat
-                        evento["Longitude"] = gv.Long
-                        mAuth.collection("Eventos").document(gv.nome)
-                            .set(evento)
-
-                        val up = HashMap<String, Any>()
-                        up["Eventos"] = arrayListOf(gv.nome)
-                        mAuth.collection("Grupos").document(gv.Evento)
-                            .update("Eventos", FieldValue.arrayUnion(gv.nome))
-
-                        //tirar criador nao conta
-                        val upd = HashMap<String, Any>()
-                        upd["Presenças"] = arrayListOf(name)
-                        mAuth.collection("Eventos").document(gv.nome)
-                            .update("Presenças", FieldValue.arrayUnion(name))
-
-                        Toast.makeText(this, "evento criado", Toast.LENGTH_SHORT).show()
 
 
-                        val intent = Intent(this, GrupoActivity::class.java)
-                        intent.flags =
-                            Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        startActivity(intent)
+            if (gv.Lat != 0.0 && gv.Long != 0.0) {
 
-                        Log.d(
-                            "evento", "DocumentSnapshot data: ${document.data?.get("name")}"
-                        )
-                    } else {
-                        Toast.makeText(this, "Tem de ter localização", Toast.LENGTH_SHORT).show()
-                        Log.d("Mapa", "$lastLocation}")
-                        Log.d("Mapa", "latitude ${gv.Lat}}")
-                        Log.d("Mapa", "longitude ${gv.Long}}")
 
-                    }
-                } else {
-                    Log.d("evento", "No such document")
-                }
+                val evento = HashMap<String, Any>()
+                evento["nome"] = gv.nome
+                //evento["Presenças"] = ArrayList<String>()
+                evento["horas"] = gv.Horas
+                evento["dia"] = gv.Day
+                evento["mes"] = gv.Month
+                evento["ano"] = gv.Year
+                evento["diaFim"] = gv.DayFim
+                evento["mesFim"] = gv.MonthFim
+                evento["anoFim"] = gv.YearFim
+                evento["Tipo"] = gv.check
+                evento["Forma"] = gv.privado
+                evento["Latitude"] = gv.Lat
+                evento["Longitude"] = gv.Long
+                evento["numeroGrupo"] = numero
+
+
+                mAuth.getReference("Eventos").child(gv.nome).setValue(evento)
+
+
+
+                Toast.makeText(this, "evento criado", Toast.LENGTH_SHORT).show()
+
+
+                val intent = Intent(this, CriarOrgEventoActivity::class.java)
+                intent.flags =
+                    Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+
+
+            } else {
+                Toast.makeText(this, "Tem de ter localização", Toast.LENGTH_SHORT).show()
+                Log.d("Mapa", "$lastLocation}")
+                Log.d("Mapa", "latitude ${gv.Lat}}")
+                Log.d("Mapa", "longitude ${gv.Long}}")
+
             }
+
         }
     }
-
 }
+
+
 
 
 

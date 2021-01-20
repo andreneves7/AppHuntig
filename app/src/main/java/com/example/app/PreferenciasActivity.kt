@@ -3,6 +3,7 @@ package com.example.app
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.AlarmClock
 import android.provider.AlarmClock.EXTRA_MESSAGE
 import android.util.Log
 import android.view.Menu
@@ -32,7 +33,13 @@ class PreferenciasActivity : AppCompatActivity() {
         val change = Auth.currentUser?.uid.toString()
 
         pular.setOnClickListener {
-            val intent = Intent(this, FiltrosActivity::class.java)
+
+            val marca = 1
+
+
+            val intent = Intent(this, FiltrosActivity::class.java)  .apply {
+                putExtra(EXTRA_MESSAGE, marca)
+            }
 
             val first = mAuth.getReference("Users").child(change)
                 first.addValueEventListener(object : ValueEventListener {
