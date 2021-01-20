@@ -11,12 +11,10 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_criar_org_evento.*
 import kotlinx.android.synthetic.main.activity_grupo.*
 
@@ -34,7 +32,8 @@ class CriarOrgEventoActivity : AppCompatActivity() {
         gv = application as VariaveisGlobais
         setContentView(R.layout.activity_criar_org_evento)
 
-        val evento = bEvento2
+        val evento = bEvento
+        val soc = bSocios
 
         busca()
 
@@ -49,6 +48,16 @@ class CriarOrgEventoActivity : AppCompatActivity() {
             })
         }
 
+       soc.setOnClickListener {
+
+            Log.d("Numero", "ola = $numero")
+            startActivity(Intent(this, AdmissaoActivity::class.java).apply {
+                putExtra(
+                    EXTRA_MESSAGE,
+                    numero.toString()
+                )
+            })
+        }
 
     }
 

@@ -151,7 +151,7 @@ class OrgActivity : AppCompatActivity() {
                 }
 
                 override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-                    TODO("Not yet implemented")
+                   startActivity(Intent(this@OrgActivity, OrgActivity::class.java))
                 }
 
                 override fun onChildRemoved(snapshot: DataSnapshot) {

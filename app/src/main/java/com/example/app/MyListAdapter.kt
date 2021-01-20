@@ -20,19 +20,26 @@ class MyListAdapter(var mCtx: Context, var resource: Int, var items: ArrayList<M
         val layoutInflater: LayoutInflater = LayoutInflater.from(mCtx)
 
         val view: View = layoutInflater.inflate(resource, null)
+
         var nome: TextView = view.findViewById(R.id.labelNome)
         var numeroCC: TextView = view.findViewById(R.id.labelNumeroCC)
         var numeroSocio: TextView = view.findViewById(R.id.labelNumeroSocio)
+        var a= ""
 
 
-        var person: Model = items[position]
+        var person: Model = getItem(position) as Model
 
         nome.text = "Nome: " + person.Nome
         numeroCC.text = "Nº Carta Caçador: " + person.NumeroCC.toString()
         numeroSocio.text = "Nº Socio: " + person.NumeroSocio.toString()
+        a = person.uid
 
 
         return view
+    }
+
+    override fun getItem(position: Int): Model? {
+        return items[position]
     }
 
 
