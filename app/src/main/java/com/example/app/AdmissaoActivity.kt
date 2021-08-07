@@ -6,11 +6,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.AlarmClock.EXTRA_MESSAGE
 import android.util.Log
-import android.view.View
-import android.widget.AdapterView
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.ListView
 import android.widget.Toast
-import androidx.core.view.get
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_admissao.*
@@ -44,6 +43,7 @@ class AdmissaoActivity : AppCompatActivity() {
         var c = 0
         var s = 0
         var uid = ""
+        var socio = ""
 
         if (user != null) {
             val mail = mAuth.getReference("Grupos")
@@ -56,9 +56,9 @@ class AdmissaoActivity : AppCompatActivity() {
 
                     //val g = dataSnapshot.child("nome").getValue().toString()
                     val admin = dataSnapshot.child("admin").getValue().toString()
-                    val numero = dataSnapshot.child("Numero").getValue().toString()
+                    val numeroGrupo = dataSnapshot.child("Numero").getValue().toString()
                     val nameGrupo = dataSnapshot.child("nome").getValue().toString()
-                    Log.d("adesa", "numero= $numero")
+                    Log.d("adesa", "numero= $numeroGrupo")
 
                     Log.d(
                         "VerGrupo2",
@@ -74,7 +74,7 @@ class AdmissaoActivity : AppCompatActivity() {
 //                    )
 
                     val t = mAuth.getReference("Users")
-                    if (num == numero.toInt()) {
+                    if (num == numeroGrupo.toInt()) {
                         if (admin == user) {
 
                             t.addValueEventListener(object : ValueEventListener {
@@ -105,7 +105,7 @@ class AdmissaoActivity : AppCompatActivity() {
                                             Log.d("adesa", "carta= $carta")
 
 
-                                            val socio =
+                                            socio =
                                                 dataSnapshot.child("Pendentes").child("${i.key}")
                                                     .child("numero socio").getValue()
                                                     .toString()
@@ -167,7 +167,7 @@ class AdmissaoActivity : AppCompatActivity() {
                                                                 .getValue().toString()
 
 
-                                                        val q = snapshot.child("Grupos")
+                                                        val numSocio = snapshot.child("Grupos")
                                                             .child(
                                                                 num.toString()
                                                             ).child("Socio")
@@ -178,7 +178,7 @@ class AdmissaoActivity : AppCompatActivity() {
 
                                                         n = name
                                                         c = cartacc.toInt()
-                                                        s = q.toInt()
+                                                        s = socio.toInt()
 
 
                                                         uid = refUser
@@ -187,7 +187,7 @@ class AdmissaoActivity : AppCompatActivity() {
                                                             "ffff :${nameGrupo}"
                                                         )
 
-                                                        open(n, c, s, nameGrupo, uid)
+                                                        open(n, c, s, nameGrupo, uid, numeroGrupo)
                                                     }
 
                                                     override fun onCancelled(error: DatabaseError) {
@@ -248,7 +248,14 @@ class AdmissaoActivity : AppCompatActivity() {
 
     }
 
-    fun open(name: String, numCC: Int, numSoc: Int, nomeGrupo: String, uid: String) {
+    fun open(
+        name: String,
+        numCC: Int,
+        numSoc: Int,
+        nomeGrupo: String,
+        uid: String,
+        numeroGrupo: String
+    ) {
         val inflater = layoutInflater
         val inflate_view = inflater.inflate(R.layout.adesao_custom_view, null)
 
@@ -284,7 +291,40 @@ class AdmissaoActivity : AppCompatActivity() {
                         val a = dataSnapshot.child("membros").value.toString()
                         valu.add(a)
 
+                        val b = dataSnapshot.child("membros").childrenCount
+
+
+
+//                       var c = a.split('=') as ArrayList<String>
+//
+//                        Log.d(
+//                            "adesa",
+//                            "DocumentSnapshot data: ${a.split('=')}"
+//                        )
+//
+//                        Log.d(
+//                            "adesa",
+//                            "DocumentSnapshot data: ${c}"
+//                        )
+//
+//
+//                        Log.d(
+//                            "adesa",
+//                            "DocumentSnapshot data: ${c[0]}"
+//                        )
+
+//                        Log.d(
+//                            "adesa",
+//                            "DocumentSnapshot data: ${c[2]}"
+//                        )
+
+                        Log.d(
+                            "adesa",
+                            "DocumentSnapshot data: ${b}"
+                        )
+
                         num = valu.size
+
 
 
                         num = num + 1
@@ -292,12 +332,26 @@ class AdmissaoActivity : AppCompatActivity() {
                             "adesa",
                             "DocumentSnapshot data: ${num}"
                         )
+                        Log.d(
+                            "adesa",
+                            "DocumentSnapshot data: ${numeroSocio}"
+                        )
 
                             val update = HashMap<String, Any>()
-                            update["$num"] = user
+                            update["$numeroSocio"] = user
 
+                        val updateUser = HashMap<String, Any>()
+                        updateUser["$numeroGrupo"] = numeroSocio
+
+                        //adiciona ao grupo nos membros se ele for aceite
                             mAuth.getReference("Grupos").child(nomeGrupo).child("membros")
                                 .updateChildren(update)
+
+                        //adiciona no utilizador o a secçao dos grupos o seu numero de socio se ele for aceite
+                        mAuth.getReference("Users").child(user).child("Grupos")
+                            .updateChildren(updateUser)
+
+                        //remove o utilizador da lista de pendetes
                             mAuth.getReference("Grupos").child(nomeGrupo).child("Pendentes")
                                 .child(user)
                                 .removeValue()
@@ -322,4 +376,36 @@ class AdmissaoActivity : AppCompatActivity() {
         dialog.show()
 
     }
+
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.menu_direita_org, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item!!.itemId == R.id.signOut2) {
+            Auth.signOut()
+            val intent = Intent(this, LoginActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+        }
+
+
+
+        if (item.itemId == R.id.grupo2) {
+
+            startActivity(Intent(this, OrgActivity::class.java))
+        }
+
+//        if (item.itemId == R.id.pendente) {
+//
+//            startActivity(Intent(this, AdmissaoActivity::class.java))
+//        }
+
+
+        return super.onOptionsItemSelected(item)
+    }
+
 }

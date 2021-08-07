@@ -8,8 +8,8 @@
 
 
     <ScrollView
-        android:layout_width="369dp"
-        android:layout_height="668dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.484"
@@ -453,6 +453,10 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/botoes"
                 android:text="Registar" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="31dp" />
 
         </LinearLayout>
     </ScrollView>
