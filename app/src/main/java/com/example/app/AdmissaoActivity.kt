@@ -20,7 +20,7 @@ class AdmissaoActivity : AppCompatActivity() {
 
 
     val mAuth = FirebaseDatabase.getInstance()
-    val Auth = FirebaseAuth.getInstance()
+    val auth = FirebaseAuth.getInstance()
 
     lateinit var lista: ListView
 
@@ -36,33 +36,33 @@ class AdmissaoActivity : AppCompatActivity() {
     }
 
 
-    fun dados() {
-        val user = Auth.currentUser?.uid
-        val num = intent.getStringExtra(EXTRA_MESSAGE).toInt()
-        var n = ""
-        var c = 0
-        var s = 0
-        var uid = ""
+    private fun dados() {
+        val user = auth.currentUser?.uid
+        val num = intent.getStringExtra(EXTRA_MESSAGE)?.toInt()
+        var n: String
+        var c: Int
+        var s: Int
+        var uid: String
         var socio = ""
 
         if (user != null) {
             val mail = mAuth.getReference("Grupos")
 
-            var values = ArrayList<Model>()
+            val values = ArrayList<Model>()
             val valor = ArrayList<String>()
 
             val j = object : ChildEventListener {
                 override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
 
                     //val g = dataSnapshot.child("nome").getValue().toString()
-                    val admin = dataSnapshot.child("admin").getValue().toString()
-                    val numeroGrupo = dataSnapshot.child("Numero").getValue().toString()
-                    val nameGrupo = dataSnapshot.child("nome").getValue().toString()
+                    val admin = dataSnapshot.child("admin").value.toString()
+                    val numeroGrupo = dataSnapshot.child("Numero").value.toString()
+                    val nameGrupo = dataSnapshot.child("nome").value.toString()
                     Log.d("adesa", "numero= $numeroGrupo")
 
                     Log.d(
                         "VerGrupo2",
-                        "${user}"
+                        "$user"
                     )
 
 
@@ -90,24 +90,24 @@ class AdmissaoActivity : AppCompatActivity() {
 
                                         val existe =
                                             dataSnapshot.child("Pendentes")
-                                                .getValue().toString()
+                                                .value.toString()
 
                                         if (existe.contains(i.key.toString())) {
 
                                             val nome =
                                                 snapshot.child("${i.key}").child("name")
-                                                    .getValue().toString()
+                                                    .value.toString()
                                             Log.d("adesa", "nome= $nome")
 
                                             val carta =
                                                 snapshot.child("${i.key}").child("Carta Caçadore")
-                                                    .getValue().toString()
+                                                    .value.toString()
                                             Log.d("adesa", "carta= $carta")
 
 
                                             socio =
                                                 dataSnapshot.child("Pendentes").child("${i.key}")
-                                                    .child("numero socio").getValue()
+                                                    .child("numero socio").value
                                                     .toString()
 
                                             Log.d("adesa", "g= $socio")
@@ -130,7 +130,7 @@ class AdmissaoActivity : AppCompatActivity() {
                                             values
                                         )
 
-                                        lista.setOnItemClickListener { parent, view, position, id ->
+                                        lista.setOnItemClickListener { parent, _, position, _ ->
 
 //                                        lista.onItemClickListener =
 //                                            object : AdapterView.OnItemClickListener {
@@ -142,11 +142,11 @@ class AdmissaoActivity : AppCompatActivity() {
 //                                                ) {
 
 
-                                            var elemnt = parent.getItemAtPosition(position) as Model
+                                            val elemnt = parent.getItemAtPosition(position) as Model
                                             val itemValue = lista.getItemIdAtPosition(position)
                                             Log.d(
                                                 "adesa",
-                                                "ffff :${elemnt.toString()}"
+                                                "ffff :$elemnt"
                                             )
 
 
@@ -159,22 +159,22 @@ class AdmissaoActivity : AppCompatActivity() {
 
                                                         val name =
                                                             snapshot.child("name")
-                                                                .getValue().toString()
+                                                                .value.toString()
 
 
                                                         val cartacc =
                                                             snapshot.child("Carta Caçadore")
-                                                                .getValue().toString()
+                                                                .value.toString()
 
 
                                                         val numSocio = snapshot.child("Grupos")
                                                             .child(
                                                                 num.toString()
                                                             ).child("Socio")
-                                                            .getValue().toString()
+                                                            .value.toString()
 
                                                         val refUser = snapshot.child("uid")
-                                                            .getValue().toString()
+                                                            .value.toString()
 
                                                         n = name
                                                         c = cartacc.toInt()
@@ -218,7 +218,6 @@ class AdmissaoActivity : AppCompatActivity() {
                 }
 
                 override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-                    val numero = num
                     startActivity(
                         Intent(
                             this@AdmissaoActivity,
@@ -226,7 +225,7 @@ class AdmissaoActivity : AppCompatActivity() {
                         ).apply {
                             putExtra(
                                 EXTRA_MESSAGE,
-                                numero.toString()
+                                num.toString()
                             )
                         })
                 }
@@ -257,31 +256,28 @@ class AdmissaoActivity : AppCompatActivity() {
         numeroGrupo: String
     ) {
         val inflater = layoutInflater
-        val inflate_view = inflater.inflate(R.layout.adesao_custom_view, null)
+        val inflateview = inflater.inflate(R.layout.adesao_custom_view, null)
 
-        val texto = inflate_view.textViewShow
+        val texto = inflateview.textViewShow
 
-        val user = uid
-
-        val nome = name
-        val numeroCC = numCC
-        val numeroSocio = numSoc
-        var num = 0
+        var num: Int
         val valu = ArrayList<String>()
 
-        texto.text =
-            "Nome: " + nome + "\n" + "Nº Carta Caçador: " + numeroCC + "\n" + "Nº Socio: " + numeroSocio
+//        texto.text =
+//            "Nome: " + nome + "\n" + "Nº Carta Caçador: " + numeroCC + "\n" + "Nº Socio: " + numeroSocio
+        texto.text = getString(R.string.adesao_custom_textViewShow, name, numCC, numSoc)
+
 
         val alertDialog = AlertDialog.Builder(this)
         alertDialog.setTitle("Socio Pendente")
-        alertDialog.setView(inflate_view)
+        alertDialog.setView(inflateview)
         alertDialog.setCancelable(false)
 
-        alertDialog.setNegativeButton("Rejeitar") { dialog, which ->
+        alertDialog.setNegativeButton("Rejeitar") { _, _ ->
             Toast.makeText(this, "Rejeitado", Toast.LENGTH_LONG).show()
         }
 
-        alertDialog.setPositiveButton("Aceitar") { dialog, which ->
+        alertDialog.setPositiveButton("Aceitar") { _, _ ->
 
 
             mAuth.getReference("Grupos").child(nomeGrupo).addListenerForSingleValueEvent(
@@ -292,7 +288,6 @@ class AdmissaoActivity : AppCompatActivity() {
                         valu.add(a)
 
                         val b = dataSnapshot.child("membros").childrenCount
-
 
 
 //                       var c = a.split('=') as ArrayList<String>
@@ -320,45 +315,41 @@ class AdmissaoActivity : AppCompatActivity() {
 
                         Log.d(
                             "adesa",
-                            "DocumentSnapshot data: ${b}"
+                            "DocumentSnapshot data: $b"
                         )
 
                         num = valu.size
 
 
 
-                        num = num + 1
+                        num += 1
                         Log.d(
                             "adesa",
-                            "DocumentSnapshot data: ${num}"
+                            "DocumentSnapshot data: $num"
                         )
                         Log.d(
                             "adesa",
-                            "DocumentSnapshot data: ${numeroSocio}"
+                            "DocumentSnapshot data: $numSoc"
                         )
 
-                            val update = HashMap<String, Any>()
-                            update["$numeroSocio"] = user
+                        val update = HashMap<String, Any>()
+                        update["$numSoc"] = uid
 
                         val updateUser = HashMap<String, Any>()
-                        updateUser["$numeroGrupo"] = numeroSocio
+                        updateUser[numeroGrupo] = numSoc
 
                         //adiciona ao grupo nos membros se ele for aceite
-                            mAuth.getReference("Grupos").child(nomeGrupo).child("membros")
-                                .updateChildren(update)
+                        mAuth.getReference("Grupos").child(nomeGrupo).child("membros")
+                            .updateChildren(update)
 
                         //adiciona no utilizador o a secçao dos grupos o seu numero de socio se ele for aceite
-                        mAuth.getReference("Users").child(user).child("Grupos")
+                        mAuth.getReference("Users").child(uid).child("Grupos")
                             .updateChildren(updateUser)
 
                         //remove o utilizador da lista de pendetes
-                            mAuth.getReference("Grupos").child(nomeGrupo).child("Pendentes")
-                                .child(user)
-                                .removeValue()
-
-
-
-
+                        mAuth.getReference("Grupos").child(nomeGrupo).child("Pendentes")
+                            .child(uid)
+                            .removeValue()
 
 
                     }
@@ -384,9 +375,9 @@ class AdmissaoActivity : AppCompatActivity() {
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item!!.itemId == R.id.signOut2) {
-            Auth.signOut()
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.signOut2) {
+            auth.signOut()
             val intent = Intent(this, LoginActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)

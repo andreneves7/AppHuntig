@@ -7,9 +7,8 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
 
-class MyListAdapter( private var mCtx: Context, private var resource: Int, private var items: ArrayList<Model>) :
-    ArrayAdapter<Model>(mCtx, resource, items) {
-
+class MyListAdapter_ListaSocios (private var mCtx: Context,private var resource: Int,private var items: ArrayList<Model>) :
+    ArrayAdapter<Model>(mCtx, resource, items){
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
 
@@ -18,7 +17,7 @@ class MyListAdapter( private var mCtx: Context, private var resource: Int, priva
         val view: View = layoutInflater.inflate(resource, null)
 
         val nome: TextView = view.findViewById(R.id.labelNome)
-        val numeroCC: TextView = view.findViewById(R.id.labelNumeroCC)
+
         val numeroSocio: TextView = view.findViewById(R.id.labelNumeroSocio)
 
 
@@ -26,14 +25,10 @@ class MyListAdapter( private var mCtx: Context, private var resource: Int, priva
         val person: Model = getItem(position)
 
 //        nome.text = "Nome: " + person.Nome
-        nome.text = mCtx.getString(R.string.nome,person.Nome)
+        nome.text = mCtx.getString(R.string.nome, person.Nome)
 
-//        numeroCC.text = "Nº Carta Caçador: " + person.NumeroCC.toString()
-        numeroCC.text = mCtx.getString(R.string.carta_cacador, person.NumeroCC.toString())
-
-//        numeroSocio.text = "Nº Socio: " + person.NumeroSocio.toString()
         numeroSocio.text = mCtx.getString(R.string.num_socio, person.NumeroSocio.toString())
-        var a = person.uid
+
 
 
         return view
@@ -42,6 +37,5 @@ class MyListAdapter( private var mCtx: Context, private var resource: Int, priva
     override fun getItem(position: Int): Model {
         return items[position]
     }
-
 
 }

@@ -7,18 +7,15 @@ import android.provider.AlarmClock
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ListView
-import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.google.firebase.firestore.FirebaseFirestore
 
 class ListaGruposActivity : AppCompatActivity() {
 
-    val Auth = FirebaseAuth.getInstance()
+    val auth = FirebaseAuth.getInstance()
     val mAuth = FirebaseDatabase.getInstance()
     lateinit var gv: VariaveisGlobais
 
@@ -30,7 +27,7 @@ class ListaGruposActivity : AppCompatActivity() {
         setContentView(R.layout.activity_lista_grupos)
         listView = findViewById(R.id.listViewLista)
 
-        val GruposMemebro = mAuth.getReference("Grupos")
+        val gruposMemebro = mAuth.getReference("Grupos")
         val list = ArrayList<String>()
 
         val membro = object : ChildEventListener {
@@ -38,9 +35,9 @@ class ListaGruposActivity : AppCompatActivity() {
 
                 //val grupo = dataSnapshot.getValue()
 
-                val g = dataSnapshot.child("nome").getValue().toString()
+                val g = dataSnapshot.child("nome").value.toString()
                 list.add(
-                    "${g}"
+                    g
                 )
 
 //                Log.d(
@@ -60,40 +57,30 @@ class ListaGruposActivity : AppCompatActivity() {
                 listView.adapter = adapter3
 
                 listView.onItemClickListener =
-                    object : AdapterView.OnItemClickListener {
+                    AdapterView.OnItemClickListener { _, view, position, _ ->
+                        val itemValue = listView.getItemAtPosition(position)
+                        val message = itemValue as String
+                        Log.d("ListaGruposActivity", "mensagem: $message" + "item: $itemValue ")
+
+                        val b = mAuth.getReference("Grupos").child(itemValue.toString())
+
+                        //var b = mAuth.collection("Grupos").document(itemValue.toString())
+                        b.addValueEventListener(object : ValueEventListener {
+                            override fun onDataChange(snapshot: DataSnapshot) {
 
 
-                        override fun onItemClick(
-                            parent: AdapterView<*>,
-                            view: View,
-                            position: Int,
-                            id: Long
-                        ) {
+                                startActivity(
+                                    Intent(view.context, AdesaoActivity::class.java).apply {
+                                        putExtra(AlarmClock.EXTRA_MESSAGE, message)
+                                    }
+                                )
+                            }
 
-                            val itemValue = listView.getItemAtPosition(position)
-                            val message = itemValue as String
-                            Log.d("ListaGruposActivity", "mensagem: $message" + "item: $itemValue ")
+                            override fun onCancelled(error: DatabaseError) {
+                                TODO("Not yet implemented")
+                            }
 
-                            var b = mAuth.getReference("Grupos").child(itemValue.toString())
-
-                            //var b = mAuth.collection("Grupos").document(itemValue.toString())
-                            b.addValueEventListener(object : ValueEventListener {
-                                override fun onDataChange(snapshot: DataSnapshot) {
-
-
-                                    startActivity(
-                                        Intent(view.context, AdesaoActivity::class.java).apply {
-                                            putExtra(AlarmClock.EXTRA_MESSAGE, message)
-                                        }
-                                    )
-                                }
-
-                                override fun onCancelled(error: DatabaseError) {
-                                    TODO("Not yet implemented")
-                                }
-
-                            })
-                        }
+                        })
                     }
 
             }
@@ -116,7 +103,7 @@ class ListaGruposActivity : AppCompatActivity() {
 
 
         }
-        GruposMemebro.addChildEventListener(membro)
+        gruposMemebro.addChildEventListener(membro)
     }
 
 
@@ -126,9 +113,9 @@ class ListaGruposActivity : AppCompatActivity() {
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item!!.itemId == R.id.signOut) {
-            Auth.signOut()
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.signOut) {
+            auth.signOut()
             val intent = Intent(this, LoginActivity::class.java)
             intent.flags =
                 Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)

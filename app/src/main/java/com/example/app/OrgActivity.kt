@@ -195,10 +195,7 @@ class OrgActivity : AppCompatActivity() {
             startActivity(Intent(this, OrgActivity::class.java))
         }
 
-//        if (item.itemId == R.id.pendente) {
-//
-//            startActivity(Intent(this, AdmissaoActivity::class.java))
-//        }
+
 
 
         return super.onOptionsItemSelected(item)

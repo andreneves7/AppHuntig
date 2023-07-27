@@ -9,10 +9,10 @@
 
 
 
-<!--        <item-->
-<!--            android:id="@+id/pendente"-->
-<!--            android:title="Socios"-->
-<!--            app:showAsAction="never" />-->
+        <item
+            android:id="@+id/lista"
+            android:title="Socios"
+            app:showAsAction="never" />
 
 
         <item

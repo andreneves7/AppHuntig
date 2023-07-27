@@ -20,10 +20,10 @@ import kotlinx.android.synthetic.main.activity_registo_user.*
 class RegistoUserActivity : AppCompatActivity() {
 
     //    val mAuth = FirebaseFirestore.getInstance()
-    val mAuth = FirebaseDatabase.getInstance();
+    val mAuth = FirebaseDatabase.getInstance()
 
     //val gAuth = FirebaseFirestore.getInstance().collection("Grupos")
-    val Auth = FirebaseAuth.getInstance()
+    val auth = FirebaseAuth.getInstance()
 
     //val mStorage = FirebaseStorage.getInstance().reference
     lateinit var gv: VariaveisGlobais
@@ -96,14 +96,14 @@ class RegistoUserActivity : AppCompatActivity() {
                             bi.isVisible = true
                             nif.isVisible = true
                             nif.isFocusableInTouchMode = true
-                            licencaP.setVisibility(View.VISIBLE)
-                            e.setVisibility(View.VISIBLE);
+                            licencaP.visibility = View.VISIBLE
+                            e.visibility = View.VISIBLE
 
-                            p.setVisibility(View.INVISIBLE);
+                            p.visibility = View.INVISIBLE
                             dni.isInvisible = true
                             outros.isInvisible = true
                             passaporte.isInvisible = true
-                            licencaE.setVisibility(View.INVISIBLE)
+                            licencaE.visibility = View.INVISIBLE
 
 
                             //Log.d("RegistoUser", "putas")
@@ -112,18 +112,18 @@ class RegistoUserActivity : AppCompatActivity() {
                             e.setOnClickListener {
                                 if (e.isChecked) {
 
-                                    nomeSeguradoraExtra.setVisibility(View.VISIBLE)
-                                    numApoliceExtra.setVisibility(View.VISIBLE)
-                                    numCaca.setVisibility(View.VISIBLE)
-                                    licencaEspanha.setVisibility(View.VISIBLE)
+                                    nomeSeguradoraExtra.visibility = View.VISIBLE
+                                    numApoliceExtra.visibility = View.VISIBLE
+                                    numCaca.visibility = View.VISIBLE
+                                    licencaEspanha.visibility = View.VISIBLE
 
                                 } else {
 
-                                    licencaEspanha.setVisibility(View.INVISIBLE)
-                                    nomeSeguradoraExtra.setVisibility(View.INVISIBLE)
-                                    numApoliceExtra.setVisibility(View.INVISIBLE)
-                                    numCaca.setVisibility(View.INVISIBLE)
-                                    linceca.setVisibility(View.INVISIBLE)
+                                    licencaEspanha.visibility = View.INVISIBLE
+                                    nomeSeguradoraExtra.visibility = View.INVISIBLE
+                                    numApoliceExtra.visibility = View.INVISIBLE
+                                    numCaca.visibility = View.INVISIBLE
+                                    linceca.visibility = View.INVISIBLE
                                 }
                             }
 
@@ -141,9 +141,9 @@ class RegistoUserActivity : AppCompatActivity() {
                             licencaEspanha.setVisibility(View.INVISIBLE)
                             licencaP.setVisibility(View.INVISIBLE)
                             licencaE.setVisibility(View.INVISIBLE)
-                            p.setVisibility(View.INVISIBLE);
-                            e.setVisibility(View.INVISIBLE);
-                            Log.d("RegistoUser", "$g")
+                            p.setVisibility(View.INVISIBLE)
+                            e.setVisibility(View.INVISIBLE)
+                            Log.d("RegistoUser", g)
                         }
                         R.id.checkEspanha -> {
                             "Espanha"
@@ -311,7 +311,7 @@ class RegistoUserActivity : AppCompatActivity() {
                 if (!g.isEmpty()) {
 
 
-                    Auth.createUserWithEmailAndPassword(email, password)
+                    auth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener { it ->
 
                             if (!it.isSuccessful) return@addOnCompleteListener
@@ -439,7 +439,7 @@ class RegistoUserActivity : AppCompatActivity() {
         passaporte: EditText
     ) {
 
-        val uid = Auth.uid.toString()
+        val uid = auth.uid.toString()
 //        val ref = mAuth.document("$uid")
 //
         val NomeSeguradoraExtra = nomeSeguradoraExtra.text.toString()
@@ -522,7 +522,7 @@ class RegistoUserActivity : AppCompatActivity() {
                         intent.flags =
                             Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
                         startActivity(intent)
-                        Auth.signOut()
+                        auth.signOut()
 
                         Log.d("RegistoUser", "user firestore registo2")
 
@@ -544,7 +544,7 @@ class RegistoUserActivity : AppCompatActivity() {
                 }
             } else {
 
-                val user = Auth.currentUser
+                val user = auth.currentUser
                 user?.delete()
             }
 
@@ -599,7 +599,7 @@ class RegistoUserActivity : AppCompatActivity() {
                         intent.flags =
                             Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
                         startActivity(intent)
-                        Auth.signOut()
+                        auth.signOut()
 
 
                         Log.d("RegistoUser", "user firestore registo5")
@@ -614,13 +614,13 @@ class RegistoUserActivity : AppCompatActivity() {
                     intent.flags =
                         Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
                     startActivity(intent)
-                    Auth.signOut()
+                    auth.signOut()
 
                     Log.d("RegistoUser", "user firestore registo6")
                 }
             } else {
 
-                val user = Auth.currentUser
+                val user = auth.currentUser
                 user?.delete()
             }
         } else {
@@ -638,7 +638,7 @@ class RegistoUserActivity : AppCompatActivity() {
                 intent.flags =
                     Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(intent)
-                Auth.signOut()
+                auth.signOut()
 
 
                 Log.d("RegistoUser", "user firestore registo7")
@@ -652,7 +652,7 @@ class RegistoUserActivity : AppCompatActivity() {
 
 
     private fun sendEmailVerification() {
-        val user = Auth.currentUser
+        val user = auth.currentUser
         user?.sendEmailVerification()?.addOnCompleteListener {
 
             val builder = AlertDialog.Builder(this)
@@ -664,7 +664,7 @@ class RegistoUserActivity : AppCompatActivity() {
                 Toast.makeText(
                     applicationContext,
                     android.R.string.yes, Toast.LENGTH_SHORT
-                )
+                ).show()
                 startActivity(Intent(this, LoginActivity::class.java))
             }
         }
@@ -680,7 +680,7 @@ class RegistoUserActivity : AppCompatActivity() {
         for (item in array) {
             if (item.text.isEmpty()) {
                 item.error = "Falta Preencher"
-                cont++;
+                cont++
             }
         }
         if (cont == 0) {

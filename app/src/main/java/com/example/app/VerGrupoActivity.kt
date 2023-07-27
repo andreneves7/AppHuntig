@@ -3,20 +3,15 @@ package com.example.app
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.AlarmClock
 import android.provider.AlarmClock.EXTRA_MESSAGE
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.core.view.isVisible
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.android.synthetic.main.activity_grupo.*
 import kotlinx.android.synthetic.main.activity_ver_grupo.*
 
 
@@ -24,7 +19,7 @@ class VerGrupoActivity : AppCompatActivity() {
 
     //    val mAuth = FirebaseFirestore.getInstance()
     val mAuth = FirebaseDatabase.getInstance()
-    val Auth = FirebaseAuth.getInstance()
+    val auth = FirebaseAuth.getInstance()
 
     lateinit var gv: VariaveisGlobais
 
@@ -38,7 +33,7 @@ class VerGrupoActivity : AppCompatActivity() {
         val semGrupos = tNaoGrupos
         val list = ListView2
 
-        val user = Auth.currentUser?.uid
+        val user = auth.currentUser?.uid
         if (user != null) {
             val mail = mAuth.getReference("Grupos")
 
@@ -48,11 +43,11 @@ class VerGrupoActivity : AppCompatActivity() {
             val m = object : ChildEventListener {
                 override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
 
-                    val g = dataSnapshot.child("nome").getValue().toString()
+                    val g = dataSnapshot.child("nome").value.toString()
 
                     Log.d(
                         "VerGrupo2",
-                        "${user}"
+                        "$user"
                     )
 
                     values.add(g)
@@ -61,7 +56,7 @@ class VerGrupoActivity : AppCompatActivity() {
 
                     Log.d(
                         "VerGrupo2",
-                        " ${m}"
+                        " $m"
                     )
 
                     val t = mAuth.getReference("Grupos").child(g).child("membros")
@@ -72,22 +67,18 @@ class VerGrupoActivity : AppCompatActivity() {
                             dataSnapshot: DataSnapshot,
                             previousChildName: String?
                         ) {
-                            val j = dataSnapshot.getValue().toString()
+                            val j = dataSnapshot.value.toString()
                             val fazParte = ArrayList<String>()
 
                             Log.d(
                                 "VerGrupo2",
-                                "j : ${
-                                    j
-                                }"
+                                "j : $j"
                             )
                             fazParte.add(j)
 
                             Log.d(
                                 "VerGrupo2",
-                                "f : ${
-                                    fazParte
-                                }"
+                                "f : $fazParte"
                             )
 
                             if (fazParte.contains(user)) {
@@ -97,7 +88,7 @@ class VerGrupoActivity : AppCompatActivity() {
                                     override fun onDataChange(snapshot: DataSnapshot) {
 
                                         val n =
-                                            snapshot.child("Numero").getValue()
+                                            snapshot.child("Numero").value
                                         Log.d(
                                             "VerGrupo",
                                             " grupos deste user"
@@ -105,7 +96,7 @@ class VerGrupoActivity : AppCompatActivity() {
 
                                         Log.d(
                                             "VerGrupo2",
-                                            " n: ${n}"
+                                            " n: $n"
                                         )
 
                                         semGrupos.isVisible = false
@@ -121,55 +112,41 @@ class VerGrupoActivity : AppCompatActivity() {
 
 
                                         list.onItemClickListener =
-                                            object : AdapterView.OnItemClickListener {
+                                            AdapterView.OnItemClickListener { _, view, position, _ ->
+                                                val itemValue =
+                                                    list.getItemAtPosition(position) as String
+                                                mAuth.getReference("Grupos").child(itemValue).addValueEventListener(object : ValueEventListener {
+                                                    override fun onDataChange(snapshot: DataSnapshot) {
+                                                        val num =
+                                                            snapshot.child("Numero").value
+                                                        val message = num.toString()
+                                                        Log.d(
+                                                            "VerGrupo2",
+                                                            " num: $num"
+                                                        )
+
+                                                        startActivity(
+                                                            Intent(
+                                                                view.context,
+                                                                GrupoActivity::class.java
+                                                            ).apply {
+                                                                putExtra(EXTRA_MESSAGE, message)
+                                                                putExtra(EXTRA_MESSAGE, message)
+                                                            }
+                                                        )
 
 
-                                                override fun onItemClick(
-                                                    parent: AdapterView<*>, view: View,
-                                                    position: Int, id: Long
-                                                ) {
+                                                        Log.d(
+                                                            "VerGrupo2",
+                                                            "messagem: $message"
+                                                        )
+                                                    }
 
+                                                    override fun onCancelled(error: DatabaseError) {
+                                                        TODO("Not yet implemented")
+                                                    }
 
-                                                    val itemValue =
-                                                        list.getItemAtPosition(position) as String
-                                                    mAuth.getReference("Grupos").child(itemValue).addValueEventListener(object : ValueEventListener {
-                                                        override fun onDataChange(snapshot: DataSnapshot) {
-                                                            val num =
-                                                                snapshot.child("Numero").getValue()
-                                                            val message = num.toString()
-                                                            Log.d(
-                                                                "VerGrupo2",
-                                                                " num: ${num}"
-                                                            )
-
-                                                            startActivity(
-                                                                Intent(
-                                                                    view.context,
-                                                                    GrupoActivity::class.java
-                                                                ).apply {
-                                                                    putExtra(EXTRA_MESSAGE, message)
-                                                                    putExtra(EXTRA_MESSAGE, message)
-                                                                }
-                                                            )
-
-
-                                                            Log.d(
-                                                                "VerGrupo2",
-                                                                "messagem: $message"
-                                                            )
-                                                        }
-
-                                                        override fun onCancelled(error: DatabaseError) {
-                                                            TODO("Not yet implemented")
-                                                        }
-
-                                                    })
-
-
-
-
-                                                }
-
+                                                })
                                             }
 
 
@@ -249,9 +226,9 @@ class VerGrupoActivity : AppCompatActivity() {
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item!!.itemId == R.id.signOut) {
-            Auth.signOut()
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.signOut) {
+            auth.signOut()
             val intent = Intent(this, LoginActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
@@ -276,7 +253,7 @@ class VerGrupoActivity : AppCompatActivity() {
         if (item.itemId == R.id.home) {
             val marca = 0
             val intent = Intent(this, FiltrosActivity::class.java).apply {
-                putExtra(AlarmClock.EXTRA_MESSAGE, marca)
+                putExtra(EXTRA_MESSAGE, marca)
             }
             startActivity(intent)
         }

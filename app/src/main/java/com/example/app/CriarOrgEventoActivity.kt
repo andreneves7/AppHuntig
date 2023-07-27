@@ -224,6 +224,15 @@ class CriarOrgEventoActivity : AppCompatActivity() {
             startActivity(Intent(this, OrgActivity::class.java))
         }
 
+        if (item.itemId == R.id.lista) {
+
+            startActivity(Intent(this, ListaSociosOrgActivity::class.java).apply {
+                putExtra(
+                    EXTRA_MESSAGE,
+                    numero.toString()
+                )
+            })
+        }
 
 
         return super.onOptionsItemSelected(item)

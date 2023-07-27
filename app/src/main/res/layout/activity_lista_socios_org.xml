@@ -4,24 +4,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AdmissaoActivity">
+    tools:context=".ListaSociosOrgActivity">
 
     <TextView
         android:id="@+id/textViewListaSocios"
         android:layout_width="347dp"
         android:layout_height="48dp"
-        android:text="@string/pedidos_adesao_pendentes"
+        android:text="Lista de Socios:"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.058"
-        tools:ignore="TextSizeCheck" />
+        app:layout_constraintVertical_bias="0.058" />
 
     <ListView
-        android:id="@+id/ListViewPendentes"
+        android:id="@+id/ListViewSociosInscritos"
         android:layout_width="0dp"
         android:layout_height="582dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -30,6 +29,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,6 +5,19 @@
     <string name="edit_message">Enter a message</string>
     <string name="button_send">Send</string>
 
+    <!--region Adapter-->
+    <string name="carta_cacador">Nº Carta Caçador: %1$s  </string>
+    <string name="nome">Nome:  %1$s  </string>
+    <string name="num_socio">Nº Socio: %1$s  </string>
+    <!--endregion-->
+
+    <!--region Act_Admissao-->
+    <string name="pedidos_adesao_pendentes">Pedidos adesão Pendentes:</string>
+    <string name="adesao_custom_textViewShow">Nome:  %1$s  \n  Nº Carta Caçador:   %2$i  \n  Nº Socio:  %3$i</string>
+
+    <!--endregion-->
+
+
     <string-array name="zonas">
         <item>Selecionar Zonas</item>
         <item>leon</item>
