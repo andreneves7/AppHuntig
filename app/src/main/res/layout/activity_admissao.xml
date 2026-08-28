@@ -8,8 +8,9 @@
 
     <TextView
         android:id="@+id/textViewListaSocios"
-        android:layout_width="347dp"
+        android:layout_width="0dp"
         android:layout_height="48dp"
+        android:gravity="center"
         android:text="@string/pedidos_adesao_pendentes"
         android:textSize="24sp"
         android:textStyle="bold"

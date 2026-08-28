@@ -7,11 +7,10 @@
     tools:context=".CriarOrgEventoActivity">
     <ListView
         android:id="@+id/ListView4"
-        android:layout_width="411dp"
+        android:layout_width="0dp"
         android:layout_height="250dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.002" />
@@ -19,8 +18,10 @@
 
     <TextView
         android:id="@+id/tNaoEventos2"
-        android:layout_width="360dp"
-        android:layout_height="137dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:gravity="center"
         android:text="Nao tem eventos Disponiveis"
         app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toBottomOf="parent"
