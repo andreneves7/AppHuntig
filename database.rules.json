@@ -10,6 +10,10 @@
       "$uid": {
         ".write": "auth != null && (auth.uid === $uid || root.child('Users').child(auth.uid).child('role').val() === 'superadmin')",
 
+        "role": {
+          ".validate": "!newData.exists() || newData.val() === 'cacador' || newData.val() === 'organizacao' || newData.val() === 'superadmin'"
+        },
+
         "Grupos": {
           "$numeroGrupo": {
             ".write": "auth != null && (auth.uid === $uid || root.child('Users').child(auth.uid).child('role').val() === 'superadmin' || root.child('Users').child(auth.uid).child('role').val() === 'organizacao')"
@@ -23,6 +27,10 @@
 
       "$grupoId": {
         ".write": "auth != null && (root.child('Grupos').child($grupoId).child('admin').val() === auth.uid || root.child('Users').child(auth.uid).child('role').val() === 'superadmin')",
+
+        "admin": {
+          ".validate": "!newData.exists() || newData.isString()"
+        },
 
         "Pendentes": {
           "$uid": {
@@ -38,6 +46,16 @@
 
       "$eventoId": {
         ".write": "auth != null && (root.child('Users').child(auth.uid).child('role').val() === 'organizacao' || root.child('Users').child(auth.uid).child('role').val() === 'superadmin')",
+
+        ".validate": "newData.hasChildren(['nome', 'Forma'])",
+
+        "nome": {
+          ".validate": "newData.isString() && newData.val().length > 0"
+        },
+
+        "Forma": {
+          ".validate": "newData.val() === 'publico' || newData.val() === 'privado'"
+        },
 
         "Presenças": {
           ".write": "auth != null"
