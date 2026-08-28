@@ -1,5 +1,7 @@
 # Checklist de Release — AppHuntig
 
+> 📌 **Se procuras os passos exatos para as chaves/consolas (Maps, Firebase, keystore, SuperAdmin), vai direto a `docs/ACOES_MANUAIS.md` — está tudo por ordem, pronto a copiar.** Este documento cobre o quadro geral e o que fazer depois disso (compilar, testar, publicar).
+
 > Passo a passo para quando estiveres pronto a publicar. Os itens com ✅ já
 > estão tratados no código/repositório; os com ☐ precisam da tua ação direta
 > (consolas externas, decisões de produto, ou testes que só podem ser feitos

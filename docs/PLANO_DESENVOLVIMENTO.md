@@ -7,6 +7,8 @@
 
 ## 0. 🚨 AÇÃO URGENTE — chave da API do Google Maps exposta
 
+> 📌 **Passos detalhados e prontos a copiar em `docs/ACOES_MANUAIS.md`, ponto 1️⃣.** Esta secção fica como registo do achado; o documento de ações é o que deves seguir passo a passo.
+
 Encontrada durante a revisão de boas práticas para publicação. **Mais urgente do que tudo o resto neste documento.**
 
 **O que se passa:**
