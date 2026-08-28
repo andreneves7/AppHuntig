@@ -193,6 +193,10 @@ var num = 0
             iniciarScanQR()
         }
 
+        if (item.itemId == R.id.definicoes) {
+            startActivity(Intent(this, DefinicoesActivity::class.java))
+        }
+
         if (item.itemId == R.id.home) {
 
             startActivity(Intent(this, FiltrosActivity::class.java))

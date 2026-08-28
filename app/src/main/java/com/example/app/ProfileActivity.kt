@@ -257,41 +257,14 @@ class ProfileActivity : AppCompatActivity() {
     }
 
 
-    /**
-     * Liga/desliga o login por biometria (ver Utils.kt para as funções
-     * partilhadas, e VerificarLoginActivity para onde isto é usado).
-     */
-    private fun alternarBiometria() {
-        if (!biometriaDisponivel()) {
-            Toast.makeText(
-                this,
-                "O teu telemóvel não tem biometria configurada ou disponível.",
-                Toast.LENGTH_LONG
-            ).show()
-            return
-        }
-        val novoEstado = !biometriaEstaAtivada()
-        definirBiometriaAtivada(novoEstado)
-        val mensagem = if (novoEstado) {
-            "Login por biometria ativado."
-        } else {
-            "Login por biometria desativado."
-        }
-        Toast.makeText(this, mensagem, Toast.LENGTH_SHORT).show()
-    }
-
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
-        inflater.inflate(R.menu.menu_profile, menu)
+        inflater.inflate(R.menu.menu_direita, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item!!.itemId == R.id.toggleBiometria) {
-            alternarBiometria()
-        }
-
-        if (item.itemId == R.id.signOut) {
+        if (item!!.itemId == R.id.signOut) {
             Auth.signOut()
             val intent = Intent(this, LoginActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -319,6 +292,10 @@ class ProfileActivity : AppCompatActivity() {
 
         if (item.itemId == R.id.checkInQR) {
             iniciarScanQR()
+        }
+
+        if (item.itemId == R.id.definicoes) {
+            startActivity(Intent(this, DefinicoesActivity::class.java))
         }
 
         if (item.itemId == R.id.home) {

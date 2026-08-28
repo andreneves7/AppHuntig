@@ -39,6 +39,12 @@ class VariaveisGlobais : Application() {
             // sem persistência do que rebentar no arranque por causa disto.
             android.util.Log.d("VariaveisGlobais", "falha ao ativar persistencia offline: ${e.message}")
         }
+
+        // Aplica o modo escuro guardado (ver Utils.kt/DefinicoesActivity) —
+        // sem isto, a escolha só teria efeito enquanto a app estivesse
+        // aberta na sessão em que foi mudada, e voltaria ao claro sempre
+        // que a app fosse reaberta de raiz.
+        aplicarModoEscuro(modoEscuroEstaAtivado())
     }
 
     var Evento: String = ""
@@ -276,6 +282,10 @@ class GrupoActivity : AppCompatActivity() {
 
         if (item.itemId == R.id.checkInQR) {
             iniciarScanQR()
+        }
+
+        if (item.itemId == R.id.definicoes) {
+            startActivity(Intent(this, DefinicoesActivity::class.java))
         }
 
         if (item.itemId == R.id.home) {

@@ -1,11 +1,20 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar" >
+    <!-- Mudado de Theme.AppCompat.Light.DarkActionBar para a variante
+         DayNight — visualmente idêntico em modo claro (é a mesma base),
+         mas passa a responder a AppCompatDelegate.setDefaultNightMode()
+         (ver DefinicoesActivity.kt). forceDarkAllowed ativa a inversão
+         automática de cores do próprio Android (API 29+) para os muitos
+         elementos com cores fixas em hexadecimal espalhados pelos layouts,
+         que não têm uma versão "noturna" própria preparada manualmente.
+         Documentação oficial: https://developer.android.com/develop/ui/views/theming/darktheme -->
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.DarkActionBar" >
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:forceDarkAllowed" tools:targetApi="29">true</item>
     </style>
 
 </resources>

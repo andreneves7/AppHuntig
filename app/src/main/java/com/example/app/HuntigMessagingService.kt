@@ -51,6 +51,13 @@ class HuntigMessagingService : FirebaseMessagingService() {
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
 
+        if (!notificacoesEstaoAtivadas()) {
+            // Utilizador desligou as notificações em Definições — o token
+            // continua registado (para o caso de as voltar a ligar), só não
+            // mostramos nada enquanto estiver desligado.
+            return
+        }
+
         val titulo = message.notification?.title ?: getString(R.string.app_name)
         val corpo = message.notification?.body ?: ""
 

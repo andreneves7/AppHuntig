@@ -144,6 +144,10 @@ class AdesaoActivity : AppCompatActivity() {
             iniciarScanQR()
         }
 
+        if (item.itemId == R.id.definicoes) {
+            startActivity(Intent(this, DefinicoesActivity::class.java))
+        }
+
         if (item.itemId == R.id.home) {
             val marca = 0
             val intent = Intent(this, FiltrosActivity::class.java).apply {

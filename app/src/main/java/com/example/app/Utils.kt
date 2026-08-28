@@ -146,3 +146,45 @@ fun android.content.Context.biometriaDisponivel(): Boolean {
     return biometricManager.canAuthenticate(androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG) ==
         androidx.biometric.BiometricManager.BIOMETRIC_SUCCESS
 }
+
+// --- Notificações (preferência local, "silenciar" sem desativar o token) ---
+
+fun android.content.Context.notificacoesEstaoAtivadas(): Boolean {
+    return getSharedPreferences(PREFS_BIOMETRIA, android.content.Context.MODE_PRIVATE)
+        .getBoolean("notificacoes_ativadas", true)
+}
+
+fun android.content.Context.definirNotificacoesAtivadas(ativadas: Boolean) {
+    getSharedPreferences(PREFS_BIOMETRIA, android.content.Context.MODE_PRIVATE)
+        .edit()
+        .putBoolean("notificacoes_ativadas", ativadas)
+        .apply()
+}
+
+// --- Modo escuro ---
+// Usa AppCompatDelegate (funciona porque o tema base passou a ser
+// Theme.AppCompat.DayNight, ver styles.xml) + forceDarkAllowed no tema para
+// os muitos elementos com cores fixas nos layouts que não têm uma versão
+// noturna própria preparada manualmente.
+
+fun android.content.Context.modoEscuroEstaAtivado(): Boolean {
+    return getSharedPreferences(PREFS_BIOMETRIA, android.content.Context.MODE_PRIVATE)
+        .getBoolean("modo_escuro_ativado", false)
+}
+
+fun android.content.Context.definirModoEscuroAtivado(ativado: Boolean) {
+    getSharedPreferences(PREFS_BIOMETRIA, android.content.Context.MODE_PRIVATE)
+        .edit()
+        .putBoolean("modo_escuro_ativado", ativado)
+        .apply()
+    aplicarModoEscuro(ativado)
+}
+
+fun aplicarModoEscuro(ativado: Boolean) {
+    val modo = if (ativado) {
+        androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
+    } else {
+        androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
+    }
+    androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(modo)
+}
