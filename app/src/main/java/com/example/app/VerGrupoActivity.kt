@@ -34,6 +34,9 @@ class VerGrupoActivity : AppCompatActivity() {
         val semGrupos = binding.tNaoGrupos
         val list = binding.ListView2
 
+        binding.progressVerGrupo.isVisible = true
+        binding.progressVerGrupo.postDelayed({ binding.progressVerGrupo.isVisible = false }, 5000)
+
         val user = auth.currentUser?.uid
         if (user != null) {
             val mail = mAuth.getReference("Grupos")
@@ -43,6 +46,8 @@ class VerGrupoActivity : AppCompatActivity() {
 
             val m = object : ChildEventListener {
                 override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
+
+                    binding.progressVerGrupo.isVisible = false
 
                     val g = dataSnapshot.child("nome").value.toString()
 
@@ -212,6 +217,7 @@ class VerGrupoActivity : AppCompatActivity() {
                 }
 
                 override fun onCancelled(error: DatabaseError) {
+                    binding.progressVerGrupo.isVisible = false
                     Log.d("todo_fix", "erro Firebase: ${error.message}")
                     this@VerGrupoActivity.mostrarErroLigacao()
                 }

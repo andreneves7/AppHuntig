@@ -73,6 +73,8 @@ class GrupoActivity : AppCompatActivity() {
     fun busca() {
         val semEventos = binding.tNaoEventos
         semEventos.isInvisible = true
+        binding.progressGrupo.isVisible = true
+        binding.progressGrupo.postDelayed({ binding.progressGrupo.isVisible = false }, 5000)
         val user = Auth.currentUser
         if (user != null) {
 
@@ -82,6 +84,8 @@ class GrupoActivity : AppCompatActivity() {
             val mail = mAuth.getReference("Eventos")
             val m = object : ChildEventListener {
                 override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
+
+                    binding.progressGrupo.isVisible = false
 
                     val nome = dataSnapshot.child("nome").getValue().toString()
 
@@ -204,7 +208,9 @@ class GrupoActivity : AppCompatActivity() {
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    Log.d("Grupo", "No such document")
+                    binding.progressGrupo.isVisible = false
+                    Log.d("Grupo", "No such document: ${error.message}")
+                    this@GrupoActivity.mostrarErroLigacao()
                 }
             }
             mail.addChildEventListener(m)

@@ -12,26 +12,35 @@ import android.widget.ArrayAdapter
 import android.widget.ListView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.example.app.databinding.ActivityListaGruposBinding
+import androidx.core.view.isVisible
 
 class ListaGruposActivity : AppCompatActivity() {
 
     val auth = FirebaseAuth.getInstance()
     val mAuth = FirebaseDatabase.getInstance()
     lateinit var gv: VariaveisGlobais
+    private lateinit var binding: ActivityListaGruposBinding
 
 
     lateinit var listView: ListView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_lista_grupos)
-        listView = findViewById(R.id.listViewLista)
+        binding = ActivityListaGruposBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        listView = binding.listViewLista
+
+        binding.progressListaGrupos.isVisible = true
+        binding.progressListaGrupos.postDelayed({ binding.progressListaGrupos.isVisible = false }, 5000)
 
         val gruposMemebro = mAuth.getReference("Grupos")
         val list = ArrayList<String>()
 
         val membro = object : ChildEventListener {
             override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
+
+                binding.progressListaGrupos.isVisible = false
 
                 //val grupo = dataSnapshot.getValue()
 
@@ -98,6 +107,7 @@ class ListaGruposActivity : AppCompatActivity() {
             }
 
             override fun onCancelled(error: DatabaseError) {
+                binding.progressListaGrupos.isVisible = false
                 Log.d("todo_fix", "erro Firebase: ${error.message}")
                 this@ListaGruposActivity.mostrarErroLigacao()
             }

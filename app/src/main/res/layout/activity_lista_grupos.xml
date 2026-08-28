@@ -6,15 +6,30 @@
     android:layout_height="match_parent"
     tools:context=".ListaGruposActivity">
 
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="0dp"
+        android:layout_height="54dp"
+        android:text="Entidades aderentes"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textSize="30sp"
+        android:textColor="#000000"/>
+
     <LinearLayout
         android:id="@+id/linearLayout2"
-        android:layout_width="380dp"
-        android:layout_height="611dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bPular"
-        tools:context=".PreferenciasActivity">
+        app:layout_constraintTop_toBottomOf="@+id/textView2">
+        <!-- CORRIGIDO: antes referenciava "@+id/bPular", um ID que não existe
+             neste ficheiro (ficou de um copy-paste de activity_preferencias.xml —
+             o tools:context errado ".PreferenciasActivity" também denunciava
+             isto). Passa a ancorar corretamente por baixo do título. -->
 
         <ListView
             android:id="@+id/listViewLista"
@@ -24,18 +39,14 @@
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="411dp"
-        android:layout_height="54dp"
-        android:text="Entidades aderentes"
-        android:gravity="center"
+    <ProgressBar
+        android:id="@+id/progressListaGrupos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        android:textSize="30sp"
-        android:textColor="#000000"/>
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

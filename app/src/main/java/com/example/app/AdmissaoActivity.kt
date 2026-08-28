@@ -10,6 +10,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.ListView
 import android.widget.Toast
+import androidx.core.view.isVisible
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.example.app.databinding.ActivityAdmissaoBinding
@@ -31,8 +32,8 @@ class AdmissaoActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         lista = binding.ListViewPendentes
-
-
+        binding.progressAdmissao.isVisible = true
+        binding.progressAdmissao.postDelayed({ binding.progressAdmissao.isVisible = false }, 5000)
 
         dados()
     }
@@ -88,6 +89,8 @@ class AdmissaoActivity : AppCompatActivity() {
                             // a pessoa errada) e dava a aparência de "só aceitar 1" corretamente.
                             t.addListenerForSingleValueEvent(object : ValueEventListener {
                                 override fun onDataChange(snapshot: DataSnapshot) {
+
+                                    binding.progressAdmissao.isVisible = false
 
                                     val teste = snapshot.children
                                     Log.d("adesa", "teste= $teste")
@@ -201,7 +204,9 @@ class AdmissaoActivity : AppCompatActivity() {
                                 }
 
                                 override fun onCancelled(error: DatabaseError) {
-                                    Log.d("adesa", "fail dados users")
+                                    binding.progressAdmissao.isVisible = false
+                                    Log.d("adesa", "fail dados users: ${error.message}")
+                                    this@AdmissaoActivity.mostrarErroLigacao()
                                 }
 
 

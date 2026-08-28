@@ -36,6 +36,8 @@ class OrgActivity : AppCompatActivity() {
 
 
         semGrupos.isVisible = true
+        binding.progressOrg.isVisible = true
+        binding.progressOrg.postDelayed({ binding.progressOrg.isVisible = false }, 5000)
         if (user != null) {
             val mail = mAuth.getReference("Grupos")
 
@@ -44,6 +46,8 @@ class OrgActivity : AppCompatActivity() {
 
             val j = object : ChildEventListener {
                 override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
+
+                    binding.progressOrg.isVisible = false
 
                     val g = dataSnapshot.child("nome").getValue().toString()
                     val admin = dataSnapshot.child("admin").getValue().toString()
@@ -163,6 +167,7 @@ class OrgActivity : AppCompatActivity() {
                 }
 
                 override fun onCancelled(error: DatabaseError) {
+                    binding.progressOrg.isVisible = false
                     Log.d("todo_fix", "erro Firebase: ${error.message}")
                     this@OrgActivity.mostrarErroLigacao()
                 }

@@ -7,6 +7,7 @@ import android.provider.AlarmClock
 import android.util.Log
 import android.widget.ListView
 import androidx.annotation.RequiresApi
+import androidx.core.view.isVisible
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.example.app.databinding.ActivityListaSociosOrgBinding
@@ -25,6 +26,8 @@ class ListaSociosOrgActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         lista = binding.ListViewSociosInscritos
+        binding.progressListaSocios.isVisible = true
+        binding.progressListaSocios.postDelayed({ binding.progressListaSocios.isVisible = false }, 5000)
 
         dados()
 
@@ -47,6 +50,8 @@ class ListaSociosOrgActivity : AppCompatActivity() {
             val j = object : ChildEventListener {
                 @RequiresApi(Build.VERSION_CODES.N)
                 override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
+
+                    binding.progressListaSocios.isVisible = false
 
                     val numeroGrupo = dataSnapshot.child("Numero").value.toString()
                     val nameGrupo = dataSnapshot.child("nome").value.toString()
@@ -159,6 +164,7 @@ class ListaSociosOrgActivity : AppCompatActivity() {
                 }
 
                 override fun onCancelled(error: DatabaseError) {
+                    binding.progressListaSocios.isVisible = false
                     Log.d("todo_fix", "erro Firebase: ${error.message}")
                     this@ListaSociosOrgActivity.mostrarErroLigacao()
                 }
