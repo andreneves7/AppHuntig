@@ -32,6 +32,14 @@ class LoginActivity : AppCompatActivity() {
         val loginOrg = binding.bLoginOrg
         val regTxt = binding.bRegisto
 
+        // Pré-preenche com o último email usado com sucesso, para poupar o
+        // utilizador de o escrever de novo sempre que abre a app.
+        val emailGuardado = getSharedPreferences("apphuntig_prefs", MODE_PRIVATE)
+            .getString("ultimo_email", null)
+        if (emailGuardado != null) {
+            binding.idEmail.setText(emailGuardado)
+        }
+
         loginOrg.setVisibility(View.INVISIBLE)
 
         loginBtn.setOnClickListener(View.OnClickListener { view ->
@@ -55,6 +63,18 @@ class LoginActivity : AppCompatActivity() {
      * Envia um email de recuperação de password através do Firebase Auth.
      * Documentação oficial: https://firebase.google.com/docs/auth/android/manage-users#send_a_password_reset_email
      */
+    /**
+     * Guarda o email para pré-preencher da próxima vez (ver onCreate). Só é
+     * chamado depois de um login com sucesso — nunca guarda algo que o
+     * utilizador escreveu por engano.
+     */
+    private fun guardarEmailLembrado(email: String) {
+        getSharedPreferences("apphuntig_prefs", MODE_PRIVATE)
+            .edit()
+            .putString("ultimo_email", email)
+            .apply()
+    }
+
     private fun recuperarPassword() {
         val emailInput = android.widget.EditText(this)
         emailInput.hint = "Email"
@@ -112,6 +132,7 @@ class LoginActivity : AppCompatActivity() {
         if (!email.isEmpty() && !password.isEmpty()) {
             Auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
+                    guardarEmailLembrado(email)
                     if (Auth.currentUser!!.isEmailVerified) {
 
 
@@ -191,6 +212,7 @@ class LoginActivity : AppCompatActivity() {
             Auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
+                        guardarEmailLembrado(email)
                         if (Auth.currentUser!!.isEmailVerified) {
                             val ver = mAuth.getReference("Users").child(Auth.currentUser!!.uid)
                             ver.addListenerForSingleValueEvent(object : ValueEventListener {
