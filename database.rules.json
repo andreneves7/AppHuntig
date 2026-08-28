@@ -60,6 +60,10 @@
 
         "Presenças": {
           ".write": "auth != null"
+        },
+
+        "ListaEspera": {
+          ".write": "auth != null"
         }
       }
     }

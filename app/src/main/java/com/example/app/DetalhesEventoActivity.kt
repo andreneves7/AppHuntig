@@ -8,6 +8,7 @@ import android.provider.AlarmClock.EXTRA_MESSAGE
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -72,10 +73,17 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback {
                     val dateAno = dataSnapshot.child("ano").getValue().toString()
                     val time = dataSnapshot.child("horas").getValue().toString()
                     val tipo = dataSnapshot.child("Tipo").getValue().toString()
+                    val limite = dataSnapshot.child("limiteParticipantes").getValue(Long::class.java) ?: 0L
+                    val numAtual = dataSnapshot.child("Presenças").childrenCount
 
+                    val textoVagas = if (limite > 0) {
+                        "\nvagas: $numAtual/$limite"
+                    } else {
+                        ""
+                    }
 
                     showDetalhe.text =
-                        "nome: $name\ndata: $dateDia/$dateMes/$dateAno\nhoras: $time\ntipo: $tipo"
+                        "nome: $name\ndata: $dateDia/$dateMes/$dateAno\nhoras: $time\ntipo: $tipo$textoVagas"
 
 
 //                    Log.d(
@@ -207,46 +215,45 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
     fun marcarPresença() {
-        var num = 0
-        val valu = ArrayList<String>()
-
         val user = Auth.currentUser
         if (user != null) {
             val mail = mAuth.getReference("Eventos").child(gv.detalhes)
             mail.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
 
-                    val a = dataSnapshot.child("Presenças").value.toString()
-                    valu.add(a)
+                    // BUG CORRIGIDO: a versão anterior usava valu.size como próximo
+                    // índice, mas valu só recebia SEMPRE um elemento (a lista
+                    // Presenças inteira convertida para string, de uma só vez) — ou
+                    // seja, o índice era sempre "1", e cada nova pessoa que marcasse
+                    // presença SOBRESCREVIA a marcação da pessoa anterior, perdendo
+                    // dados de presença silenciosamente. childrenCount() dá a
+                    // contagem real de entradas já existentes.
+                    val numAtual = dataSnapshot.child("Presenças").childrenCount
+
+                    val limite = dataSnapshot.child("limiteParticipantes").getValue(Long::class.java) ?: 0L
 
                     Log.d(
                         "evento",
-                        "DocumentSnapshot data: ${valu.size} "
-                    )
-                    Log.d(
-                        "evento",
-                        "DocumentSnapshot data: ${valu} "
-                    )
-
-
-                    num = valu.size
-
-                    Log.d(
-                        "evento",
-                        "DocumentSnapshot data: ${num }"
+                        "presencas atuais: $numAtual, limite: $limite"
                     )
 
                     val update = HashMap<String, Any>()
-                    update["$num"] = user.uid
 
-                    mAuth.getReference("Eventos").child(gv.detalhes).child("Presenças")
-                        .updateChildren(update)
-
-                    Log.d(
-                        "evento",
-                        "DocumentSnapshot data: ${dataSnapshot.child("admin").getValue()} "
-                    )
-
+                    if (limite > 0 && numAtual >= limite) {
+                        // Evento cheio — entra na lista de espera em vez de Presenças.
+                        update["$numAtual"] = user.uid
+                        mAuth.getReference("Eventos").child(gv.detalhes).child("ListaEspera")
+                            .updateChildren(update)
+                        Toast.makeText(
+                            this@DetalhesEventoActivity,
+                            "Este evento já atingiu o limite de participantes — ficaste na lista de espera.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    } else {
+                        update["$numAtual"] = user.uid
+                        mAuth.getReference("Eventos").child(gv.detalhes).child("Presenças")
+                            .updateChildren(update)
+                    }
 
                 }
 

@@ -87,10 +87,50 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickListe
 
         val guardarEvento = binding.bGuardar
         guardarEvento.evitarDuploClique {
-            evento()
+            pedirLimiteEGuardarEvento()
         }
 
 
+    }
+
+    /**
+     * Pede o limite de participantes (opcional) antes de gravar o evento.
+     * Não está no layout activity_evento.xml porque esse ecrã já está
+     * totalmente ocupado (todos os campos posicionados por bias específico,
+     * sem espaço livre para acrescentar um campo novo em segurança sem
+     * conseguir ver o resultado). Mesmo padrão de diálogo já usado em
+     * LoginActivity.recuperarPassword().
+     */
+    private fun pedirLimiteEGuardarEvento() {
+        val input = android.widget.EditText(this)
+        input.hint = "Deixa vazio para sem limite"
+        input.inputType = android.text.InputType.TYPE_CLASS_NUMBER
+
+        val padding = (16 * resources.displayMetrics.density).toInt()
+        val container = android.widget.FrameLayout(this)
+        val params = android.widget.FrameLayout.LayoutParams(
+            android.widget.FrameLayout.LayoutParams.MATCH_PARENT,
+            android.widget.FrameLayout.LayoutParams.WRAP_CONTENT
+        )
+        params.leftMargin = padding
+        params.rightMargin = padding
+        input.layoutParams = params
+        container.addView(input)
+
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("Limite de participantes")
+            .setMessage("Quantas pessoas podem inscrever-se, no máximo? Quem se tentar inscrever depois de atingido o limite entra numa lista de espera.")
+            .setView(container)
+            .setCancelable(true)
+            .setNegativeButton("Sem limite") { _, _ ->
+                evento(0)
+            }
+            .setPositiveButton("Guardar") { _, _ ->
+                val texto = input.text.toString().trim()
+                val limite = texto.toIntOrNull() ?: 0
+                evento(limite)
+            }
+            .show()
     }
 
     private fun search() {
@@ -304,7 +344,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickListe
         map.addMarker(markerOptions)
     }
 
-    private fun evento() {
+    private fun evento(limiteParticipantes: Int) {
         val user = Auth.currentUser
         if (user != null) {
 
@@ -345,6 +385,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickListe
                 evento["Latitude"] = gv.Lat
                 evento["Longitude"] = gv.Long
                 evento["numeroGrupo"] = numero
+                // 0 = sem limite. Ver DetalhesEventoActivity.marcarPresença() para a
+                // lógica que usa este campo (lista de espera quando o evento enche).
+                evento["limiteParticipantes"] = limiteParticipantes
 
 
                 mAuth.getReference("Eventos").child(gv.nome).setValue(evento)
