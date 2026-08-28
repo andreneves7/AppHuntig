@@ -134,7 +134,8 @@ Todos os 17 ficheiros `.kt` que usavam `kotlinx.android.synthetic` (incluindo os
 - [x] Estados de loading + tratamento de erros visível (indicador de carregamento em `HomeActivity` como referência do padrão; 30 `onCancelled` silenciosos em 11 ficheiros passaram a mostrar Toast de erro ao utilizador)
 - [x] Loading state replicado pelos 6 ecrãs restantes (`OrgActivity`, `GrupoActivity`, `VerGrupoActivity`, `ListaGruposActivity`, `ListaSociosOrgActivity`, `AdmissaoActivity`)
 - [x] Paginação de listas — implementada para a lista principal de eventos (`HomeActivity`), ver nota abaixo. As restantes listas (grupos, sócios) continuam sem paginação — ficam para uma iteração futura se o volume de dados justificar.
-- [ ] Extrair strings hardcoded para `strings.xml` — **decisão explicada abaixo**
+- [x] Extrair strings hardcoded para `strings.xml` — feito de forma faseada e verificada (ver nota abaixo). 51 strings de layouts XML + 36 strings de `Toast.makeText()` no código Kotlin.
+- [x] 17 dos 21 layouts com larguras fixas em dp — 5 corrigidos com critério mais rigoroso nesta ronda (só `ListView`/`fragment`/`TextView` com Start+End já presentes e sem `bias` deliberado). Os restantes ficam deliberadamente por mexer — ver nota abaixo.
 - [ ] Alinhar as chaves de `Grupos` (nome → número)
 
 ### Paginação — solução implementada
@@ -144,8 +145,21 @@ A tentativa inicial (`limitToLast()` na chave de `Eventos`) foi abandonada por a
 
 **Ação necessária no Firebase:** o `database.rules.json` foi atualizado com `".indexOn": ["dataFimTimestamp"]` em `Eventos`, para esta query ser eficiente (sem índice, o Firebase ainda funciona mas avisa nos logs e faz uma pesquisa mais lenta). **Se já tinhas aplicado a versão anterior das regras, precisas de voltar a copiar e publicar a versão atualizada** — ver `docs/ACOES_MANUAIS.md` ponto 2️⃣.
 
-### Strings hardcoded — porque não foram extraídas
-A app inteira (não só o que eu escrevi) tem virtualmente todos os textos escritos diretamente no código Kotlin (`Toast.makeText(this, "texto", ...)`), não só nos layouts XML — são centenas de ocorrências em todos os ficheiros, praticamente desde o commit inicial. Extrair só as ~15 strings que eu próprio introduzi nesta sessão criaria uma inconsistência sem resolver o problema de fundo (a maioria continuaria hardcoded). Fica documentado como tarefa de grande escala, não urgente para funcionar — só relevante se algum dia quiseres preparar a app para outro idioma, ou por preferência de organização de código.
+### Strings hardcoded — o que foi feito
+Reconsiderei a decisão inicial de não mexer. Feito em duas fases, cada uma verificada separadamente antes de avançar para a seguinte:
+1. **51 strings de `android:text="..."` em 22 layouts XML** → risco mínimo (troca mecânica de texto, sem tocar em posição/tamanho/lógica). Strings idênticas entre ficheiros passaram a partilhar o mesmo recurso.
+2. **36 strings estáticas de `Toast.makeText()`** em 13 ficheiros Kotlin → substituídas por `CONTEXTO.getString(R.string.msg_...)`, reutilizando sempre a mesma expressão de contexto (`this`, `this@Activity`, etc.) de cada chamada, para nunca haver erro de resolução dentro de listeners aninhados. 1 string com interpolação de variável (`${nomesOrgs[position]} (uid: $uid)` em `SuperAdminActivity`) ficou de fora — baixo valor, mensagem de debug simples.
+
+**Por resolver, se quiseres continuar esta limpeza no futuro:** `setTitle()`/`setMessage()` de `AlertDialog` (categoria diferente de Toast, não incluída nesta ronda), e as strings de `Log.d(...)` (deliberadamente não extraídas — não são visíveis ao utilizador, extrair mensagens de debug para recursos não é prática recomendada).
+
+**Bug evitado:** o gerador de nomes produziu `nome` para uma string nova, que colidia com um recurso já existente e usado (`nome` = `"Nome:  %1$s  "`, com formatação, usado em `MyListAdapter`). Detetado e corrigido antes de integrar (renomeado para `label_nome`) — todos os nomes novos foram verificados um a um contra os já existentes antes de qualquer merge, em ambas as fases.
+
+### Larguras fixas em layouts — o que foi feito e o que ficou de fora
+Nesta ronda, mais 5 elementos em 5 ficheiros (`activity_criar_org_evento.xml`, `activity_detalhes_evento.xml`, `activity_maps.xml`, `activity_admissao.xml`, `activity_lista_socios_org.xml`), com um critério mais apertado que antes: só `ListView`, `fragment` (mapas) e `TextView` — nunca `Button`, `Switch`, `DatePicker`, `ImageView` ou `View` (divisores), porque esticar estes últimos até à largura do ecrã pioraria o aspeto em vez de melhorar. Mapas convertidos por convenção universal de UX (ecrã completo), não por regra mecânica.
+
+**Bug próprio detetado e corrigido a meio:** ao converter um dos elementos, retirei sem querer a constraint `Bottom`, o que desativa silenciosamente o `vertical_bias` (o ConstraintLayout precisa de `Top` E `Bottom` para o bias funcionar) — o elemento ficaria preso ao topo do ecrã em vez de flutuar na posição original. Corrigido, e foi feita uma varredura a **todos** os layouts do projeto à procura do mesmo padrão de erro (e do equivalente horizontal) — só restam 2 casos pré-existentes, não introduzidos por mim, ambos no ficheiro com o bug de IDs duplicados já conhecido.
+
+**Deliberadamente fora desta ronda** (risco visual real, sem forma de verificar sem renderizar): `activity_evento.xml`, `activity_profile.xml`, `activity_adesao.xml` (campo `tInfo`) — todos usam `bias` horizontal específico e ajustado (não o valor "por omissão" dos casos convertidos), típico de formulários com posicionamento livre em vez de conteúdo que deve esticar. `activity_registo_user.xml` continua de fora pelo bug de IDs duplicados já documentado. `filtros_custom_view.xml` confirmado como código morto, sem benefício em mexer.
 
 ### Erros visíveis (onCancelled) — detalhes
 Criado `Utils.kt` com a função `Context.mostrarErroLigacao()`, reutilizada em todos os `onCancelled` que antes só escreviam num `Log.d` silencioso (30 ocorrências em 11 ficheiros). Isto é especialmente relevante depois de aplicares as regras de segurança do `database.rules.json` — se uma leitura for recusada, o utilizador agora vê um aviso em vez de um ecrã parado sem explicação.
