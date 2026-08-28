@@ -138,6 +138,37 @@ Todos os 17 ficheiros `.kt` que usavam `kotlinx.android.synthetic` (incluindo os
 - [x] 17 dos 21 layouts com larguras fixas em dp — 5 corrigidos com critério mais rigoroso nesta ronda (só `ListView`/`fragment`/`TextView` com Start+End já presentes e sem `bias` deliberado). Os restantes ficam deliberadamente por mexer — ver nota abaixo.
 - [ ] Alinhar as chaves de `Grupos` (nome → número)
 
+## 7. Prova de conceito: migração Activity → Fragment (Navigation Component)
+
+**Pedido:** modernizar a app para as práticas mais recentes, mesmo que implique mudar de Activities para Fragments para melhor performance.
+
+**Contexto importante, para não ficar mal-entendido:** Fragments não são "mais rápidos" que Activities — a app já teria essa performance com Activities bem feitas. A razão real para esta arquitetura (usada pela generalidade das apps Android modernas) é outra: navegação centralizada, partilha de UI entre ecrãs, animações de transição mais fluidas. Isto é uma modernização de arquitetura, não uma otimização de velocidade.
+
+**Porque só um ecrã, e não a app toda de uma vez:** uma migração completa tocaria as 20 Activities, todos os layouts, e toda a navegação entre ecrãs — e o ciclo de vida de Fragments tem categorias de bugs (fugas de memória, comportamento errado da stack de navegação) que não aparecem em nenhuma análise de código, só a correr a app. Sem conseguir compilar/testar aqui, fazer isto às cegas para toda a app seria irresponsável.
+
+**O que foi feito:** `FiltrosActivity` (o ecrã mais simples e isolado da app — sem Firebase, sem formulários) convertido para `FiltrosFragment`, alojado por uma `FiltrosActivity` reduzida a um "host" fino.
+
+**Ficheiros novos:**
+- `FiltrosFragment.kt` — toda a lógica que estava em `FiltrosActivity.onCreate`, agora em `onViewCreated`, com a gestão correta do ciclo de vida do View Binding (`_binding` nullable, limpo em `onDestroyView` — o erro mais comum ao fazer isto, uma fuga de memória silenciosa se for esquecido)
+- `activity_filtros_host.xml` — layout mínimo com um `FragmentContainerView`
+- `nav_graph_filtros.xml` — grafo de navegação com o único destino (`FiltrosFragment`)
+
+**Ficheiros alterados:**
+- `FiltrosActivity.kt` — reduzida a ~60 linhas (só `onCreate` a montar o host, e o menu de opções, que continua na Activity porque navega para outras Activities)
+- `app/build.gradle` — dependências `androidx.navigation:navigation-fragment-ktx`/`navigation-ui-ktx` 2.7.5
+
+**Impacto no resto da app: zero.** Verificado — as outras 12 Activities que iniciam `FiltrosActivity` via `Intent(this, FiltrosActivity::class.java)` continuam a funcionar sem qualquer alteração, porque o nome da classe e o pacote não mudaram, só a implementação interna.
+
+### Como testar (antes de decidirmos escalar ao resto da app)
+1. `./gradlew build` — primeiro teste, se isto não compilar já sabemos que há um problema na configuração do Navigation Component
+2. Abrir a app, navegar até ao ecrã de Filtros (a partir do login, ou do menu "home" em qualquer ecrã)
+3. Confirmar visualmente que está **igual** ao que era antes (nenhuma mudança visual esperada)
+4. Testar os 3 fluxos: "Caça Maior" → Esperas/Montaria, "Caça Menor" → Tordos/Rolas/Dias, "Ver Tudo" — todos devem continuar a navegar para `HomeActivity` com o filtro certo
+5. **Teste específico de fuga de memória:** rodar o ecrã (mudar orientação) enquanto estás no ecrã de Filtros, várias vezes seguidas — se a app não abrandar/rebentar, o `onDestroyView` está a funcionar bem
+6. Navegar para trás (botão "voltar" do sistema) a partir deste ecrã — deve sair da app ou voltar ao ecrã anterior normalmente, sem comportamento estranho da stack de navegação
+
+Se tudo isto correr bem, o padrão está validado e posso escalar aos restantes 19 ecrãs, um de cada vez, com o mesmo cuidado de verificação.
+
 ### Paginação — solução implementada
 A tentativa inicial (`limitToLast()` na chave de `Eventos`) foi abandonada por a chave ser o nome do evento, não uma data — traria resultados alfabéticos, não cronológicos. Solução: adicionado um campo calculado e ordenável, `dataFimTimestamp` (epoch millis da data de fim do evento), gravado em `MapsActivity.kt` no momento da criação do evento. `HomeActivity` passou a consultar `.orderByChild("dataFimTimestamp").limitToFirst(200)` em vez de descarregar a coleção `Eventos` inteira sempre — a lógica de filtragem por data/tipo/formato que já existia manteve-se **exatamente igual**, isto só limita quantos nós o listener descarrega.
 

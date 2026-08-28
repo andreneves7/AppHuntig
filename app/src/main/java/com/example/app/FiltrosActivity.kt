@@ -3,154 +3,35 @@ package com.example.app
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.AlarmClock
 import android.provider.AlarmClock.EXTRA_MESSAGE
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import com.google.firebase.auth.FirebaseAuth
-import com.example.app.databinding.ActivityFiltrosBinding
+import com.example.app.databinding.ActivityFiltrosHostBinding
 
+/**
+ * PROVA DE CONCEITO da migração Activity -> Fragment com Navigation
+ * Component (ver docs/PLANO_DESENVOLVIMENTO.md). Esta Activity passou a
+ * ser um "host" fino: só aloja o FiltrosFragment (ver
+ * activity_filtros_host.xml, nav_graph_filtros.xml, FiltrosFragment.kt),
+ * que tem toda a lógica de conteúdo do ecrã.
+ *
+ * Nada muda para quem chama esta Activity (LoginActivity, HomeActivity,
+ * ProfileActivity, etc.) — o nome da classe, o Intent, e o EXTRA_MESSAGE
+ * continuam exatamente iguais a antes desta conversão. O menu de opções
+ * (signOut/profile/Lis/grupo/home) fica na Activity porque navega para
+ * OUTRAS Activities, não depende de nada específico do Fragment.
+ */
 class FiltrosActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityFiltrosBinding
+    private lateinit var binding: ActivityFiltrosHostBinding
     val Auth = FirebaseAuth.getInstance()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityFiltrosBinding.inflate(layoutInflater)
+        binding = ActivityFiltrosHostBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        val maior = binding.bMaior
-        val menor = binding.bMenor
-        val tudo = binding.bTudo
-
-        val esperas = binding.bEsperas
-        val montaria = binding.bMontarias
-        val tordos = binding.bTordos
-        val rolas = binding.bRolas
-        val dias = binding.bDias
-
-        val marca = intent.getIntExtra(EXTRA_MESSAGE, -1)
-
-        if (marca == 1) {
-            //startActivity(Intent(this@FiltrosActivity, FiltrosActivity::class.java))
-            val marca = 0
-            val intent = Intent(this, FiltrosActivity::class.java).apply {
-                putExtra(EXTRA_MESSAGE, marca)
-            }
-            startActivity(intent)
-
-        }
-
-        rolas.setVisibility(View.INVISIBLE)
-        tordos.setVisibility(View.INVISIBLE)
-        montaria.setVisibility(View.INVISIBLE)
-        esperas.setVisibility(View.INVISIBLE)
-        dias.setVisibility(View.INVISIBLE)
-
-        if (marca == 0) {
-            maior.setOnClickListener(View.OnClickListener {
-
-
-                rolas.setVisibility(View.INVISIBLE)
-                dias.setVisibility(View.INVISIBLE)
-                tordos.setVisibility(View.INVISIBLE)
-                montaria.setVisibility(View.VISIBLE)
-                esperas.setVisibility(View.VISIBLE)
-
-                esperas.setOnClickListener{ view ->
-                    val filtro = "esperas"
-                    val intent = Intent(this, HomeActivity::class.java).apply {
-                        putExtra(EXTRA_MESSAGE, filtro)
-                    }
-                    startActivity(intent)
-                    Log.d(
-                        "filtro",
-                        "g : ${
-                            filtro
-                        }"
-                    )
-                }
-
-                montaria.setOnClickListener {
-                    val filtro = "montaria"
-                    val intent = Intent(this, HomeActivity::class.java).apply {
-                        putExtra(EXTRA_MESSAGE, filtro)
-                    }
-                    startActivity(intent)
-                    Log.d(
-                        "filtro",
-                        "g : ${
-                            filtro
-                        }"
-                    )
-                }
-
-            })
-
-            menor.setOnClickListener(View.OnClickListener { view ->
-
-                val marca = intent.getIntExtra(EXTRA_MESSAGE, 0)
-
-                if (marca == 1) {
-                    startActivity(Intent(view.context, FiltrosActivity::class.java))
-                }
-
-                rolas.setVisibility(View.VISIBLE)
-                tordos.setVisibility(View.VISIBLE)
-                dias.setVisibility(View.VISIBLE)
-                montaria.setVisibility(View.INVISIBLE)
-                esperas.setVisibility(View.INVISIBLE)
-                tordos.setOnClickListener(View.OnClickListener { view ->
-                    val filtro = "tordos"
-                    val intent = Intent(this, HomeActivity::class.java).apply {
-                        putExtra(EXTRA_MESSAGE, filtro)
-                    }
-                    startActivity(intent)
-                })
-                rolas.setOnClickListener(View.OnClickListener { view ->
-                    val filtro = "rolas"
-                    val intent = Intent(this, HomeActivity::class.java).apply {
-                        putExtra(EXTRA_MESSAGE, filtro)
-                    }
-                    startActivity(intent)
-                })
-                dias.setOnClickListener(View.OnClickListener { view ->
-                    val filtro = "dias"
-                    val intent = Intent(this, HomeActivity::class.java).apply {
-                        putExtra(EXTRA_MESSAGE, filtro)
-                    }
-                    startActivity(intent)
-                })
-            })
-
-            tudo.setOnClickListener(View.OnClickListener { view ->
-
-                val marca = intent.getIntExtra(EXTRA_MESSAGE, 0)
-
-                if (marca == 1) {
-                    startActivity(Intent(view.context, FiltrosActivity::class.java))
-                }
-
-                rolas.setVisibility(View.INVISIBLE)
-                tordos.setVisibility(View.INVISIBLE)
-                dias.setVisibility(View.INVISIBLE)
-                montaria.setVisibility(View.INVISIBLE)
-                esperas.setVisibility(View.INVISIBLE)
-
-                val filtro = "tudo"
-                val intent = Intent(this, HomeActivity::class.java).apply {
-                    putExtra(EXTRA_MESSAGE, filtro)
-                }
-                startActivity(intent)
-            })
-
-        }
     }
-
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
@@ -165,25 +46,19 @@ class FiltrosActivity : AppCompatActivity() {
             intent.flags =
                 Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
-            //startActivity(Intent (this, MainActivity :: class.java ))
         }
 
         if (item.itemId == R.id.profile) {
-
             startActivity(Intent(this, ProfileActivity::class.java))
         }
 
         if (item.itemId == R.id.Lis) {
-
             startActivity(Intent(this, ListaGruposActivity::class.java))
         }
 
         if (item.itemId == R.id.grupo) {
-
             startActivity(Intent(this, VerGrupoActivity::class.java))
         }
-
-
 
         if (item.itemId == R.id.home) {
             val marca = 0
