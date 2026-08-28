@@ -33,6 +33,17 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
 
+    // Guardados quando o evento é lido em onCreate, para poderem ser
+    // reutilizados em adicionarAoCalendario() sem precisar de nova leitura
+    // ao Firebase.
+    private var eventoNome: String? = null
+    private var eventoDia: Int? = null
+    private var eventoMes: Int? = null
+    private var eventoAno: Int? = null
+    private var eventoDiaFim: Int? = null
+    private var eventoMesFim: Int? = null
+    private var eventoAnoFim: Int? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,6 +86,15 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback {
                     val tipo = dataSnapshot.child("Tipo").getValue().toString()
                     val limite = dataSnapshot.child("limiteParticipantes").getValue(Long::class.java) ?: 0L
                     val numAtual = dataSnapshot.child("Presenças").childrenCount
+
+                    // Guardados para uso posterior em adicionarAoCalendario().
+                    eventoNome = name
+                    eventoDia = dataSnapshot.child("dia").getValue(Int::class.java)
+                    eventoMes = dataSnapshot.child("mes").getValue(Int::class.java)
+                    eventoAno = dataSnapshot.child("ano").getValue(Int::class.java)
+                    eventoDiaFim = dataSnapshot.child("diaFim").getValue(Int::class.java)
+                    eventoMesFim = dataSnapshot.child("mesFim").getValue(Int::class.java)
+                    eventoAnoFim = dataSnapshot.child("anoFim").getValue(Int::class.java)
 
                     val textoVagas = if (limite > 0) {
                         "\nvagas: $numAtual/$limite"
@@ -265,14 +285,72 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    /**
+     * Abre o calendário nativo do telemóvel com os dados do evento
+     * pré-preenchidos, para o utilizador confirmar e guardar. Usa a API
+     * pública ACTION_INSERT do CalendarContract — não precisa de nenhuma
+     * permissão especial (a diferença de escrever diretamente no calendário,
+     * que exigiria permissão WRITE_CALENDAR), porque quem confirma a
+     * gravação final é sempre o utilizador, na própria app de calendário.
+     * Documentação oficial: https://developer.android.com/guide/topics/providers/calendar-provider#intent-insert
+     */
+    private fun adicionarAoCalendario() {
+        val dia = eventoDia
+        val mes = eventoMes
+        val ano = eventoAno
+
+        if (dia == null || mes == null || ano == null) {
+            Toast.makeText(this, "Ainda a carregar os dados do evento, tenta novamente.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val inicio = java.util.Calendar.getInstance()
+        inicio.set(ano, mes - 1, dia, 0, 0, 0)
+
+        val fim = java.util.Calendar.getInstance()
+        val diaFim = eventoDiaFim
+        val mesFim = eventoMesFim
+        val anoFim = eventoAnoFim
+        if (diaFim != null && mesFim != null && anoFim != null) {
+            fim.set(anoFim, mesFim - 1, diaFim, 23, 59, 59)
+        } else {
+            // Sem data de fim gravada — assume o mesmo dia, até ao final do dia.
+            fim.set(ano, mes - 1, dia, 23, 59, 59)
+        }
+
+        val intent = Intent(Intent.ACTION_INSERT)
+            .setData(android.provider.CalendarContract.Events.CONTENT_URI)
+            .putExtra(android.provider.CalendarContract.Events.TITLE, eventoNome ?: "Evento de caça")
+            .putExtra(
+                android.provider.CalendarContract.EXTRA_EVENT_BEGIN_TIME,
+                inicio.timeInMillis
+            )
+            .putExtra(
+                android.provider.CalendarContract.EXTRA_EVENT_END_TIME,
+                fim.timeInMillis
+            )
+
+        try {
+            startActivity(intent)
+        } catch (e: android.content.ActivityNotFoundException) {
+            // Telemóvel sem nenhuma app de calendário instalada — raro, mas acontece
+            // em alguns dispositivos/emuladores personalizados.
+            Toast.makeText(this, "Não foi encontrada nenhuma app de calendário no teu telemóvel.", Toast.LENGTH_LONG).show()
+        }
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
-        inflater.inflate(R.menu.menu_direita, menu)
+        inflater.inflate(R.menu.menu_detalhes_evento, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item!!.itemId == R.id.signOut) {
+        if (item!!.itemId == R.id.adicionarCalendario) {
+            adicionarAoCalendario()
+        }
+
+        if (item.itemId == R.id.signOut) {
             Auth.signOut()
             val intent = Intent(this, LoginActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
