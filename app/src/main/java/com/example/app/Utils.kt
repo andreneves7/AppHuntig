@@ -161,30 +161,65 @@ fun android.content.Context.definirNotificacoesAtivadas(ativadas: Boolean) {
         .apply()
 }
 
-// --- Modo escuro ---
+// --- Tema (claro / escuro / seguir o sistema) ---
 // Usa AppCompatDelegate (funciona porque o tema base passou a ser
 // Theme.AppCompat.DayNight, ver styles.xml) + forceDarkAllowed no tema para
 // os muitos elementos com cores fixas nos layouts que não têm uma versão
 // noturna própria preparada manualmente.
+//
+// Por omissão segue sempre o que estiver definido no telemóvel (claro ou
+// escuro) — só passa a ignorar isso se a pessoa escolher explicitamente uma
+// opção fixa nas Definições.
 
-fun android.content.Context.modoEscuroEstaAtivado(): Boolean {
+const val TEMA_SEGUIR_SISTEMA = 0
+const val TEMA_CLARO = 1
+const val TEMA_ESCURO = 2
+
+fun android.content.Context.temaGuardado(): Int {
     return getSharedPreferences(PREFS_BIOMETRIA, android.content.Context.MODE_PRIVATE)
-        .getBoolean("modo_escuro_ativado", false)
+        .getInt("tema_escolhido", TEMA_SEGUIR_SISTEMA)
 }
 
-fun android.content.Context.definirModoEscuroAtivado(ativado: Boolean) {
+fun android.content.Context.definirTema(tema: Int) {
     getSharedPreferences(PREFS_BIOMETRIA, android.content.Context.MODE_PRIVATE)
         .edit()
-        .putBoolean("modo_escuro_ativado", ativado)
+        .putInt("tema_escolhido", tema)
         .apply()
-    aplicarModoEscuro(ativado)
+    aplicarTema(tema)
 }
 
-fun aplicarModoEscuro(ativado: Boolean) {
-    val modo = if (ativado) {
-        androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
-    } else {
-        androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
+fun aplicarTema(tema: Int) {
+    val modo = when (tema) {
+        TEMA_CLARO -> androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
+        TEMA_ESCURO -> androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
+        else -> androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
     }
     androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(modo)
+}
+
+// --- Idioma ---
+// Usa AppCompatDelegate.setApplicationLocales() (androidx.appcompat 1.6.0+,
+// já usado nesta app) em vez de manipular Locale/Configuration manualmente —
+// API moderna e recomendada pela Google, que trata sozinha de: aplicar o
+// idioma em todas as Activities, e guardar/restaurar a escolha entre
+// aberturas da app (ao contrário do tema, não é preciso reaplicar isto no
+// arranque da app — a biblioteca já faz isso sozinha).
+// Documentação oficial: https://developer.android.com/guide/topics/resources/app-languages
+
+/** Código de idioma vazio = "idioma do telemóvel" (comportamento por omissão, sem forçar nada). */
+const val IDIOMA_SISTEMA = ""
+
+fun idiomaAtual(): String {
+    val locales = androidx.appcompat.app.AppCompatDelegate.getApplicationLocales()
+    if (locales.isEmpty) return IDIOMA_SISTEMA
+    return locales[0]?.language ?: IDIOMA_SISTEMA
+}
+
+fun definirIdioma(codigoIdioma: String) {
+    val locales = if (codigoIdioma == IDIOMA_SISTEMA) {
+        androidx.core.os.LocaleListCompat.getEmptyLocaleList()
+    } else {
+        androidx.core.os.LocaleListCompat.forLanguageTags(codigoIdioma)
+    }
+    androidx.appcompat.app.AppCompatDelegate.setApplicationLocales(locales)
 }

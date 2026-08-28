@@ -138,6 +138,21 @@
             </intent-filter>
         </service>
 
+        <!-- Recomendado pela documentação oficial ao usar
+             AppCompatDelegate.setApplicationLocales() (ver Utils.kt) — permite
+             que a escolha de idioma feita dentro da app sincronize com o
+             seletor de idioma por app do próprio Android 13+ (Definições do
+             sistema > Apps > HuntingEvent > Idioma).
+             https://developer.android.com/guide/topics/resources/app-languages#appcompat-store -->
+        <service
+            android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"
+            android:enabled="false"
+            android:exported="false">
+            <meta-data
+                android:name="autoStoreLocales"
+                android:value="true" />
+        </service>
+
     </application>
 
 </manifest>

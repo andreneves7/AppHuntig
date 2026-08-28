@@ -1,19 +1,23 @@
 package com.example.app
 
 import android.os.Bundle
+import android.widget.ArrayAdapter
+import android.widget.AdapterView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.app.databinding.ActivityDefinicoesBinding
 
 /**
- * Ecrã central de definições da app — antes disto, a única definição que
- * existia (login por biometria) estava enterrada num item de menu dentro de
- * ProfileActivity. Concentra aqui tudo o que faz sentido ser uma
- * "definição" global da app.
+ * Ecrã central de definições da app.
  */
 class DefinicoesActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDefinicoesBinding
+
+    // Códigos de idioma (tags BCP-47) na mesma ordem das opções mostradas no
+    // spinner — usados para saber a que idioma corresponde a posição
+    // escolhida, e para pré-selecionar a posição certa ao abrir o ecrã.
+    private val codigosIdioma = listOf(IDIOMA_SISTEMA, "pt", "en", "es")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,7 +26,8 @@ class DefinicoesActivity : AppCompatActivity() {
 
         configurarBiometria()
         configurarNotificacoes()
-        configurarModoEscuro()
+        configurarTema()
+        configurarIdioma()
         mostrarVersaoApp()
     }
 
@@ -53,16 +58,52 @@ class DefinicoesActivity : AppCompatActivity() {
         }
     }
 
-    private fun configurarModoEscuro() {
-        binding.switchModoEscuro.isChecked = modoEscuroEstaAtivado()
+    private fun configurarTema() {
+        val radioId = when (temaGuardado()) {
+            TEMA_CLARO -> R.id.radioTemaClaro
+            TEMA_ESCURO -> R.id.radioTemaEscuro
+            else -> R.id.radioTemaSistema
+        }
+        binding.radioGroupTema.check(radioId)
 
-        binding.switchModoEscuro.setOnCheckedChangeListener { _, ativar ->
-            definirModoEscuroAtivado(ativar)
+        binding.radioGroupTema.setOnCheckedChangeListener { _, checkedId ->
+            val tema = when (checkedId) {
+                R.id.radioTemaClaro -> TEMA_CLARO
+                R.id.radioTemaEscuro -> TEMA_ESCURO
+                else -> TEMA_SEGUIR_SISTEMA
+            }
+            definirTema(tema)
             // AppCompatDelegate.setDefaultNightMode() só recria totalmente o
             // visual em Activities que ainda não existiam ou são recriadas —
             // este próprio ecrã precisa de recreate() para mostrar já a
             // mudança, em vez de só na próxima vez que a app abrir.
             recreate()
+        }
+    }
+
+    private fun configurarIdioma() {
+        val nomes = listOf(
+            "Idioma do telemóvel",
+            "Português",
+            "English",
+            "Español"
+        )
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, nomes)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.spinnerIdioma.adapter = adapter
+
+        val posicaoAtual = codigosIdioma.indexOf(idiomaAtual()).let { if (it == -1) 0 else it }
+        binding.spinnerIdioma.setSelection(posicaoAtual, false)
+
+        binding.spinnerIdioma.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: android.view.View?, position: Int, id: Long) {
+                definirIdioma(codigosIdioma[position])
+                // setApplicationLocales() recria a app automaticamente para
+                // aplicar o novo idioma a todos os ecrãs — não é preciso
+                // chamar recreate() aqui manualmente.
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
     }
 

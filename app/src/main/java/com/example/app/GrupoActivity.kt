@@ -40,11 +40,13 @@ class VariaveisGlobais : Application() {
             android.util.Log.d("VariaveisGlobais", "falha ao ativar persistencia offline: ${e.message}")
         }
 
-        // Aplica o modo escuro guardado (ver Utils.kt/DefinicoesActivity) —
-        // sem isto, a escolha só teria efeito enquanto a app estivesse
-        // aberta na sessão em que foi mudada, e voltaria ao claro sempre
-        // que a app fosse reaberta de raiz.
-        aplicarModoEscuro(modoEscuroEstaAtivado())
+        // Aplica o tema guardado (ver Utils.kt/DefinicoesActivity) — sem
+        // isto, a escolha só teria efeito enquanto a app estivesse aberta na
+        // sessão em que foi mudada, e voltaria sempre a "seguir o sistema"
+        // ao reabrir a app de raiz. (O idioma não precisa disto — o próprio
+        // AppCompatDelegate.setApplicationLocales() já guarda e restaura a
+        // escolha sozinho entre aberturas da app.)
+        aplicarTema(temaGuardado())
     }
 
     var Evento: String = ""
