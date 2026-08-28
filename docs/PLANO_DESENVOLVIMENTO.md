@@ -51,35 +51,24 @@ role: "cacador" | "organizacao" | "superadmin"
 
 Isto **não posso testar/aplicar diretamente** — não tenho acesso à tua consola Firebase. Vou deixando aqui os passos exatos para aplicares (ou dares-me acesso temporário, se preferires).
 
-### 4.1 Regras de segurança do Realtime Database (a rever/criar)
-Regras sugeridas (rascunho inicial, por rever — sintaxe correta para **Realtime Database**, formato JSON, documentação oficial: https://firebase.google.com/docs/database/security/rules-conditions):
+### 4.1 Regras de segurança do Realtime Database
 
-```json
-{
-  "rules": {
-    "Users": {
-      "$uid": {
-        ".read": "auth != null",
-        ".write": "auth != null && ($uid === auth.uid || root.child('Users').child(auth.uid).child('role').val() === 'superadmin')"
-      }
-    },
-    "Eventos": {
-      ".read": "auth != null",
-      "$eventoId": {
-        ".write": "auth != null && (root.child('Users').child(auth.uid).child('role').val() === 'organizacao' || root.child('Users').child(auth.uid).child('role').val() === 'superadmin')"
-      }
-    },
-    "Grupos": {
-      ".read": "auth != null",
-      "$grupoId": {
-        ".write": "auth != null && (root.child('Users').child(auth.uid).child('role').val() === 'organizacao' || root.child('Users').child(auth.uid).child('role').val() === 'superadmin')"
-      }
-    }
-  }
-}
-```
+**Ficheiro real, pronto a aplicar:** [`database.rules.json`](../database.rules.json) (na raiz do repositório). Substitui o rascunho anterior — este já reflete os caminhos e campos reais confirmados no código (`Users`, `Grupos`, `Eventos`, e os fluxos de escrita cruzada como aceitar sócios ou pedir adesão).
 
-> ⚠️ Isto é um ponto de partida, não uma versão final — precisa de ser validado contra a estrutura real de dados que tens hoje no teu Firebase (posso não estar a ver 100% da estrutura só pelo código-cliente).
+**O que cada regra garante:**
+- `Users`: qualquer utilizador autenticado pode ler (necessário — a app lista todos os utilizadores em vários sítios); só o próprio, o superadmin, ou uma organização podem escrever no registo de outra pessoa (necessário para a organização aceitar sócios).
+- `Grupos`: leitura livre para autenticados; escrita restrita ao `admin` desse grupo específico ou ao superadmin; exceção explícita para `Pendentes/{uid}`, que o próprio utilizador pode escrever (pedido de adesão).
+- `Eventos`: leitura livre para autenticados; escrita do evento em si restrita a organizações/superadmin; exceção explícita para `Presenças`, que qualquer autenticado pode escrever (inscrição num evento).
+
+**⚠️ Limitação conhecida (não resolvida, por design das Realtime Database rules):** a regra que permite a uma organização escrever em `Users/{uid}/Grupos` não está limitada a "só o grupo que essa organização administra" — permite a qualquer conta com `role: organizacao` escrever ali. Isto acontece porque `Grupos` é indexado pelo **nome** do grupo, mas `Users/{uid}/Grupos` é indexado pelo **número** do grupo — as regras do Realtime Database não conseguem fazer essa referência cruzada (não há como "pesquisar por valor"), ao contrário do Firestore. É uma melhoria real na segurança (antes: qualquer pessoa, agora: só organizações), mas não é perfeito. Para resolver bem, precisaria de alinhar as duas chaves (usar sempre o número do grupo como chave em `Grupos` também) — fica registado como possível melhoria futura, não bloqueia a aplicação destas regras agora.
+
+**Como aplicar (tens de o fazer tu — não tenho acesso à tua consola Firebase):**
+1. Firebase Console → o teu projeto → Realtime Database → separador "Regras" (Rules)
+2. Copia o conteúdo de `database.rules.json` e cola no editor
+3. Usa o botão "Simulador de regras" (Rules Playground) para testar alguns casos antes de publicar — por exemplo, simula uma leitura sem autenticação (deve falhar) e uma escrita de um utilizador no seu próprio registo (deve passar)
+4. Clica em "Publicar" (Publish)
+
+Documentação oficial: https://firebase.google.com/docs/database/security
 
 ### 4.2 Passos que **tu** precisas de validar/fazer
 1. Confirmar na Firebase Console se já existem regras de segurança ativas (Firestore → Regras).

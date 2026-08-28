@@ -1,0 +1,48 @@
+{
+  "rules": {
+
+    ".read": false,
+    ".write": false,
+
+    "Users": {
+      ".read": "auth != null",
+
+      "$uid": {
+        ".write": "auth != null && (auth.uid === $uid || root.child('Users').child(auth.uid).child('role').val() === 'superadmin')",
+
+        "Grupos": {
+          "$numeroGrupo": {
+            ".write": "auth != null && (auth.uid === $uid || root.child('Users').child(auth.uid).child('role').val() === 'superadmin' || root.child('Users').child(auth.uid).child('role').val() === 'organizacao')"
+          }
+        }
+      }
+    },
+
+    "Grupos": {
+      ".read": "auth != null",
+
+      "$grupoId": {
+        ".write": "auth != null && (root.child('Grupos').child($grupoId).child('admin').val() === auth.uid || root.child('Users').child(auth.uid).child('role').val() === 'superadmin')",
+
+        "Pendentes": {
+          "$uid": {
+            ".write": "auth != null && ($uid === auth.uid || root.child('Grupos').child($grupoId).child('admin').val() === auth.uid || root.child('Users').child(auth.uid).child('role').val() === 'superadmin')"
+          }
+        }
+      }
+    },
+
+    "Eventos": {
+      ".read": "auth != null",
+
+      "$eventoId": {
+        ".write": "auth != null && (root.child('Users').child(auth.uid).child('role').val() === 'organizacao' || root.child('Users').child(auth.uid).child('role').val() === 'superadmin')",
+
+        "Presenças": {
+          ".write": "auth != null"
+        }
+      }
+    }
+
+  }
+}
