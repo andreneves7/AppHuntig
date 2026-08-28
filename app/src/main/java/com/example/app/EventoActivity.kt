@@ -11,7 +11,7 @@ import android.view.MenuItem
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.android.synthetic.main.activity_evento.*
+import com.example.app.databinding.ActivityEventoBinding
 import java.util.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -19,7 +19,7 @@ import java.util.regex.Pattern
 
 class EventoActivity : AppCompatActivity() {
 
-
+    private lateinit var binding: ActivityEventoBinding
     val Auth = FirebaseAuth.getInstance()
 
     lateinit var gv: VariaveisGlobais
@@ -27,11 +27,12 @@ var num = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_evento)
+        binding = ActivityEventoBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         gv = application as VariaveisGlobais
 
 
-        val datePicker2 = findViewById<DatePicker>(R.id.datePicker2)
+        val datePicker2 = binding.datePicker2
         val today2 = Calendar.getInstance()
         datePicker2.init(
             today2.get(Calendar.YEAR), today2.get(Calendar.MONTH),
@@ -51,7 +52,7 @@ var num = 0
         }
 
 
-        val datePicker = findViewById<DatePicker>(R.id.datePicker1)
+        val datePicker = binding.datePicker1
         val today = Calendar.getInstance()
         datePicker.init(
             today.get(Calendar.YEAR), today.get(Calendar.MONTH),
@@ -70,7 +71,7 @@ var num = 0
             gv.Year = year
         }
 
-        val btnPop = bTipos
+        val btnPop = binding.bTipos
 
         btnPop.setOnClickListener{
 
@@ -90,7 +91,7 @@ var num = 0
             })
             popMenu.show()
         }
-        val paginaMapa = bPais_User
+        val paginaMapa = binding.bPais_User
         paginaMapa.setOnClickListener {
             evento()
         }
@@ -99,9 +100,9 @@ var num = 0
 
     private fun evento() {
 
-        val nome = edNome.text.toString()
-        val horas = edTime.text.toString()
-        val on = switchForma
+        val nome = binding.edNome.text.toString()
+        val horas = binding.edTime.text.toString()
+        val on = binding.switchForma
 
         var numero = intent.getStringExtra(EXTRA_MESSAGE).toInt()
         Log.d("Numero", "ola2 = $numero")

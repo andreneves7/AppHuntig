@@ -12,12 +12,13 @@ import android.widget.ListView
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import kotlinx.android.synthetic.main.activity_admissao.*
-import kotlinx.android.synthetic.main.adesao_custom_view.view.*
+import com.example.app.databinding.ActivityAdmissaoBinding
+import com.example.app.databinding.AdesaoCustomViewBinding
 import java.util.HashMap
 
 class AdmissaoActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityAdmissaoBinding
 
     val mAuth = FirebaseDatabase.getInstance()
     val auth = FirebaseAuth.getInstance()
@@ -26,9 +27,10 @@ class AdmissaoActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_admissao)
+        binding = ActivityAdmissaoBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        lista = ListViewPendentes
+        lista = binding.ListViewPendentes
 
 
 
@@ -250,9 +252,10 @@ class AdmissaoActivity : AppCompatActivity() {
         numeroGrupo: String
     ) {
         val inflater = layoutInflater
-        val inflateview = inflater.inflate(R.layout.adesao_custom_view, null)
+        val dialogBinding = AdesaoCustomViewBinding.inflate(inflater)
+        val inflateview = dialogBinding.root
 
-        val texto = inflateview.textViewShow
+        val texto = dialogBinding.textViewShow
 
         var num: Int
         val valu = ArrayList<String>()

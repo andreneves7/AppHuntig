@@ -10,26 +10,28 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.android.synthetic.main.activity_filtros.*
+import com.example.app.databinding.ActivityFiltrosBinding
 
 class FiltrosActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityFiltrosBinding
     val Auth = FirebaseAuth.getInstance()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_filtros)
+        binding = ActivityFiltrosBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val maior = bMaior
-        val menor = bMenor
-        val tudo = bTudo
+        val maior = binding.bMaior
+        val menor = binding.bMenor
+        val tudo = binding.bTudo
 
-        val esperas = bEsperas
-        val montaria = bMontarias
-        val tordos = bTordos
-        val rolas = bRolas
-        val dias = bDias
+        val esperas = binding.bEsperas
+        val montaria = binding.bMontarias
+        val tordos = binding.bTordos
+        val rolas = binding.bRolas
+        val dias = binding.bDias
 
         val marca = intent.getIntExtra(EXTRA_MESSAGE, -1)
 

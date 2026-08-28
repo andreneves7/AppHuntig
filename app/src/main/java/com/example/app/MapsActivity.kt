@@ -36,15 +36,14 @@ import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.GeoPoint
-import kotlinx.android.synthetic.main.activity_maps.*
+import com.example.app.databinding.ActivityMapsBinding
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.set
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickListener {
 
+    private lateinit var binding: ActivityMapsBinding
     private lateinit var map: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var lastLocation: Location
@@ -59,7 +58,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickListe
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_maps)
+        binding = ActivityMapsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         gv = application as VariaveisGlobais
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
@@ -85,7 +85,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickListe
         search()
 
 
-        val guardarEvento = bGuardar
+        val guardarEvento = binding.bGuardar
         guardarEvento.setOnClickListener {
             evento()
         }

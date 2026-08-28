@@ -17,10 +17,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import kotlinx.android.synthetic.main.activity_evento.*
-import kotlinx.android.synthetic.main.activity_home.*
-import kotlinx.android.synthetic.main.filtros_custom_view.*
-import kotlinx.android.synthetic.main.filtros_custom_view.view.*
+import com.example.app.databinding.ActivityHomeBinding
 import org.intellij.lang.annotations.JdkConstants
 import java.time.LocalDate
 import java.util.*
@@ -29,6 +26,7 @@ import kotlin.collections.ArrayList
 
 class HomeActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityHomeBinding
     val Auth = FirebaseAuth.getInstance()
     val mAuth = FirebaseDatabase.getInstance()
     lateinit var gv: VariaveisGlobais
@@ -36,7 +34,8 @@ class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         gv = application as VariaveisGlobais
-        setContentView(R.layout.activity_home)
+        binding = ActivityHomeBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         //val lista = ListView4
 
@@ -52,10 +51,10 @@ class HomeActivity : AppCompatActivity() {
     }
 
     fun eventos() {
-        val semEventos = NaoEventos
+        val semEventos = binding.NaoEventos
 
-        val lista = ListViewHome
-        val pesquisa = SearchEvento
+        val lista = binding.ListViewHome
+        val pesquisa = binding.SearchEvento
         val filtro = intent.getStringExtra(EXTRA_MESSAGE)
         val values = ArrayList<String>()
         val ListaEventosPrivat = mAuth.getReference("Eventos")

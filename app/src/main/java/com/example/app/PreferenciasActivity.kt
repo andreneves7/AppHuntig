@@ -14,9 +14,10 @@ import android.widget.ArrayAdapter
 import android.widget.ListView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import kotlinx.android.synthetic.main.activity_preferencias.*
+import com.example.app.databinding.ActivityPreferenciasBinding
 
 class PreferenciasActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityPreferenciasBinding
     val Auth = FirebaseAuth.getInstance()
     val mAuth = FirebaseDatabase.getInstance()
     lateinit var gv: VariaveisGlobais
@@ -26,9 +27,10 @@ class PreferenciasActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_preferencias)
+        binding = ActivityPreferenciasBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val pular = bPular
+        val pular = binding.bPular
         val change = Auth.currentUser?.uid.toString()
 
         pular.setOnClickListener {
@@ -63,7 +65,7 @@ class PreferenciasActivity : AppCompatActivity() {
 
 
 
-        listView = findViewById(R.id.listViewPre)
+        listView = binding.listViewPre
 
         var d = mAuth.getReference("Grupos")
         var list = ArrayList<String>()

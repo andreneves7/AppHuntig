@@ -15,11 +15,11 @@ import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import kotlinx.android.synthetic.main.activity_criar_org_evento.*
-import kotlinx.android.synthetic.main.activity_grupo.*
+import com.example.app.databinding.ActivityCriarOrgEventoBinding
 
 class CriarOrgEventoActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityCriarOrgEventoBinding
     lateinit var gv: VariaveisGlobais
     val Auth = FirebaseAuth.getInstance()
 
@@ -29,10 +29,11 @@ class CriarOrgEventoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         gv = application as VariaveisGlobais
-        setContentView(R.layout.activity_criar_org_evento)
+        binding = ActivityCriarOrgEventoBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val evento = bEvento
-        val soc = bSocios
+        val evento = binding.bEvento
+        val soc = binding.bSocios
 
         busca()
 
@@ -62,7 +63,7 @@ class CriarOrgEventoActivity : AppCompatActivity() {
 
 
     fun busca() {
-        val semEventos = tNaoEventos2
+        val semEventos = binding.tNaoEventos2
         semEventos.isInvisible = true
         val user = Auth.currentUser
         if (user != null) {
@@ -109,7 +110,7 @@ class CriarOrgEventoActivity : AppCompatActivity() {
                                         R.layout.listview_item,
                                         valu
                                     )
-                                    val lista = ListView4
+                                    val lista = binding.ListView4
                                     lista.adapter = adapter
 
                                     lista.onItemClickListener =

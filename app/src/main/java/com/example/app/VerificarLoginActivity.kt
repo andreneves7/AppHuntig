@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
-import org.jetbrains.anko.startActivity
 import android.content.Intent
 import android.provider.AlarmClock
 import com.google.firebase.database.DataSnapshot
@@ -17,29 +16,41 @@ class VerificarLoginActivity : AppCompatActivity() {
 
     private val a = FirebaseAuth.getInstance().currentUser
     private val b = FirebaseDatabase.getInstance()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (a == null) {
-            startActivity<LoginActivity>()
+            startActivity(Intent(this, LoginActivity::class.java))
         } else {
-
 
             val c = b.getReference("Users").child(a.uid)
             c.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    val org = dataSnapshot.child("Org").value
+                    val org = dataSnapshot.child("Org").value as? Boolean
+                    val roleValue = dataSnapshot.child("role").getValue(String::class.java)
+                    val role = Roles.resolver(roleValue, org)
 
+                    val gv = application as VariaveisGlobais
+                    gv.role = role
 
-                    if (org == false) {
-
-                        val marca = 0
-                        val intent = Intent(this@VerificarLoginActivity, FiltrosActivity::class.java).apply {
-                            putExtra(AlarmClock.EXTRA_MESSAGE, marca)
+                    when (role) {
+                        Roles.SUPERADMIN -> startActivity(
+                            Intent(this@VerificarLoginActivity, SuperAdminActivity::class.java)
+                        )
+                        Roles.ORGANIZACAO -> startActivity(
+                            Intent(this@VerificarLoginActivity, OrgActivity::class.java)
+                        )
+                        else -> {
+                            val marca = 0
+                            val intent = Intent(
+                                this@VerificarLoginActivity,
+                                FiltrosActivity::class.java
+                            ).apply {
+                                putExtra(AlarmClock.EXTRA_MESSAGE, marca)
+                            }
+                            startActivity(intent)
                         }
-                        startActivity(intent)
-
-
-                    } else startActivity<OrgActivity>()
+                    }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
@@ -47,6 +58,6 @@ class VerificarLoginActivity : AppCompatActivity() {
                 }
             })
         }
-    finish()
+        finish()
     }
 }

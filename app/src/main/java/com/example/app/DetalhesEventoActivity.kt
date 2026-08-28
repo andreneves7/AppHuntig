@@ -19,13 +19,13 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.google.firebase.firestore.FieldValue
-import kotlinx.android.synthetic.main.activity_detalhes_evento.*
+import com.example.app.databinding.ActivityDetalhesEventoBinding
 import java.util.HashMap
 import androidx.core.view.isVisible as isVisible
 
 class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback {
 
+    private lateinit var binding: ActivityDetalhesEventoBinding
     val Auth = FirebaseAuth.getInstance()
     val mAuth = FirebaseDatabase.getInstance()
     lateinit var gv: VariaveisGlobais
@@ -36,10 +36,11 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         gv = application as VariaveisGlobais
-        setContentView(R.layout.activity_detalhes_evento)
+        binding = ActivityDetalhesEventoBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val showDetalhe = tShowDetalhes
-        val marcar = bPresença
+        val showDetalhe = binding.tShowDetalhes
+        val marcar = binding.bPresença
 
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map2) as SupportMapFragment
@@ -127,7 +128,7 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback {
 
     fun desativar() {
 
-        val marcar = bPresença
+        val marcar = binding.bPresença
         val uid = Auth.currentUser?.uid
         val fazParte = ArrayList<String>()
 

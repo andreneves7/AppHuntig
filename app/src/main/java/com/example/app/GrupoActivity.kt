@@ -16,7 +16,7 @@ import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import kotlinx.android.synthetic.main.activity_grupo.*
+import com.example.app.databinding.ActivityGrupoBinding
 
 class VariaveisGlobais : Application() {
     var Evento: String = ""
@@ -48,6 +48,7 @@ class VariaveisGlobais : Application() {
 
 class GrupoActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityGrupoBinding
     lateinit var gv: VariaveisGlobais
     val Auth = FirebaseAuth.getInstance()
     val mAuth = FirebaseDatabase.getInstance()
@@ -56,8 +57,9 @@ class GrupoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         gv = application as VariaveisGlobais
-        setContentView(R.layout.activity_grupo)
-        val semEventos = tNaoEventos
+        binding = ActivityGrupoBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        val semEventos = binding.tNaoEventos
 
         semEventos.isInvisible = true
 
@@ -69,7 +71,7 @@ class GrupoActivity : AppCompatActivity() {
 
 
     fun busca() {
-        val semEventos = tNaoEventos
+        val semEventos = binding.tNaoEventos
         semEventos.isInvisible = true
         val user = Auth.currentUser
         if (user != null) {
@@ -114,7 +116,7 @@ class GrupoActivity : AppCompatActivity() {
                                         R.layout.listview_item,
                                         valu
                                     )
-                                    val lista = ListView3
+                                    val lista = binding.ListView3
                                     lista.adapter = adapter
 
                                     lista.onItemClickListener =

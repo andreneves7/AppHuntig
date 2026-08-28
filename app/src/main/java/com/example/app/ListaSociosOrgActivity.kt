@@ -9,10 +9,11 @@ import android.widget.ListView
 import androidx.annotation.RequiresApi
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import kotlinx.android.synthetic.main.activity_lista_socios_org.*
+import com.example.app.databinding.ActivityListaSociosOrgBinding
 
 class ListaSociosOrgActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityListaSociosOrgBinding
     val mAuth = FirebaseDatabase.getInstance()
     val auth = FirebaseAuth.getInstance()
 
@@ -20,9 +21,10 @@ class ListaSociosOrgActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_lista_socios_org)
+        binding = ActivityListaSociosOrgBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        lista = ListViewSociosInscritos
+        lista = binding.ListViewSociosInscritos
 
         dados()
 

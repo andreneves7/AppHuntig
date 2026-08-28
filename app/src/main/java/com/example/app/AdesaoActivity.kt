@@ -12,12 +12,12 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.firestore.FieldValue
-import kotlinx.android.synthetic.main.activity_adesao.*
+import com.example.app.databinding.ActivityAdesaoBinding
 
 
 class AdesaoActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityAdesaoBinding
     val Auth = FirebaseAuth.getInstance()
     val mAuth = FirebaseDatabase.getInstance()
     lateinit var gv: VariaveisGlobais
@@ -26,10 +26,11 @@ class AdesaoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         gv = application as VariaveisGlobais
-        setContentView(R.layout.activity_adesao)
+        binding = ActivityAdesaoBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val texto = tInfo
-        val botao = bEntrar
+        val texto = binding.tInfo
+        val botao = binding.bEntrar
 
 
         val user = Auth.currentUser
@@ -69,7 +70,7 @@ class AdesaoActivity : AppCompatActivity() {
 
     private fun showAlert() {
 
-        val cod = grupoCodigo
+        val cod = binding.grupoCodigo
         val codigo = cod.text.toString()
         val message = intent.getStringExtra(EXTRA_MESSAGE)
 

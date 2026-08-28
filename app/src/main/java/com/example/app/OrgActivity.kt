@@ -13,11 +13,11 @@ import android.widget.ArrayAdapter
 import androidx.core.view.isVisible
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import kotlinx.android.synthetic.main.activity_org.*
-import kotlinx.android.synthetic.main.activity_ver_grupo.*
+import com.example.app.databinding.ActivityOrgBinding
 
 class OrgActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityOrgBinding
     val mAuth = FirebaseDatabase.getInstance()
     val Auth = FirebaseAuth.getInstance()
 
@@ -26,10 +26,11 @@ class OrgActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         gv = application as VariaveisGlobais
-        setContentView(R.layout.activity_org)
+        binding = ActivityOrgBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val semGrupos = tNaoGrupos2
-        val list = ListView3
+        val semGrupos = binding.tNaoGrupos2
+        val list = binding.ListView3
 
         val user = Auth.currentUser?.uid
 

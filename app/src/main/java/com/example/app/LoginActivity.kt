@@ -11,25 +11,26 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import kotlinx.android.synthetic.main.activity_main.*
+import com.example.app.databinding.ActivityMainBinding
 import java.util.*
 
 
 class LoginActivity : AppCompatActivity() {
 
-
+    private lateinit var binding: ActivityMainBinding
     val mAuth = FirebaseDatabase.getInstance()
     val Auth = FirebaseAuth.getInstance()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
 
-        val loginBtn = bLogin
-        val loginOrg = bLoginOrg
-        val regTxt = bRegisto
+        val loginBtn = binding.bLogin
+        val loginOrg = binding.bLoginOrg
+        val regTxt = binding.bRegisto
 
         loginOrg.setVisibility(View.INVISIBLE)
 
@@ -47,8 +48,8 @@ class LoginActivity : AppCompatActivity() {
     }
 
     fun loginOrg() {
-        val emailTxt = idEmail
-        val passwordTxt = idPassword
+        val emailTxt = binding.idEmail
+        val passwordTxt = binding.idPassword
 
         var email = emailTxt.text.toString()
         var password = passwordTxt.text.toString()
@@ -125,8 +126,8 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun login() {
-        val emailTxt = idEmail
-        val passwordTxt = idPassword
+        val emailTxt = binding.idEmail
+        val passwordTxt = binding.idPassword
 
         var email = emailTxt.text.toString()
         var password = passwordTxt.text.toString()
@@ -298,9 +299,9 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
 
-        val regTxt = bRegisto
-        val loginBtn = bLogin
-        val loginOrg = bLoginOrg
+        val regTxt = binding.bRegisto
+        val loginBtn = binding.bLogin
+        val loginOrg = binding.bLoginOrg
 
 
 
