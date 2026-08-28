@@ -45,6 +45,8 @@ Aqui tens de criar uma **segunda chave** (repete os passos acima) restringida co
 
 **Porquê:** sem isto, qualquer pessoa com a app instalada consegue ler/escrever a tua base de dados inteira.
 
+> ⚠️ Se já tinhas aplicado uma versão anterior destas regras, o ficheiro foi atualizado depois (acrescentado um índice para a nova ordenação de eventos) — volta a copiar e publicar a versão mais recente.
+
 **Passos:**
 1. Firebase Console → o teu projeto → **Realtime Database** → separador **Regras**
 2. Copia o conteúdo completo do ficheiro `database.rules.json` (raiz do repositório, já pronto)

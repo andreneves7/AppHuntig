@@ -57,8 +57,19 @@ class HomeActivity : AppCompatActivity() {
         val pesquisa = binding.SearchEvento
         val filtro = intent.getStringExtra(EXTRA_MESSAGE)
         val values = ArrayList<String>()
+        // Antes: mAuth.getReference("Eventos") sem qualquer ordenação/limite — o
+        // listener descarregava TODOS os eventos existentes, sempre, sem exceção.
+        // Agora: ordenado pelo campo "dataFimTimestamp" (ver MapsActivity.kt) e
+        // limitado aos 200 que terminam mais cedo — eventos muito antigos (sem
+        // este campo, ou com data de fim já muito passada) ficam de fora primeiro
+        // à medida que a base de dados cresce. A lógica de filtragem por
+        // data/tipo/formato abaixo mantém-se exatamente igual — isto só limita
+        // quantos nós o listener descarrega, não muda o que é mostrado dentro
+        // desse limite.
         val ListaEventosPrivat = mAuth.getReference("Eventos")
+            .orderByChild("dataFimTimestamp").limitToFirst(200)
         val ListaEventosPublic = mAuth.getReference("Eventos")
+            .orderByChild("dataFimTimestamp").limitToFirst(200)
 
         // Mostra o indicador de carregamento enquanto esperamos pela resposta do
         // Firebase. Como ChildEventListener não avisa quando "acabou de carregar

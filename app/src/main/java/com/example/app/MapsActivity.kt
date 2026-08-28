@@ -328,6 +328,18 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickListe
                 evento["diaFim"] = gv.DayFim
                 evento["mesFim"] = gv.MonthFim
                 evento["anoFim"] = gv.YearFim
+                // Campo calculado, necessário para o Firebase conseguir ordenar/paginar
+                // eventos (orderByChild só ordena por UM campo — não existia nenhum campo
+                // único e ordenável antes disto, só dia/mes/ano separados). Representa a
+                // data de FIM do evento (não a de início), porque é essa que decide se um
+                // evento ainda deve aparecer na lista (ver HomeActivity.eventos()).
+                // Eventos criados antes desta alteração não têm este campo — o Firebase
+                // trata-os como "menores que qualquer valor" numa orderByChild, o que
+                // significa que vão aparecer primeiro numa ordenação ascendente e ser os
+                // primeiros a cair fora de um limitToLast() à medida que a lista cresce.
+                val calendarioFim = java.util.Calendar.getInstance()
+                calendarioFim.set(gv.YearFim, gv.MonthFim - 1, gv.DayFim, 23, 59, 59)
+                evento["dataFimTimestamp"] = calendarioFim.timeInMillis
                 evento["Tipo"] = gv.check
                 evento["Forma"] = gv.privado
                 evento["Latitude"] = gv.Lat
