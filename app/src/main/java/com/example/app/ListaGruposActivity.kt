@@ -44,10 +44,15 @@ class ListaGruposActivity : AppCompatActivity() {
         val list = ArrayList<String>()
         // MIGRAÇÃO: Grupos passou a ser indexado por "Numero" em vez do nome
         // (ver docs/PLANO_DESENVOLVIMENTO.md). A lista continua a MOSTRAR o
-        // nome (é o que faz sentido para o utilizador ler), mas guarda em
-        // paralelo o número de cada grupo, na mesma posição/ordem, para usar
-        // como chave real do Firebase e no Intent para AdesaoActivity.
-        val listNumeros = ArrayList<String>()
+        // nome (é o que faz sentido para o utilizador ler).
+        // Trocado de um array paralelo (listNumeros[posição]) para um mapa
+        // nome->número: com a pesquisa agora ligada ao adapter, a POSIÇÃO de
+        // um item na lista visível muda conforme o texto filtrado — um array
+        // indexado por posição ficaria dessincronizado e levaria a pessoa
+        // para o grupo errado depois de pesquisar. O mapa procura pelo NOME
+        // do item realmente clicado, que se mantém correto seja qual for o
+        // filtro aplicado.
+        val nomeParaNumero = LinkedHashMap<String, String>()
 
         val membro = object : ChildEventListener {
             override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
@@ -57,7 +62,7 @@ class ListaGruposActivity : AppCompatActivity() {
                 val g = dataSnapshot.child("nome").value.toString()
                 val numero = dataSnapshot.child("Numero").value.toString()
                 list.add(g)
-                listNumeros.add(numero)
+                nomeParaNumero[g] = numero
 
                 Log.d(
                     "ListaGruposActivity",
@@ -71,9 +76,18 @@ class ListaGruposActivity : AppCompatActivity() {
 
                 listView.adapter = adapter3
 
+                binding.searchListaGrupos.setOnQueryTextListener(object : android.widget.SearchView.OnQueryTextListener {
+                    override fun onQueryTextSubmit(query: String?): Boolean = false
+                    override fun onQueryTextChange(newText: String?): Boolean {
+                        adapter3.filter.filter(newText)
+                        return true
+                    }
+                })
+
                 listView.onItemClickListener =
-                    AdapterView.OnItemClickListener { _, view, position, _ ->
-                        val message = listNumeros[position]
+                    AdapterView.OnItemClickListener { parent, view, position, _ ->
+                        val nomeClicado = parent.getItemAtPosition(position) as String
+                        val message = nomeParaNumero[nomeClicado] ?: return@OnItemClickListener
                         Log.d("ListaGruposActivity", "numero: $message" + "posicao: $position ")
 
                         val b = mAuth.getReference("Grupos").child(message)
