@@ -264,7 +264,7 @@ class LoginActivity : AppCompatActivity() {
                                                         val intent =
                                                             Intent(
                                                                 this@LoginActivity,
-                                                                PreferenciasActivity::class.java
+                                                                OnboardingActivity::class.java
                                                             )
                                                         intent.flags =
                                                             Intent.FLAG_ACTIVITY_CLEAR_TASK.or(

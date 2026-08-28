@@ -117,6 +117,9 @@
         <activity
             android:name=".EventosProximosActivity"
             android:screenOrientation="fullSensor" />
+        <activity
+            android:name=".OnboardingActivity"
+            android:screenOrientation="fullSensor" />
         <service
             android:name=".HuntigMessagingService"
             android:exported="false">
