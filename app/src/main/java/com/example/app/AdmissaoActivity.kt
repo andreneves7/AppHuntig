@@ -284,12 +284,19 @@ class AdmissaoActivity : AppCompatActivity() {
         alertDialog.setCancelable(false)
 
         alertDialog.setNegativeButton("Rejeitar") { _, _ ->
-            // BUG CORRIGIDO: antes só mostrava um Toast, nunca removia o
-            // pedido de "Pendentes" — a organização veria o mesmo pedido
-            // "rejeitado" para sempre, sem nunca desaparecer da lista.
-            mAuth.getReference("Grupos").child(numeroGrupo).child("Pendentes")
-                .child(uid).removeValue()
-            Toast.makeText(this, this.getString(R.string.msg_rejeitado), Toast.LENGTH_LONG).show()
+            // Ação destrutiva desde a correção do bug (antes não fazia nada de
+            // facto) — pede confirmação extra antes de remover o pedido, para
+            // não rejeitar alguém sem querer com um toque sem intenção.
+            AlertDialog.Builder(this)
+                .setTitle("Confirmar rejeição")
+                .setMessage("Tens a certeza que queres rejeitar o pedido de $name? A pessoa vai ter de pedir adesão outra vez se mudares de ideias.")
+                .setPositiveButton("Sim, rejeitar") { _, _ ->
+                    mAuth.getReference("Grupos").child(numeroGrupo).child("Pendentes")
+                        .child(uid).removeValue()
+                    Toast.makeText(this, this.getString(R.string.msg_rejeitado), Toast.LENGTH_LONG).show()
+                }
+                .setNegativeButton("Cancelar", null)
+                .show()
         }
 
         alertDialog.setPositiveButton("Aceitar") { _, _ ->
