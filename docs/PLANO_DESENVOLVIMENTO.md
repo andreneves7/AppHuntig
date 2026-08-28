@@ -100,6 +100,20 @@ Todos os 17 ficheiros `.kt` que usavam `kotlinx.android.synthetic` (incluindo os
 **Validação necessária antes do merge:** esta foi a alteração de maior volume (17 ficheiros, ~150 substituições de IDs). Fiz verificação sistemática por scripts (procura de imports `kotlinx` residuais — zero encontrados; procura de duplo-prefixo `binding.binding.` por erro de substituição — zero encontrados), mas **não consegui compilar nada disto**. É essencial correres `./gradlew build` no Android Studio antes de fazeres merge para `master`.
 - [ ] Rever/corrigir layouts XML afetados
 - [ ] Testar fluxos principais (login caçador, login organização, login superadmin, criação de evento, adesão a grupo) — **ver nota abaixo sobre limitação de teste**
+- [x] Regras de segurança do Realtime Database (`database.rules.json`) — ver secção 4.1
+- [x] Recuperação de password (`LoginActivity` — "Esqueceu-se da password?")
+- [x] Validação de email, password, e comprimento de campos no registo (`RegistoUserActivity`) — corrigido também um bug em que a falha de validação não mostrava nada ao utilizador
+- [x] Validação de datas de evento (fim não pode ser antes do início) — `EventoActivity`
+- [x] Estados de loading + tratamento de erros visível (indicador de carregamento em `HomeActivity` como referência do padrão; 30 `onCancelled` silenciosos em 11 ficheiros passaram a mostrar Toast de erro ao utilizador)
+- [ ] Alinhar as chaves de `Grupos` (nome → número)
+
+### Erros visíveis (onCancelled) — detalhes
+Criado `Utils.kt` com a função `Context.mostrarErroLigacao()`, reutilizada em todos os `onCancelled` que antes só escreviam num `Log.d` silencioso (30 ocorrências em 11 ficheiros). Isto é especialmente relevante depois de aplicares as regras de segurança do `database.rules.json` — se uma leitura for recusada, o utilizador agora vê um aviso em vez de um ecrã parado sem explicação.
+
+### Loading state — detalhes
+Adicionado `ProgressBar` (`progressHome`) a `activity_home.xml`/`HomeActivity.kt` como implementação de referência: aparece ao iniciar o carregamento, desaparece assim que chega o primeiro evento (ou ao fim de 5 segundos, para nunca ficar preso a girar se a lista estiver mesmo vazia — o `ChildEventListener` do Realtime Database não tem um callback nativo de "carregamento inicial concluído", ao contrário do `addListenerForSingleValueEvent`).
+
+**Ecrãs que ainda beneficiariam do mesmo padrão** (não feito por limitação de tempo, não de dificuldade — é mecânico, repetir o que está em `HomeActivity`): `OrgActivity`, `GrupoActivity`, `VerGrupoActivity`, `ListaGruposActivity`, `ListaSociosOrgActivity`, `AdmissaoActivity`.
 
 ### ⚠️ Nota sobre testes
 Não foi possível compilar/correr a app neste ambiente de trabalho — a rede disponível não tem acesso aos repositórios Maven da Google/Maven Central, necessários para as dependências do Gradle (Firebase, AndroidX, Google Maps). Todo o trabalho acima foi feito por revisão estática cuidadosa (leitura linha a linha, verificação de imports, verificação de duplicação de nomes). **Antes de fazer merge para `master`, corre localmente no Android Studio**: `./gradlew build` (ou `assembleDebug`) para confirmar que compila, e testa manualmente os fluxos de login dos 3 papéis.

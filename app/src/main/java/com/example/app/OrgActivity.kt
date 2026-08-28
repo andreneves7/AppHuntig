@@ -140,7 +140,8 @@ class OrgActivity : AppCompatActivity() {
 
 
                             override fun onCancelled(error: DatabaseError) {
-                                Log.d("todo_fix", "Evento Firebase ignorado propositadamente (sem logica necessaria)")
+                                Log.d("todo_fix", "erro Firebase: ${error.message}")
+                                this@OrgActivity.mostrarErroLigacao()
                             }
                         })
                     } else {
@@ -162,7 +163,8 @@ class OrgActivity : AppCompatActivity() {
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    Log.d("todo_fix", "Evento Firebase ignorado propositadamente (sem logica necessaria)")
+                    Log.d("todo_fix", "erro Firebase: ${error.message}")
+                    this@OrgActivity.mostrarErroLigacao()
                 }
             }
             mail.addChildEventListener(j)

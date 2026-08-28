@@ -60,11 +60,20 @@ class HomeActivity : AppCompatActivity() {
         val ListaEventosPrivat = mAuth.getReference("Eventos")
         val ListaEventosPublic = mAuth.getReference("Eventos")
 
+        // Mostra o indicador de carregamento enquanto esperamos pela resposta do
+        // Firebase. Como ChildEventListener não avisa quando "acabou de carregar
+        // tudo o que existe" (ao contrário de addListenerForSingleValueEvent),
+        // escondemo-lo assim que o primeiro evento chegar (onChildAdded) ou, se a
+        // lista estiver mesmo vazia, ao fim de 5 segundos — para nunca ficar preso
+        // a girar indefinidamente.
+        binding.progressHome.isVisible = true
+        binding.progressHome.postDelayed({ binding.progressHome.isVisible = false }, 5000)
 
         if (filtro != null) {
             val public = object : ChildEventListener {
                 override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
 
+                    binding.progressHome.isVisible = false
 
                     val tipo = dataSnapshot.child("Tipo").getValue().toString()
 
@@ -188,7 +197,8 @@ class HomeActivity : AppCompatActivity() {
                                     }
 
                                     override fun onCancelled(error: DatabaseError) {
-                                        Log.d("todo_fix", "Evento Firebase ignorado propositadamente (sem logica necessaria)")
+                                        Log.d("todo_fix", "erro Firebase: ${error.message}")
+                                        this@HomeActivity.mostrarErroLigacao()
                                     }
                                 })
 
@@ -233,7 +243,9 @@ class HomeActivity : AppCompatActivity() {
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    Log.d("todo_fix", "Evento Firebase ignorado propositadamente (sem logica necessaria)")
+                    binding.progressHome.isVisible = false
+                    Log.d("todo_fix", "erro Firebase: ${error.message}")
+                    this@HomeActivity.mostrarErroLigacao()
                 }
 
             }
@@ -511,7 +523,8 @@ class HomeActivity : AppCompatActivity() {
                                                                 }
 
                                                                 override fun onCancelled(error: DatabaseError) {
-                                                                    Log.d("todo_fix", "Evento Firebase ignorado propositadamente (sem logica necessaria)")
+                                                                    Log.d("todo_fix", "erro Firebase: ${error.message}")
+                                                                    this@HomeActivity.mostrarErroLigacao()
                                                                 }
                                                             })
 
@@ -554,7 +567,8 @@ class HomeActivity : AppCompatActivity() {
                                             }
 
                                             override fun onCancelled(error: DatabaseError) {
-                                                Log.d("todo_fix", "Evento Firebase ignorado propositadamente (sem logica necessaria)")
+                                                Log.d("todo_fix", "erro Firebase: ${error.message}")
+                                                this@HomeActivity.mostrarErroLigacao()
                                             }
 
 //                            var x = 0
@@ -583,7 +597,8 @@ class HomeActivity : AppCompatActivity() {
                                     }
 
                                     override fun onCancelled(error: DatabaseError) {
-                                        Log.d("todo_fix", "Evento Firebase ignorado propositadamente (sem logica necessaria)")
+                                        Log.d("todo_fix", "erro Firebase: ${error.message}")
+                                        this@HomeActivity.mostrarErroLigacao()
                                     }
 
 
@@ -612,7 +627,8 @@ class HomeActivity : AppCompatActivity() {
                         }
 
                         override fun onCancelled(error: DatabaseError) {
-                            Log.d("todo_fix", "Evento Firebase ignorado propositadamente (sem logica necessaria)")
+                            Log.d("todo_fix", "erro Firebase: ${error.message}")
+                            this@HomeActivity.mostrarErroLigacao()
                         }
                     }
                     t.addChildEventListener(f)
@@ -632,7 +648,8 @@ class HomeActivity : AppCompatActivity() {
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    Log.d("todo_fix", "Evento Firebase ignorado propositadamente (sem logica necessaria)")
+                    Log.d("todo_fix", "erro Firebase: ${error.message}")
+                    this@HomeActivity.mostrarErroLigacao()
                 }
 
 
