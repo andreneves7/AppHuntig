@@ -19,6 +19,11 @@
             app:showAsAction="never" />
 
         <item
+            android:id="@+id/exportarParticipantes"
+            android:title="Exportar participantes"
+            app:showAsAction="never" />
+
+        <item
             android:id="@+id/home"
             android:title="home"
             app:showAsAction="never" />

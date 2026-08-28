@@ -353,6 +353,92 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback {
      * "Check-in por QR Code" (menu principal) é levado diretamente para
      * este ecrã, já pronto para marcar presença.
      */
+    /**
+     * Descarrega a lista de presenças do evento, resolve o nome de cada uid,
+     * e abre o seletor de partilha do Android (email, mensagens, etc.) com
+     * uma lista de texto simples — mais compatível entre apps do que gerar
+     * um ficheiro .csv real, que precisaria de configurar um FileProvider
+     * (mais uma peça a testar sem conseguir compilar).
+     */
+    private fun exportarParticipantes() {
+        val nomeEvento = gv.detalhes
+        if (nomeEvento.isEmpty()) {
+            Toast.makeText(this, "Evento ainda não identificado.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        Toast.makeText(this, "A preparar lista de participantes…", Toast.LENGTH_SHORT).show()
+
+        mAuth.getReference("Eventos").child(nomeEvento).child("Presenças")
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(presencasSnapshot: DataSnapshot) {
+                    val uids = presencasSnapshot.children.mapNotNull {
+                        it.getValue(String::class.java)
+                    }
+
+                    if (uids.isEmpty()) {
+                        Toast.makeText(
+                            this@DetalhesEventoActivity,
+                            "Ainda não há nenhum participante inscrito neste evento.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        return
+                    }
+
+                    resolverNomesEPartilhar(nomeEvento, uids)
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.d("todo_fix", "erro Firebase: ${error.message}")
+                    this@DetalhesEventoActivity.mostrarErroLigacao()
+                }
+            })
+    }
+
+    private fun resolverNomesEPartilhar(nomeEvento: String, uids: List<String>) {
+        val nomes = java.util.Collections.synchronizedList(ArrayList<String>())
+        var pendentes = uids.size
+
+        for (uid in uids) {
+            mAuth.getReference("Users").child(uid).child("name")
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val nome = snapshot.getValue(String::class.java) ?: "(nome desconhecido)"
+                        nomes.add(nome)
+                        pendentes--
+                        if (pendentes == 0) {
+                            partilharLista(nomeEvento, nomes)
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        nomes.add("(nome desconhecido)")
+                        pendentes--
+                        if (pendentes == 0) {
+                            partilharLista(nomeEvento, nomes)
+                        }
+                    }
+                })
+        }
+    }
+
+    private fun partilharLista(nomeEvento: String, nomes: List<String>) {
+        val texto = buildString {
+            append("Participantes — $nomeEvento\n\n")
+            nomes.sorted().forEachIndexed { indice, nome ->
+                append("${indice + 1}. $nome\n")
+            }
+            append("\nTotal: ${nomes.size}")
+        }
+
+        val intent = Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            putExtra(Intent.EXTRA_SUBJECT, "Participantes — $nomeEvento")
+            putExtra(Intent.EXTRA_TEXT, texto)
+        }
+        startActivity(Intent.createChooser(intent, "Partilhar lista de participantes"))
+    }
+
     private fun mostrarQRCode() {
         val nomeEvento = gv.detalhes
         if (nomeEvento.isEmpty()) {
@@ -402,6 +488,10 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item!!.itemId == R.id.mostrarQRCode) {
             mostrarQRCode()
+        }
+
+        if (item.itemId == R.id.exportarParticipantes) {
+            exportarParticipantes()
         }
 
         if (item.itemId == R.id.adicionarCalendario) {
