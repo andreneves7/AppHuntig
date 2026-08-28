@@ -86,7 +86,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickListe
 
 
         val guardarEvento = binding.bGuardar
-        guardarEvento.setOnClickListener {
+        guardarEvento.evitarDuploClique {
             evento()
         }
 

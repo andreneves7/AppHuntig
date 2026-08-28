@@ -50,7 +50,7 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback {
 
         desativar()
 
-        marcar.setOnClickListener {
+        marcar.evitarDuploClique {
             marcarPresença()
             val marca = 1
             val intent = Intent(this, FiltrosActivity::class.java).apply {

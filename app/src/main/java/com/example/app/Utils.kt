@@ -15,3 +15,35 @@ fun Context.mostrarErroLigacao() {
     Toast.makeText(this, this.getString(R.string.msg_nao_foi_possivel_carregar_os_dados_verif), Toast.LENGTH_LONG
     ).show()
 }
+
+/**
+ * Guarda o instante do último clique de cada View individualmente — clicar
+ * no botão A não bloqueia clicar logo a seguir no botão B, só bloqueia
+ * cliques repetidos no MESMO botão dentro do intervalo.
+ *
+ * Usa WeakHashMap para nunca impedir a View de ser recolhida pelo garbage
+ * collector — a entrada desaparece sozinha quando a View deixa de existir.
+ */
+private val ultimosCliques = java.util.WeakHashMap<android.view.View, Long>()
+
+/**
+ * Substituto de setOnClickListener para botões que disparam uma ação
+ * importante e não-repetível (gravar dados no Firebase, submeter um
+ * formulário) — ignora cliques repetidos no mesmo botão dentro de
+ * [intervaloMs], para não criar dados duplicados se o utilizador tocar
+ * duas vezes seguidas (ecrã lento a reagir, dedo a tremer, ligação lenta
+ * a fazer parecer que o primeiro toque não registou).
+ *
+ * Não desativa visualmente o botão — só ignora o clique extra, de forma
+ * silenciosa e sem "piscar" o botão para cinzento.
+ */
+fun android.view.View.evitarDuploClique(intervaloMs: Long = 800, acao: (android.view.View) -> Unit) {
+    setOnClickListener { view ->
+        val agora = System.currentTimeMillis()
+        val ultimo = ultimosCliques[view] ?: 0L
+        if (agora - ultimo >= intervaloMs) {
+            ultimosCliques[view] = agora
+            acao(view)
+        }
+    }
+}

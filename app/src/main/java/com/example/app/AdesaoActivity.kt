@@ -59,7 +59,7 @@ class AdesaoActivity : AppCompatActivity() {
             })
         }
 
-        botao.setOnClickListener {
+        botao.evitarDuploClique {
 
             showAlert()
         }

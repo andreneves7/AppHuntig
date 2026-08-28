@@ -196,7 +196,7 @@ class RegistoUserActivity : AppCompatActivity() {
         dni.text.toString()
         licencaE.text.toString()
 
-        buttonRegistar.setOnClickListener {
+        buttonRegistar.evitarDuploClique {
 
 
             val email = binding.addEmail.text.toString()
