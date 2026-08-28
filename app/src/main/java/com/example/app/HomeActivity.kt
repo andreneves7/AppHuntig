@@ -78,9 +78,12 @@ class HomeActivity : AppCompatActivity() {
         // data/tipo/formato abaixo mantém-se exatamente igual — isto só limita
         // quantos nós o listener descarrega, não muda o que é mostrado dentro
         // desse limite.
-        val ListaEventosPrivat = mAuth.getReference("Eventos")
-            .orderByChild("dataFimTimestamp").limitToFirst(200)
-        val ListaEventosPublic = mAuth.getReference("Eventos")
+        // MIGRAÇÃO (ver docs/PLANO_DESENVOLVIMENTO.md): lê agora EventosPublicos
+        // em vez do antigo nó único "Eventos". A query dos eventos PRIVADOS já
+        // não pode ser construída aqui — precisa do número de cada grupo do
+        // utilizador, só conhecido mais abaixo — por isso passou a ser montada
+        // individualmente, por grupo, no sítio onde já era usada.
+        val ListaEventosPublic = mAuth.getReference("EventosPublicos")
             .orderByChild("dataFimTimestamp").limitToFirst(200)
 
         // Mostra o indicador de carregamento enquanto esperamos pela resposta do
@@ -204,9 +207,13 @@ class HomeActivity : AppCompatActivity() {
                                         .removePrefix("🔒 ")
                                 Log.d("home", "grupoID to search: $itemValue")
                                 gv.detalhes = itemValue
+                                // Este bloco é exclusivo do ramo público (ver "public" acima)
+                                // — nunca mostra eventos privados, por isso é seguro fixar
+                                // aqui sem mais verificação.
+                                gv.detalhesPrivado = false
 //                            val uid = Auth.currentUser?.uid
                                 val eventoclick2 =
-                                    mAuth.getReference("Eventos").child(itemValue)
+                                    mAuth.getReference("EventosPublicos").child(itemValue)
                                 eventoclick2.addValueEventListener(object : ValueEventListener {
                                     override fun onDataChange(snapshot: DataSnapshot) {
 
@@ -360,6 +367,12 @@ class HomeActivity : AppCompatActivity() {
                                         val n =
                                             snapshot.child("Numero").getValue().toString().toInt()
 
+                                        // MIGRAÇÃO (ver docs/PLANO_DESENVOLVIMENTO.md): lê
+                                        // EventosPrivados/{n} — já limitado a este grupo pelo
+                                        // próprio caminho, construído aqui porque "n" só fica
+                                        // conhecido neste ponto (um grupo de cada vez).
+                                        val listaEventosPrivadosDesteGrupo =
+                                            mAuth.getReference("EventosPrivados").child(n.toString())
 
                                         val private = object : ChildEventListener {
                                             override fun onChildAdded(
@@ -532,9 +545,15 @@ class HomeActivity : AppCompatActivity() {
                                                                 "grupoID to search: $itemValue"
                                                             )
                                                             gv.detalhes = itemValue
+                                                            // Este bloco é exclusivo do ramo privado
+                                                            // deste grupo (ver "private"/"n" acima) —
+                                                            // seguro fixar aqui sem mais verificação.
+                                                            gv.detalhesPrivado = true
+                                                            gv.detalhesNumeroGrupo = n.toString()
 //                                                        val uid = Auth.currentUser?.uid
                                                             val eventoClick =
-                                                                mAuth.getReference("Eventos")
+                                                                mAuth.getReference("EventosPrivados")
+                                                                    .child(n.toString())
                                                                     .child(itemValue)
                                                             eventoClick.addValueEventListener(object :
                                                                 ValueEventListener {
@@ -620,7 +639,7 @@ class HomeActivity : AppCompatActivity() {
 //
 //
 
-                                        ListaEventosPrivat.addChildEventListener(private)
+                                        listaEventosPrivadosDesteGrupo.addChildEventListener(private)
 
                                     }
 
