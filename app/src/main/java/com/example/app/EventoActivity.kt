@@ -13,8 +13,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.example.app.databinding.ActivityEventoBinding
 import java.util.*
-import java.util.regex.Matcher
-import java.util.regex.Pattern
 
 
 class EventoActivity : AppCompatActivity() {
@@ -203,28 +201,18 @@ var num = 0
      * à data de início (gv.Year/Month/Day). Ambas são preenchidas pelos dois
      * DatePickers no onCreate, de forma totalmente independente uma da outra,
      * daí ser preciso esta validação cruzada antes de avançar.
+     *
+     * A lógica em si vive em Validacoes.kt (testada em Validacoes*Test.kt);
+     * esta função só liga a esse utilitário aos campos de VariaveisGlobais.
      */
     private fun isPeriodoValido(): Boolean {
-        val inicio = Calendar.getInstance()
-        inicio.set(gv.Year, gv.Month - 1, gv.Day, 0, 0, 0)
-
-        val fim = Calendar.getInstance()
-        fim.set(gv.YearFim, gv.MonthFim - 1, gv.DayFim, 0, 0, 0)
-
-        return !fim.before(inicio)
+        return Validacoes.isPeriodoValido(
+            gv.Year, gv.Month, gv.Day,
+            gv.YearFim, gv.MonthFim, gv.DayFim
+        )
     }
 
-    fun isTimeValid(horas: String): Boolean {
-        var isValid = false
-        val expression = "^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"
-        val inputStr: CharSequence = horas
-        val pattern: Pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE)
-        val matcher: Matcher = pattern.matcher(inputStr)
-        if (matcher.matches()) {
-            isValid = true
-        }
-        return isValid
-    }
+    fun isTimeValid(horas: String): Boolean = Validacoes.isTimeValid(horas)
 
 
 }
