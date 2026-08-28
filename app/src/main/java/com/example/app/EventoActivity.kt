@@ -197,6 +197,10 @@ var num = 0
             startActivity(Intent(this, DefinicoesActivity::class.java))
         }
 
+        if (item.itemId == R.id.ajuda) {
+            startActivity(Intent(this, AjudaActivity::class.java))
+        }
+
         if (item.itemId == R.id.home) {
 
             startActivity(Intent(this, FiltrosActivity::class.java))

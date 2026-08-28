@@ -130,6 +130,9 @@
         <activity
             android:name=".DefinicoesActivity"
             android:screenOrientation="fullSensor" />
+        <activity
+            android:name=".AjudaActivity"
+            android:screenOrientation="fullSensor" />
         <service
             android:name=".HuntigMessagingService"
             android:exported="false">

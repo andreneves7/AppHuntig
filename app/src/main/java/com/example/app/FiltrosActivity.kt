@@ -75,6 +75,10 @@ class FiltrosActivity : AppCompatActivity() {
             startActivity(Intent(this, DefinicoesActivity::class.java))
         }
 
+        if (item.itemId == R.id.ajuda) {
+            startActivity(Intent(this, AjudaActivity::class.java))
+        }
+
         if (item.itemId == R.id.home) {
             val marca = 0
             val intent = Intent(this, FiltrosActivity::class.java).apply {

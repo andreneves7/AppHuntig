@@ -29,6 +29,11 @@
             app:showAsAction="never" />
 
         <item
+            android:id="@+id/ajuda"
+            android:title="Ajuda"
+            app:showAsAction="never" />
+
+        <item
             android:id="@+id/profile"
             android:title="Profile"
             app:showAsAction="never" />
