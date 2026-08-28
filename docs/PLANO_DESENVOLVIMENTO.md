@@ -239,4 +239,30 @@ Como não existe fluxo de registo para organizações nem superadmin dentro da a
 
 ---
 
+## 8. Pacote de novas funcionalidades (7 pontos, todos feitos)
+
+- [x] **Prevenir duplo-toque** — botões críticos (criar evento, registo, pedir adesão, marcar presença)
+- [x] **Modo offline** — persistência do Firebase Realtime Database ativada
+- [x] **Validação de dados nas regras** — não só quem escreve, também o formato
+- [x] **Testes automatizados alargados** — 21 testes no total
+- [x] **Paginação completa** — Eventos (por data) e Grupos (por admin)
+- [x] **Regras mais fortes** — desbloqueadas pelo alinhamento das chaves de `Grupos`
+- [x] **Multi-idioma** — Inglês (`values-en/strings.xml`)
+- [x] **Limite de participantes + lista de espera** — em eventos
+- [x] **Pesquisa "perto de mim"** — novo ecrã `EventosProximosActivity`
+- [x] **Notificações push** — parte cliente completa; servidor (Cloud Functions) documentado em `docs/ACOES_MANUAIS.md`
+- [x] **Adicionar ao calendário** do telemóvel
+- [x] **Check-in por QR Code** — gerar (organização) e ler (caçador)
+
+### Bugs críticos encontrados e corrigidos pelo caminho (não pedidos, descobertos a trabalhar nestas funcionalidades)
+1. **Sobrescrita de presenças** (`DetalhesEventoActivity.marcarPresença()`) — usava sempre o mesmo índice (`"1"`), cada nova pessoa apagava a marcação da anterior. Descoberto ao implementar o limite de participantes.
+2. **Crash garantido em `AdmissaoActivity`** — `strings.xml` usava `%i` (válido em C, inválido em Java/Kotlin) numa string usada ativamente. Descoberto ao preparar a tradução para Inglês.
+
+### Novas dependências adicionadas nesta ronda (nunca compiladas neste ambiente — testar com atenção redobrada)
+- `androidx.navigation:navigation-fragment-ktx` / `navigation-ui-ktx` (prova de conceito Fragment)
+- `com.google.firebase:firebase-messaging-ktx` (notificações push)
+- `com.google.zxing:core` / `com.journeyapps:zxing-android-embedded` (QR code)
+
+---
+
 *Última atualização: gerado automaticamente pela sessão de trabalho com Claude.*
