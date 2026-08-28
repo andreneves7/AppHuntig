@@ -19,6 +19,28 @@ import com.google.firebase.database.*
 import com.example.app.databinding.ActivityGrupoBinding
 
 class VariaveisGlobais : Application() {
+
+    override fun onCreate() {
+        super.onCreate()
+
+        // Ativa a persistência offline do Realtime Database — os dados já
+        // vistos ficam guardados no dispositivo e continuam disponíveis sem
+        // ligação à internet (leitura), e escritas feitas offline ficam em
+        // fila e sincronizam automaticamente assim que a ligação voltar.
+        // TEM de ser chamado aqui (Application.onCreate, antes de qualquer
+        // Activity) e só uma vez em toda a vida do processo — chamar depois
+        // de já ter havido qualquer uso do FirebaseDatabase, ou chamar mais
+        // do que uma vez, lança uma exceção.
+        // Documentação oficial: https://firebase.google.com/docs/database/android/offline-capabilities
+        try {
+            com.google.firebase.database.FirebaseDatabase.getInstance().setPersistenceEnabled(true)
+        } catch (e: Exception) {
+            // Nunca deve acontecer chamado daqui, mas mais vale a app arrancar
+            // sem persistência do que rebentar no arranque por causa disto.
+            android.util.Log.d("VariaveisGlobais", "falha ao ativar persistencia offline: ${e.message}")
+        }
+    }
+
     var Evento: String = ""
     var detalhes: String = ""
     var entrar: String = ""
