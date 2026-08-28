@@ -188,7 +188,8 @@ class HomeActivity : AppCompatActivity() {
 
 
                                 val itemValue =
-                                    lista.getItemAtPosition(position) as String
+                                    (lista.getItemAtPosition(position) as String)
+                                        .removePrefix("🔒 ")
                                 Log.d("home", "grupoID to search: $itemValue")
                                 gv.detalhes = itemValue
 //                            val uid = Auth.currentUser?.uid
@@ -423,7 +424,7 @@ class HomeActivity : AppCompatActivity() {
 
                                                             if (f == "privado") {
                                                                 values.add(
-                                                                    nome
+                                                                    "🔒 $nome"
                                                                 )
 
                                                             }
@@ -435,7 +436,7 @@ class HomeActivity : AppCompatActivity() {
 //                                                            .toString()
                                                                 if (f == "privado") {
                                                                     values.add(
-                                                                        nome
+                                                                        "🔒 $nome"
                                                                     )
 
                                                                 }
@@ -453,7 +454,7 @@ class HomeActivity : AppCompatActivity() {
                                                                             }"
                                                                         )
                                                                         values.add(
-                                                                            nome
+                                                                            "🔒 $nome"
                                                                         )
                                                                         Log.d(
                                                                             "home75",
@@ -512,7 +513,8 @@ class HomeActivity : AppCompatActivity() {
 
 
                                                             val itemValue =
-                                                                lista.getItemAtPosition(position) as String
+                                                                (lista.getItemAtPosition(position) as String)
+                                                                    .removePrefix("🔒 ")
                                                             Log.d(
                                                                 "home44",
                                                                 "grupoID to search: $itemValue"
