@@ -129,6 +129,56 @@ keytool -list -v -keystore apphuntig-release.jks -alias apphuntig
 
 ---
 
+### Notificações push — parte cliente feita, falta a parte de servidor
+
+**O que já está feito (client-side):**
+- `HuntigMessagingService.kt` — recebe e mostra notificações, guarda o token FCM de cada utilizador em `Users/{uid}/fcmToken`
+- Pedido de permissão (`POST_NOTIFICATIONS`, obrigatória a partir do Android 13) nos 3 ecrãs de entrada (`FiltrosActivity`, `OrgActivity`, `SuperAdminActivity`) — cobre os 3 papéis (caçador, organização, superadmin)
+- Dependência `firebase-messaging-ktx` e registo do serviço no manifesto
+
+**O que falta — só é possível fazer com acesso à consola/CLI do Firebase, que não tenho aqui:**
+
+As notificações só são realmente *enviadas* por uma **Cloud Function** que corre nos servidores do Firebase e reage a mudanças na base de dados (ex: alguém aceite num grupo → notificar essa pessoa). Sem isto, o código cliente que já está pronto nunca é ativado sozinho.
+
+**Passos:**
+1. `npm install -g firebase-tools` (Node.js precisa de estar instalado)
+2. `firebase login` e depois `firebase init functions` na raiz do projeto (cria uma pasta `functions/`)
+3. Exemplo de função para notificar quando um pedido de adesão é aceite (adapta o caminho se os teus dados estiverem estruturados de forma diferente):
+
+```javascript
+const functions = require("firebase-functions");
+const admin = require("firebase-admin");
+admin.initializeApp();
+
+// Dispara sempre que um membro é acrescentado a um grupo
+exports.notificarAdmissaoAceite = functions.database
+  .ref("/Grupos/{grupoId}/membros/{numeroSocio}")
+  .onCreate(async (snapshot, context) => {
+    const uid = snapshot.val();
+
+    const tokenSnap = await admin.database()
+      .ref(`/Users/${uid}/fcmToken`)
+      .once("value");
+    const token = tokenSnap.val();
+    if (!token) return null;
+
+    return admin.messaging().send({
+      token: token,
+      notification: {
+        title: "Pedido aceite!",
+        body: "O teu pedido de adesão foi aceite.",
+      },
+    });
+  });
+```
+
+4. `firebase deploy --only functions` para publicar
+5. Podes replicar o mesmo padrão para outros eventos: evento novo criado num grupo (`onCreate` em `/Eventos/{eventoId}`, notificar todos os membros desse grupo), conta aprovada (`onUpdate` em `/Users/{uid}/Controlo`), etc.
+
+Documentação oficial: https://firebase.google.com/docs/functions/database-events
+
+---
+
 ## Depois de tudo isto feito
 
 Segue para o `docs/RELEASE_CHECKLIST.md` secção 3 (compilar e testar) — essa parte já não depende de mais nenhuma chave ou consola, só de correres o build no Android Studio.

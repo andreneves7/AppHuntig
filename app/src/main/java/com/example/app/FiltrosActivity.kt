@@ -31,6 +31,9 @@ class FiltrosActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityFiltrosHostBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        pedirPermissaoNotificacoes()
+        HuntigMessagingService.guardarTokenAtualNoFirebase()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

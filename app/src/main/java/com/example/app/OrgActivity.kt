@@ -29,6 +29,9 @@ class OrgActivity : AppCompatActivity() {
         binding = ActivityOrgBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        pedirPermissaoNotificacoes()
+        HuntigMessagingService.guardarTokenAtualNoFirebase()
+
         val semGrupos = binding.tNaoGrupos2
         val list = binding.ListView3
 

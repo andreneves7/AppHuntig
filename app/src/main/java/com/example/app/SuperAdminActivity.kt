@@ -58,6 +58,9 @@ class SuperAdminActivity : AppCompatActivity() {
 
         carregarOrganizacoes()
 
+        pedirPermissaoNotificacoes()
+        HuntigMessagingService.guardarTokenAtualNoFirebase()
+
         binding.bTodosUtilizadoresSuperAdmin.setOnClickListener {
             startActivity(Intent(this, SuperAdminUsersActivity::class.java))
         }

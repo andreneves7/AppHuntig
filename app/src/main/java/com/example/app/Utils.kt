@@ -47,3 +47,24 @@ fun android.view.View.evitarDuploClique(intervaloMs: Long = 800, acao: (android.
         }
     }
 }
+
+/**
+ * Pede a permissão de notificações (POST_NOTIFICATIONS), obrigatória a
+ * partir do Android 13. Em versões anteriores do Android, esta permissão
+ * nem existe — o pedido é automaticamente ignorado, seguro chamar sempre.
+ *
+ * Chamar isto a partir de um ecrã que fica visível o tempo suficiente para
+ * o utilizador responder ao diálogo do sistema (não funciona bem em
+ * Activities que se fecham logo a seguir, como VerificarLoginActivity).
+ */
+fun androidx.appcompat.app.AppCompatActivity.pedirPermissaoNotificacoes() {
+    if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.TIRAMISU) {
+        return
+    }
+    val permissao = android.Manifest.permission.POST_NOTIFICATIONS
+    if (androidx.core.content.ContextCompat.checkSelfPermission(this, permissao)
+        != android.content.pm.PackageManager.PERMISSION_GRANTED
+    ) {
+        androidx.core.app.ActivityCompat.requestPermissions(this, arrayOf(permissao), 1001)
+    }
+}

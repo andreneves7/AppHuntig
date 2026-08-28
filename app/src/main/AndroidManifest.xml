@@ -8,6 +8,10 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Obrigatória a partir do Android 13 (API 33) para mostrar notificações
+         — antes disso não existia, o pedido é ignorado em versões anteriores.
+         Documentação oficial: https://developer.android.com/develop/ui/views/notifications/notification-permission -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <!-- REMOVIDO: WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE e STORAGE não são
          usadas por nenhum código ativo (só pela funcionalidade de foto de perfil,
          que está desativada/comentada em ProfileActivity.kt). Pedir permissões que a
@@ -102,6 +106,14 @@
         <activity
             android:name=".SuperAdminGruposActivity"
             android:screenOrientation="fullSensor" />
+        <service
+            android:name=".HuntigMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
     </application>
 
 </manifest>
