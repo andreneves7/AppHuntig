@@ -10,38 +10,119 @@
         android:id="@+id/tituloEventosProximos"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="12dp"
         android:gravity="center"
         android:paddingHorizontal="16dp"
         android:text="Eventos perto de ti"
         android:textColor="#000000"
-        android:textSize="24sp"
+        android:textSize="22sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/editLocalPesquisa"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp"
+        android:hint="Pesquisar um local (vazio = a tua localização atual)"
+        android:inputType="text"
+        android:autofillHints=""
+        android:imeOptions="actionSearch"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tituloEventosProximos" />
+
+    <Spinner
+        android:id="@+id/spinnerRaio"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toStartOf="@id/checkPublicos"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/editLocalPesquisa" />
+
+    <CheckBox
+        android:id="@+id/checkPublicos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="true"
+        android:text="Públicos"
+        app:layout_constraintBottom_toBottomOf="@id/spinnerRaio"
+        app:layout_constraintEnd_toStartOf="@id/checkPrivados"
+        app:layout_constraintTop_toTopOf="@id/spinnerRaio" />
+
+    <CheckBox
+        android:id="@+id/checkPrivados"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="12dp"
+        android:checked="true"
+        android:text="Privados"
+        app:layout_constraintBottom_toBottomOf="@id/spinnerRaio"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/spinnerRaio" />
+
+    <Button
+        android:id="@+id/bAplicarFiltros"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/botoes"
+        android:text="Aplicar filtros"
+        app:layout_constraintEnd_toStartOf="@id/bAlternarVista"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/spinnerRaio" />
+
+    <Button
+        android:id="@+id/bAlternarVista"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/botoes"
+        android:text="Ver mapa"
+        app:layout_constraintBottom_toBottomOf="@id/bAplicarFiltros"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/bAplicarFiltros" />
 
     <TextView
         android:id="@+id/tSemEventosProximos"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="16dp"
         android:gravity="center"
-        android:text="Não há eventos próximos com localização disponível"
+        android:text="Não há eventos com estes filtros"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tituloEventosProximos" />
+        app:layout_constraintTop_toBottomOf="@id/bAplicarFiltros" />
 
     <ListView
         android:id="@+id/ListViewEventosProximos"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tituloEventosProximos" />
+        app:layout_constraintTop_toBottomOf="@id/bAplicarFiltros" />
+
+    <fragment
+        android:id="@+id/mapaEventosProximos"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bAplicarFiltros" />
 
     <ProgressBar
         android:id="@+id/progressEventosProximos"
@@ -51,6 +132,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/bAplicarFiltros" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

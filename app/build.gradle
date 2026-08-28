@@ -130,6 +130,9 @@ dependencies {
     // Login por biometria (impressão digital / reconhecimento facial)
     implementation 'androidx.biometric:biometric:1.1.0'
 
+    // Agrupamento de marcadores no mapa (clustering) — biblioteca oficial da Google
+    implementation 'com.google.maps.android:android-maps-utils:3.8.2'
+
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
