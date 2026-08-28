@@ -65,13 +65,16 @@ class EventosProximosActivity : AppCompatActivity(), OnMapReadyCallback {
         val lat: Double,
         val lon: Double,
         val privado: Boolean,
+        val numeroGrupo: String,
         val distanciaMetros: Float
     )
 
     private class EventoClusterItem(
         private val posicao: LatLng,
         val nomeExibicao: String,
-        val nomeReal: String
+        val nomeReal: String,
+        val privado: Boolean,
+        val numeroGrupo: String
     ) : ClusterItem {
         override fun getPosition(): LatLng = posicao
         override fun getTitle(): String = nomeExibicao
@@ -133,6 +136,8 @@ class EventosProximosActivity : AppCompatActivity(), OnMapReadyCallback {
         manager.setOnClusterItemClickListener { item ->
             val gv = application as VariaveisGlobais
             gv.detalhes = item.nomeReal
+            gv.detalhesPrivado = item.privado
+            gv.detalhesNumeroGrupo = item.numeroGrupo
             startActivity(Intent(this, DetalhesEventoActivity::class.java))
             true
         }
@@ -273,20 +278,20 @@ class EventosProximosActivity : AppCompatActivity(), OnMapReadyCallback {
 
         // Pesquisa de eventos PÚBLICOS — mesma query já otimizada e indexada
         // usada antes (dataFimTimestamp, limite de 200), só corre se o
-        // filtro "Públicos" estiver ligado.
+        // filtro "Públicos" estiver ligado. Lê agora de EventosPublicos em
+        // vez do antigo nó único "Eventos" (ver docs/PLANO_DESENVOLVIMENTO.md,
+        // separação por privacidade) — já não é preciso filtrar por "Forma"
+        // no cliente, o próprio caminho garante que só há eventos públicos aqui.
         if (querPublicos) {
             val agora = System.currentTimeMillis().toDouble()
-            mAuth.getReference("Eventos")
+            mAuth.getReference("EventosPublicos")
                 .orderByChild("dataFimTimestamp")
                 .startAt(agora)
                 .limitToFirst(200)
                 .addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         for (eventoSnap in snapshot.children) {
-                            val forma = eventoSnap.child("Forma").getValue(String::class.java)
-                            if (forma == "publico") {
-                                eventosBrutos.add(Triple(eventoSnap, false, eventoSnap.key ?: ""))
-                            }
+                            eventosBrutos.add(Triple(eventoSnap, false, eventoSnap.key ?: ""))
                         }
                         tarefaConcluida()
                     }
@@ -300,7 +305,11 @@ class EventosProximosActivity : AppCompatActivity(), OnMapReadyCallback {
 
         // Pesquisa de eventos PRIVADOS dos grupos do próprio utilizador —
         // mesma lógica já usada em MeusEventosActivity (uma query por grupo,
-        // tipicamente 1-3 grupos por pessoa).
+        // tipicamente 1-3 grupos por pessoa). Lê agora
+        // EventosPrivados/{numeroGrupo} diretamente — já não precisa de
+        // orderByChild("numeroGrupo").equalTo(), porque o número do grupo já
+        // é o próprio caminho, não um valor a comparar (também elimina a
+        // necessidade de converter numeroStr para Double).
         if (querPrivados) {
             val uid = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser?.uid
             if (uid == null) {
@@ -317,15 +326,7 @@ class EventosProximosActivity : AppCompatActivity(), OnMapReadyCallback {
 
                             var subPendentes = numerosGrupos.size
                             for (numeroStr in numerosGrupos) {
-                                val numero = numeroStr.toDoubleOrNull()
-                                if (numero == null) {
-                                    subPendentes--
-                                    if (subPendentes == 0) tarefaConcluida()
-                                    continue
-                                }
-                                mAuth.getReference("Eventos")
-                                    .orderByChild("numeroGrupo")
-                                    .equalTo(numero)
+                                mAuth.getReference("EventosPrivados").child(numeroStr)
                                     .addListenerForSingleValueEvent(object : ValueEventListener {
                                         override fun onDataChange(snapshot: DataSnapshot) {
                                             for (eventoSnap in snapshot.children) {
@@ -373,6 +374,7 @@ class EventosProximosActivity : AppCompatActivity(), OnMapReadyCallback {
             val lat = snapshot.child("Latitude").getValue(Double::class.java)
             val lon = snapshot.child("Longitude").getValue(Double::class.java)
             val nome = snapshot.child("nome").getValue(String::class.java) ?: chave
+            val numeroGrupo = snapshot.child("numeroGrupo").getValue().toString()
             if (lat == null || lon == null) continue
 
             val resultadoDistancia = FloatArray(1)
@@ -385,7 +387,7 @@ class EventosProximosActivity : AppCompatActivity(), OnMapReadyCallback {
 
             if (raioKm != -1 && distanciaMetros > raioKm * 1000) continue // fora do raio escolhido
 
-            resultado.add(EventoEncontrado(nome, lat, lon, privado, distanciaMetros))
+            resultado.add(EventoEncontrado(nome, lat, lon, privado, numeroGrupo, distanciaMetros))
         }
 
         resultado.sortBy { it.distanciaMetros }
@@ -418,6 +420,8 @@ class EventosProximosActivity : AppCompatActivity(), OnMapReadyCallback {
         binding.ListViewEventosProximos.setOnItemClickListener { _, _, position, _ ->
             val gv = application as VariaveisGlobais
             gv.detalhes = eventos[position].nome
+            gv.detalhesPrivado = eventos[position].privado
+            gv.detalhesNumeroGrupo = eventos[position].numeroGrupo
             startActivity(Intent(this, DetalhesEventoActivity::class.java))
         }
 
@@ -438,7 +442,9 @@ class EventosProximosActivity : AppCompatActivity(), OnMapReadyCallback {
                 EventoClusterItem(
                     LatLng(evento.lat, evento.lon),
                     "$prefixo${evento.nome}",
-                    evento.nome
+                    evento.nome,
+                    evento.privado,
+                    evento.numeroGrupo
                 )
             )
         }
