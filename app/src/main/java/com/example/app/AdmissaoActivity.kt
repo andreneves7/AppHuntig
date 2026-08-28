@@ -284,6 +284,11 @@ class AdmissaoActivity : AppCompatActivity() {
         alertDialog.setCancelable(false)
 
         alertDialog.setNegativeButton("Rejeitar") { _, _ ->
+            // BUG CORRIGIDO: antes só mostrava um Toast, nunca removia o
+            // pedido de "Pendentes" — a organização veria o mesmo pedido
+            // "rejeitado" para sempre, sem nunca desaparecer da lista.
+            mAuth.getReference("Grupos").child(numeroGrupo).child("Pendentes")
+                .child(uid).removeValue()
             Toast.makeText(this, this.getString(R.string.msg_rejeitado), Toast.LENGTH_LONG).show()
         }
 
