@@ -35,6 +35,10 @@ class AdmissaoActivity : AppCompatActivity() {
         binding.progressAdmissao.isVisible = true
         binding.progressAdmissao.postDelayed({ binding.progressAdmissao.isVisible = false }, 5000)
 
+        binding.swipeRefreshAdmissao.setOnRefreshListener {
+            recreate()
+        }
+
         dados()
     }
 
