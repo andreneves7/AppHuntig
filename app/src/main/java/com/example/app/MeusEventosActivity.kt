@@ -88,28 +88,22 @@ class MeusEventosActivity : AppCompatActivity() {
 
     /**
      * Um utilizador normalmente pertence a poucos grupos (1-3), por isso uma
-     * query separada por grupo — em vez de descarregar todos os eventos da
-     * plataforma e filtrar no cliente — é seguro e eficiente aqui.
-     * "numeroGrupo" é sempre escrito pela app como número (nunca manualmente
-     * na consola, ao contrário de "Numero"/"admin" em Grupos), por isso uma
-     * query tipada (.equalTo(Double)) é segura, sem o risco de ambiguidade
-     * de tipo já documentado noutras partes do plano.
+     * leitura separada por grupo é seguro e eficiente aqui. Lê
+     * EventosPrivados/{numeroGrupo} diretamente — desde a separação por
+     * privacidade (ver docs/PLANO_DESENVOLVIMENTO.md), já não é preciso
+     * nenhuma query com orderByChild/equalTo nem conversão de tipo, o
+     * número do grupo já é o próprio caminho.
      */
     private fun carregarEventosDosGrupos(numerosGrupos: List<String>) {
         val agora = System.currentTimeMillis().toDouble()
-        val eventosEncontrados = ArrayList<Pair<String, Long>>() // nome, dataFimTimestamp
+        // nome, dataFimTimestamp, numeroGrupo — o número do grupo é
+        // necessário para saber onde procurar o evento outra vez, ao
+        // navegar para os detalhes.
+        val eventosEncontrados = ArrayList<Triple<String, Long, String>>()
         var queriesPendentes = numerosGrupos.size
 
         for (numeroGrupoStr in numerosGrupos) {
-            val numeroGrupo = numeroGrupoStr.toDoubleOrNull()
-            if (numeroGrupo == null) {
-                queriesPendentes--
-                continue
-            }
-
-            mAuth.getReference("Eventos")
-                .orderByChild("numeroGrupo")
-                .equalTo(numeroGrupo)
+            mAuth.getReference("EventosPrivados").child(numeroGrupoStr)
                 .addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         for (eventoSnap in snapshot.children) {
@@ -119,7 +113,7 @@ class MeusEventosActivity : AppCompatActivity() {
 
                             val nome = eventoSnap.child("nome").getValue(String::class.java)
                                 ?: eventoSnap.key ?: continue
-                            eventosEncontrados.add(Pair(nome, dataFim))
+                            eventosEncontrados.add(Triple(nome, dataFim, numeroGrupoStr))
                         }
 
                         queriesPendentes--
@@ -139,14 +133,14 @@ class MeusEventosActivity : AppCompatActivity() {
         }
 
         if (queriesPendentes == 0) {
-            // Nenhum número de grupo era válido.
+            // Nenhum grupo tinha eventos.
             binding.progressMeusEventos.isVisible = false
             binding.swipeRefreshMeusEventos.isRefreshing = false
             binding.tSemMeusEventos.isVisible = true
         }
     }
 
-    private fun mostrarResultado(eventos: List<Pair<String, Long>>) {
+    private fun mostrarResultado(eventos: List<Triple<String, Long, String>>) {
         binding.progressMeusEventos.isVisible = false
         binding.swipeRefreshMeusEventos.isRefreshing = false
 
@@ -160,6 +154,8 @@ class MeusEventosActivity : AppCompatActivity() {
         binding.ListViewMeusEventos.setOnItemClickListener { _, _, position, _ ->
             val gv = application as VariaveisGlobais
             gv.detalhes = ordenados[position].first
+            gv.detalhesPrivado = true
+            gv.detalhesNumeroGrupo = ordenados[position].third
             startActivity(Intent(this, DetalhesEventoActivity::class.java))
         }
     }
