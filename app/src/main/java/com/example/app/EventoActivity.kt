@@ -125,8 +125,17 @@ var num = 0
                 }
                 if (gv.check != "") {
 
-
-
+                    // Antes desta validação, nada impedia criar um evento cuja data de fim
+                    // fosse anterior à data de início (as duas datas são escolhidas em
+                    // DatePickers independentes, sem nenhuma verificação cruzada).
+                    if (!isPeriodoValido()) {
+                        Toast.makeText(
+                            this,
+                            "A data de fim não pode ser anterior à data de início",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        return
+                    }
 
                     val intent = Intent(this, MapsActivity::class.java).apply {
                         putExtra(
@@ -187,6 +196,22 @@ var num = 0
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    /**
+     * Confirma que a data de fim (gv.YearFim/MonthFim/DayFim) não é anterior
+     * à data de início (gv.Year/Month/Day). Ambas são preenchidas pelos dois
+     * DatePickers no onCreate, de forma totalmente independente uma da outra,
+     * daí ser preciso esta validação cruzada antes de avançar.
+     */
+    private fun isPeriodoValido(): Boolean {
+        val inicio = Calendar.getInstance()
+        inicio.set(gv.Year, gv.Month - 1, gv.Day, 0, 0, 0)
+
+        val fim = Calendar.getInstance()
+        fim.set(gv.YearFim, gv.MonthFim - 1, gv.DayFim, 0, 0, 0)
+
+        return !fim.before(inicio)
     }
 
     fun isTimeValid(horas: String): Boolean {

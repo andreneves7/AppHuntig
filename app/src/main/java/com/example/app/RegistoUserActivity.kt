@@ -302,12 +302,46 @@ class RegistoUserActivity : AppCompatActivity() {
 
         if (verificaCampos(teste) == true) {
 
-//
-//        if (!password.isEmpty() && !email.isEmpty() && !name.isEmpty() && !tele.isEmpty() && !morada.isEmpty() && !local.isEmpty()
-//            && !postal.isEmpty() && !cartaCaca.isEmpty() && !licencaArma.isEmpty() && !nomeSeguradora.isEmpty() && !numApolice.isEmpty()
-//        ) {
+            // Validação de formato de email — antes só se verificava que não estava vazio.
+            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                binding.addEmail.error = "Email inválido"
+                return
+            }
 
-            if (tele.length == 9 && postal.length == 7 && cartaCaca.length == 6 && licencaArma.length == 5 && numApolice.length == 10) {
+            // O Firebase Auth exige um mínimo de 6 caracteres na password; validamos aqui
+            // primeiro para dar feedback imediato, em vez de esperar pela resposta do servidor.
+            if (password.length < 6) {
+                binding.addPass.error = "A password tem de ter pelo menos 6 caracteres"
+                return
+            }
+
+            // Antes desta correção: se algum destes campos tivesse o comprimento errado,
+            // nada acontecia visualmente (o Toast estava comentado) — o botão "Registar"
+            // parecia simplesmente não fazer nada. Agora sinalizamos exatamente qual campo
+            // está errado, tal como o resto da validação já faz.
+            var camposComprimentoInvalido = false
+            if (tele.length != 9) {
+                binding.addTele.error = "Deve ter 9 dígitos"
+                camposComprimentoInvalido = true
+            }
+            if (postal.length != 7) {
+                binding.addPostal.error = "Formato: 0000-000"
+                camposComprimentoInvalido = true
+            }
+            if (cartaCaca.length != 6) {
+                binding.addCartaCaca.error = "Deve ter 6 caracteres"
+                camposComprimentoInvalido = true
+            }
+            if (licencaArma.length != 5) {
+                binding.addLicencaArma.error = "Deve ter 5 caracteres"
+                camposComprimentoInvalido = true
+            }
+            if (numApolice.length != 10) {
+                binding.addNumeroApolice.error = "Deve ter 10 caracteres"
+                camposComprimentoInvalido = true
+            }
+
+            if (!camposComprimentoInvalido) {
                 if (!g.isEmpty()) {
 
 
