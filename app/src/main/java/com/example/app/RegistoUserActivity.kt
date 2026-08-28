@@ -302,14 +302,17 @@ class RegistoUserActivity : AppCompatActivity() {
         if (verificaCampos(teste) == true) {
 
             // Validação de formato de email — antes só se verificava que não estava vazio.
-            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            // Usa Validacoes.isEmailValido (regex Kotlin puro) em vez de
+            // android.util.Patterns.EMAIL_ADDRESS, para a validação poder ser
+            // testada em ValidacoesTest.kt sem precisar do framework Android.
+            if (!Validacoes.isEmailValido(email)) {
                 binding.addEmail.error = "Email inválido"
                 return
             }
 
             // O Firebase Auth exige um mínimo de 6 caracteres na password; validamos aqui
             // primeiro para dar feedback imediato, em vez de esperar pela resposta do servidor.
-            if (password.length < 6) {
+            if (!Validacoes.isPasswordValida(password)) {
                 binding.addPass.error = "A password tem de ter pelo menos 6 caracteres"
                 return
             }
@@ -319,23 +322,23 @@ class RegistoUserActivity : AppCompatActivity() {
             // parecia simplesmente não fazer nada. Agora sinalizamos exatamente qual campo
             // está errado, tal como o resto da validação já faz.
             var camposComprimentoInvalido = false
-            if (tele.length != 9) {
+            if (!Validacoes.isTelefoneValido(tele)) {
                 binding.addTele.error = "Deve ter 9 dígitos"
                 camposComprimentoInvalido = true
             }
-            if (postal.length != 7) {
+            if (!Validacoes.isCodigoPostalValido(postal)) {
                 binding.addPostal.error = "Formato: 0000-000"
                 camposComprimentoInvalido = true
             }
-            if (cartaCaca.length != 6) {
+            if (!Validacoes.isCartaCacaValida(cartaCaca)) {
                 binding.addCartaCaca.error = "Deve ter 6 caracteres"
                 camposComprimentoInvalido = true
             }
-            if (licencaArma.length != 5) {
+            if (!Validacoes.isLicencaArmaValida(licencaArma)) {
                 binding.addLicencaArma.error = "Deve ter 5 caracteres"
                 camposComprimentoInvalido = true
             }
-            if (numApolice.length != 10) {
+            if (!Validacoes.isNumeroApoliceValido(numApolice)) {
                 binding.addNumeroApolice.error = "Deve ter 10 caracteres"
                 camposComprimentoInvalido = true
             }

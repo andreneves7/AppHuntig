@@ -35,4 +35,28 @@ object Validacoes {
 
         return !fim.before(inicio)
     }
+
+    // Regex simplificado mas pragmático — cobre os casos normais de email
+    // sem a complexidade total do RFC 5322. Escolhido em vez de
+    // android.util.Patterns.EMAIL_ADDRESS (usado antes em RegistoUserActivity)
+    // exatamente para que esta validação pudesse ser testada aqui sem precisar
+    // de Android/Robolectric — Patterns é uma classe do framework Android,
+    // não existe em testes JVM puros.
+    private val EMAIL_REGEX = Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")
+
+    fun isEmailValido(email: String): Boolean = EMAIL_REGEX.matches(email)
+
+    /**
+     * O Firebase Auth exige um mínimo de 6 caracteres na password.
+     */
+    fun isPasswordValida(password: String): Boolean = password.length >= 6
+
+    // Comprimentos exatos exigidos no formulário de registo (RegistoUserActivity).
+    // Centralizados aqui em vez de espalhados como números soltos no código,
+    // e agora testáveis.
+    fun isTelefoneValido(tele: String): Boolean = tele.length == 9
+    fun isCodigoPostalValido(postal: String): Boolean = postal.length == 7
+    fun isCartaCacaValida(carta: String): Boolean = carta.length == 6
+    fun isLicencaArmaValida(licenca: String): Boolean = licenca.length == 5
+    fun isNumeroApoliceValido(numero: String): Boolean = numero.length == 10
 }
