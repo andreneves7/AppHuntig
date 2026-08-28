@@ -124,6 +124,9 @@
         <activity
             android:name=".OnboardingActivity"
             android:screenOrientation="fullSensor" />
+        <activity
+            android:name=".MeusEventosActivity"
+            android:screenOrientation="fullSensor" />
         <service
             android:name=".HuntigMessagingService"
             android:exported="false">

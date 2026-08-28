@@ -7,7 +7,6 @@ import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import com.google.firebase.auth.FirebaseAuth
 import android.content.Intent
-import android.provider.AlarmClock
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -99,14 +98,14 @@ class VerificarLoginActivity : AppCompatActivity() {
                         Intent(this@VerificarLoginActivity, OrgActivity::class.java)
                     )
                     else -> {
-                        val marca = 0
-                        val intent = Intent(
-                            this@VerificarLoginActivity,
-                            FiltrosActivity::class.java
-                        ).apply {
-                            putExtra(AlarmClock.EXTRA_MESSAGE, marca)
-                        }
-                        startActivity(intent)
+                        // Antes ia direto para FiltrosActivity (lista de todos
+                        // os eventos com filtros). Agora passa primeiro por
+                        // MeusEventosActivity, o ecrã personalizado com os
+                        // eventos dos grupos do próprio utilizador — de lá
+                        // ainda dá para chegar à lista completa com um botão.
+                        startActivity(
+                            Intent(this@VerificarLoginActivity, MeusEventosActivity::class.java)
+                        )
                     }
                 }
             }

@@ -43,7 +43,7 @@
 
     "Eventos": {
       ".read": "auth != null",
-      ".indexOn": ["dataFimTimestamp"],
+      ".indexOn": ["dataFimTimestamp", "numeroGrupo"],
 
       "$eventoId": {
         ".write": "auth != null && (root.child('Users').child(auth.uid).child('role').val() === 'organizacao' || root.child('Users').child(auth.uid).child('role').val() === 'superadmin')",

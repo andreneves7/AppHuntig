@@ -2,7 +2,6 @@ package com.example.app
 
 import android.content.Intent
 import android.os.Bundle
-import android.provider.AlarmClock
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -277,21 +276,21 @@ class LoginActivity : AppCompatActivity() {
 //                                                    ver.updateChildren(p)
                                                     } else {
 
-                                                        val marca = 0
-
+                                                        // Antes ia direto para FiltrosActivity
+                                                        // (lista de todos os eventos com filtros).
+                                                        // Agora passa primeiro por MeusEventosActivity,
+                                                        // o ecrã personalizado com os eventos dos
+                                                        // grupos do próprio utilizador.
                                                         val intent =
                                                             Intent(
                                                                 this@LoginActivity,
-                                                                FiltrosActivity::class.java
-                                                            ).apply {
-                                                                putExtra(AlarmClock.EXTRA_MESSAGE, marca)
-                                                            }
+                                                                MeusEventosActivity::class.java
+                                                            )
                                                         intent.flags =
                                                             Intent.FLAG_ACTIVITY_CLEAR_TASK.or(
                                                                 Intent.FLAG_ACTIVITY_NEW_TASK
                                                             )
                                                         startActivity(intent)
-                                                        //startActivity(Intent(this, home::class.java))
                                                     }
 
 
