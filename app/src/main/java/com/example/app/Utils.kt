@@ -113,3 +113,36 @@ fun androidx.appcompat.app.AppCompatActivity.processarResultadoScanQR(
     startActivity(android.content.Intent(this, DetalhesEventoActivity::class.java))
     return true
 }
+
+// --- Login por biometria ---
+// Funcionalidade opt-in (desativada por omissão) — só afeta quem a ativa
+// explicitamente em ProfileActivity. Não substitui a autenticação do
+// Firebase (que já persiste a sessão sozinha entre aberturas da app);
+// é uma camada extra a pedir confirmação da identidade antes de deixar
+// entrar, útil se o telemóvel ficar destrancado nas mãos de outra pessoa.
+
+private const val PREFS_BIOMETRIA = "apphuntig_prefs"
+private const val CHAVE_BIOMETRIA = "biometria_ativada"
+
+fun android.content.Context.biometriaEstaAtivada(): Boolean {
+    return getSharedPreferences(PREFS_BIOMETRIA, android.content.Context.MODE_PRIVATE)
+        .getBoolean(CHAVE_BIOMETRIA, false)
+}
+
+fun android.content.Context.definirBiometriaAtivada(ativada: Boolean) {
+    getSharedPreferences(PREFS_BIOMETRIA, android.content.Context.MODE_PRIVATE)
+        .edit()
+        .putBoolean(CHAVE_BIOMETRIA, ativada)
+        .apply()
+}
+
+/**
+ * Confirma que o dispositivo tem biometria configurada e disponível AGORA
+ * (BIOMETRIC_STRONG — impressão digital ou reconhecimento facial seguro,
+ * não um simples desbloqueio por padrão/PIN fraco).
+ */
+fun android.content.Context.biometriaDisponivel(): Boolean {
+    val biometricManager = androidx.biometric.BiometricManager.from(this)
+    return biometricManager.canAuthenticate(androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG) ==
+        androidx.biometric.BiometricManager.BIOMETRIC_SUCCESS
+}
