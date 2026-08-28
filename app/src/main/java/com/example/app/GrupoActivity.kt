@@ -40,7 +40,9 @@ class VariaveisGlobais : Application() {
     var numSocio: Int = 0
     var numEspanha: Int = 0
 
-
+    // Papel do utilizador autenticado nesta sessão.
+    // Ver docs/PLANO_DESENVOLVIMENTO.md secção 3 para o desenho completo.
+    var role: String = Roles.CACADOR
 
 }
 

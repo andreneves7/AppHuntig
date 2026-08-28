@@ -463,7 +463,8 @@ class RegistoUserActivity : AppCompatActivity() {
         //pessoa["grupo"] = ArrayList<String>()
         pessoa["Pais"] = g
         pessoa["FirstTime"] = true
-        pessoa["Org"] = false
+        pessoa["Org"] = false // campo legado, mantido por compatibilidade — ver Roles.kt
+        pessoa["role"] = Roles.CACADOR
         pessoa["Controlo"] = false
 
 //        val pessoa = hashMapOf(

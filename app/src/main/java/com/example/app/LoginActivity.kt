@@ -65,16 +65,24 @@ class LoginActivity : AppCompatActivity() {
                             override fun onDataChange(dataSnapshot: DataSnapshot) {
                                 // This method is called once with the initial value and again
                                 // whenever data at this location is updated.
-                                val org = dataSnapshot.child("Org").getValue()
+                                val org = dataSnapshot.child("Org").getValue() as? Boolean
+                                val roleValue = dataSnapshot.child("role").getValue(String::class.java)
+                                val role = Roles.resolver(roleValue, org)
 
 
 
+                                if (role == Roles.ORGANIZACAO || role == Roles.SUPERADMIN) {
 
+                                    val gv = application as VariaveisGlobais
+                                    gv.role = role
 
-                                if (org == true) {
+                                    // SuperAdmin também consegue entrar por este ecrã (login de
+                                    // organização), mas vai para o painel de gestão total em vez
+                                    // do painel normal da organização.
+                                    val destino = if (role == Roles.SUPERADMIN)
+                                        SuperAdminActivity::class.java else OrgActivity::class.java
 
-
-                                    val intent = Intent(this@LoginActivity, OrgActivity::class.java)
+                                    val intent = Intent(this@LoginActivity, destino)
                                     intent.flags =
                                         Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
                                     startActivity(intent)
@@ -140,16 +148,33 @@ class LoginActivity : AppCompatActivity() {
                                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                                     // This method is called once with the initial value and again
                                     // whenever data at this location is updated.
-                                    val org = dataSnapshot.child("Org").getValue()
+                                    val org = dataSnapshot.child("Org").getValue() as? Boolean
+                                    val roleValue = dataSnapshot.child("role").getValue(String::class.java)
+                                    val role = Roles.resolver(roleValue, org)
                                     val controlo = dataSnapshot.child("Controlo").getValue()
 
 
-                                    Log.d("Login", "user ${Auth.currentUser?.uid}")
+                                    Log.d("Login", "user ${Auth.currentUser?.uid} role=$role")
+
+                                    // SuperAdmin tem sempre acesso, independentemente do campo
+                                    // "Controlo" (aprovação), pois é a conta de gestão da própria
+                                    // plataforma, criada manualmente pelo dono do projeto.
+                                    if (role == Roles.SUPERADMIN) {
+                                        val gv = application as VariaveisGlobais
+                                        gv.role = role
+                                        val intent = Intent(this@LoginActivity, SuperAdminActivity::class.java)
+                                        intent.flags =
+                                            Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                        startActivity(intent)
+                                        return
+                                    }
 
                                     if (controlo == true) {
 
-                                        if (org == false) {
+                                        if (role == Roles.CACADOR) {
 
+                                            val gv = application as VariaveisGlobais
+                                            gv.role = role
 
                                             ver.addListenerForSingleValueEvent(object :
                                                 ValueEventListener {

@@ -87,6 +87,9 @@
         <activity
             android:name=".LoginActivity"
             android:screenOrientation="fullSensor" />
+        <activity
+            android:name=".SuperAdminActivity"
+            android:screenOrientation="fullSensor" />
     </application>
 
 </manifest>

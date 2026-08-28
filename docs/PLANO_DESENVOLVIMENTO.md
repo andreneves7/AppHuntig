@@ -100,19 +100,32 @@ service cloud.firestore {
 
 ## 5. Plano de trabalho (código, branch `claude-dev`)
 
-- [ ] Adicionar `.gitignore` para ficheiros sensíveis (feito nesta sessão)
-- [ ] Introduzir campo `role` no modelo de dados e lógica de login/routing
-- [ ] Criar `SuperAdminActivity` (painel com acesso a todas as organizações/utilizadores)
-- [ ] Corrigir bug de aceitação múltipla em grupos (`GrupoActivity.kt`)
+- [x] Adicionar `.gitignore` para ficheiros sensíveis
+- [x] Corrigir bug de duplicação na lista de admissão de sócios (`AdmissaoActivity.kt`) — a causa real era um `addValueEventListener` (contínuo) que reconstruía a lista sem a limpar, e não propriamente o `GrupoActivity.kt`
+- [x] Remover **todos** os `TODO("Not yet implemented")` de callbacks Firebase (11 ficheiros, ~60 ocorrências) — cada um destes rebentava a app (`NotImplementedError`) se o evento correspondente disparasse. Substituídos por `Log.d` seguro.
+- [x] Introduzir campo `role` (`Roles.kt`) com resolução de compatibilidade com o campo legado `Org`
+- [x] Atualizar `LoginActivity` (login caçador e login organização) para ler e encaminhar por `role`
+- [x] Atualizar `RegistoUserActivity` para gravar `role: "cacador"` nas novas contas
+- [x] Criar `SuperAdminActivity` v1 — lista todas as organizações da plataforma
+- [ ] `SuperAdminActivity` v2 — ver/gerir todos os utilizadores e grupos de qualquer organização (bloqueado por: os ecrãs existentes de organização assumem que o utilizador autenticado É o admin dessa organização; precisa de nova lógica de acesso, não reutilização direta)
 - [ ] Unificar acesso a dados (escolher Firestore **ou** Realtime DB, não os dois)
 - [ ] Migrar `kotlinx.android.synthetic` → View Binding
 - [ ] Substituir dependências Anko por alternativas atuais
 - [ ] Rever/corrigir layouts XML afetados
-- [ ] Testar fluxos principais (login caçador, login organização, login superadmin, criação de evento, adesão a grupo)
+- [ ] Testar fluxos principais (login caçador, login organização, login superadmin, criação de evento, adesão a grupo) — **ver nota abaixo sobre limitação de teste**
+
+### ⚠️ Nota sobre testes
+Não foi possível compilar/correr a app neste ambiente de trabalho — a rede disponível não tem acesso aos repositórios Maven da Google/Maven Central, necessários para as dependências do Gradle (Firebase, AndroidX, Google Maps). Todo o trabalho acima foi feito por revisão estática cuidadosa (leitura linha a linha, verificação de imports, verificação de duplicação de nomes). **Antes de fazer merge para `master`, corre localmente no Android Studio**: `./gradlew build` (ou `assembleDebug`) para confirmar que compila, e testa manualmente os fluxos de login dos 3 papéis.
+
+### Passo manual necessário no Firebase (para testar o SuperAdmin)
+Como não existe fluxo de registo para organizações nem superadmin dentro da app (confirmado — só é possível criar contas "cacador" pelo registo normal), para testares o painel SuperAdmin:
+1. Regista uma conta normal na app (fica com `role: "cacador"`)
+2. Na Firebase Console → Realtime Database → `Users/{uid}`, muda manualmente `role` para `"superadmin"` e `Controlo` para `true`
+3. Faz login novamente (usa o botão de login normal ou o de organização — ambos já reconhecem `superadmin`)
 
 ## 6. Ponto em aberto — stack para Web Admin + iOS
 
-A decidir em conjunto antes de qualquer reescrita. Ver mensagem no chat com a proposta e razões. Nada nesta secção é executado sem confirmação explícita.
+**Decidido (confirmado no chat):** manter o Android atual em Kotlin nativo. iOS e portal Web de administração ficam como projetos separados, a criar mais tarde noutras ferramentas, todos a falar com o mesmo backend Firebase. Nada disto é executado nesta branch.
 
 ---
 
