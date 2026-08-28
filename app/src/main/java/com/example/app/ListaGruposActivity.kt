@@ -34,6 +34,10 @@ class ListaGruposActivity : AppCompatActivity() {
         binding.progressListaGrupos.isVisible = true
         binding.progressListaGrupos.postDelayed({ binding.progressListaGrupos.isVisible = false }, 5000)
 
+        binding.swipeRefreshListaGrupos.setOnRefreshListener {
+            recreate()
+        }
+
         // Este ecrã lista TODOS os grupos da plataforma para o utilizador navegar
         // e pedir adesão a um (não é "os meus grupos" — é um catálogo de
         // descoberta). Por isso, ao contrário de OrgActivity/AdmissaoActivity, um

@@ -29,6 +29,10 @@ class ListaSociosOrgActivity : AppCompatActivity() {
         binding.progressListaSocios.isVisible = true
         binding.progressListaSocios.postDelayed({ binding.progressListaSocios.isVisible = false }, 5000)
 
+        binding.swipeRefreshListaSocios.setOnRefreshListener {
+            recreate()
+        }
+
         dados()
 
     }

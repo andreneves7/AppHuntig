@@ -40,11 +40,17 @@
              o tools:context errado ".PreferenciasActivity" também denunciava
              isto). Passa a ancorar corretamente por baixo do título. -->
 
-        <ListView
-            android:id="@+id/listViewLista"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefreshListaGrupos"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
 
+            <ListView
+                android:id="@+id/listViewLista"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     </LinearLayout>
 
