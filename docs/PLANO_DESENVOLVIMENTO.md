@@ -112,7 +112,7 @@ Documentação oficial: https://firebase.google.com/docs/database/security
 - [x] Atualizar `LoginActivity` (login caçador e login organização) para ler e encaminhar por `role`
 - [x] Atualizar `RegistoUserActivity` para gravar `role: "cacador"` nas novas contas
 - [x] Criar `SuperAdminActivity` v1 — lista todas as organizações da plataforma
-- [ ] `SuperAdminActivity` v2 — ver/gerir todos os utilizadores e grupos de qualquer organização (bloqueado por: os ecrãs existentes de organização assumem que o utilizador autenticado É o admin dessa organização; precisa de nova lógica de acesso, não reutilização direta)
+- [x] `SuperAdminActivity` v2 — ver/gerir todos os utilizadores e grupos de qualquer organização (`SuperAdminUsersActivity`: aprovar contas e mudar roles; `SuperAdminGruposActivity`: ver todos os grupos, independentemente de quem administra)
 - [x] ~~Unificar acesso a dados~~ — não era necessário; Firestore nunca esteve ativo, era só código morto (removido: imports, ~170 linhas de código comentado, e a dependência do `build.gradle`)
 - [x] Migrar `kotlinx.android.synthetic` → View Binding (17/17 ficheiros — ver nota abaixo)
 - [x] Substituir dependências Anko por alternativas atuais (Anko só era realmente usado num único ficheiro, `VerificarLoginActivity.kt`; removido por completo, incluindo do `build.gradle`)
@@ -125,6 +125,8 @@ Todos os 17 ficheiros `.kt` que usavam `kotlinx.android.synthetic` (incluindo os
 **Validação necessária antes do merge:** esta foi a alteração de maior volume (17 ficheiros, ~150 substituições de IDs). Fiz verificação sistemática por scripts (procura de imports `kotlinx` residuais — zero encontrados; procura de duplo-prefixo `binding.binding.` por erro de substituição — zero encontrados), mas **não consegui compilar nada disto**. É essencial correres `./gradlew build` no Android Studio antes de fazeres merge para `master`.
 - [ ] Rever/corrigir layouts XML afetados
 - [ ] Testar fluxos principais (login caçador, login organização, login superadmin, criação de evento, adesão a grupo) — **ver nota abaixo sobre limitação de teste**
+- [x] Testes automatizados — iniciado: `RolesTest.kt` e `ValidacoesTest.kt` (13 testes, lógica pura extraída para `Validacoes.kt`, corre em JVM local sem emulador). Cobertura ainda parcial — só a lógica sem dependências Android; testar Activities completas precisaria de Robolectric ou testes instrumentados, não tentado por não conseguir verificar a compilação aqui.
+- [x] Foto de perfil — decisão tomada: removida por completo (código morto, nunca esteve ativa nem visível na UI), em vez de terminada. Motivo: envolveria testar upload de imagem/câmara, que não é possível verificar sem correr a app num dispositivo.
 - [x] Regras de segurança do Realtime Database (`database.rules.json`) — ver secção 4.1
 - [x] Recuperação de password (`LoginActivity` — "Esqueceu-se da password?")
 - [x] Validação de email, password, e comprimento de campos no registo (`RegistoUserActivity`) — corrigido também um bug em que a falha de validação não mostrava nada ao utilizador
