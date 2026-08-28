@@ -390,7 +390,20 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickListe
                 evento["limiteParticipantes"] = limiteParticipantes
 
 
-                mAuth.getReference("Eventos").child(gv.nome).setValue(evento)
+                // Separado em dois nós (EventosPublicos / EventosPrivados) em vez de
+                // um só "Eventos" — resolve um problema real de privacidade: as
+                // regras do Firebase não conseguem filtrar LISTAS (só decidem se um
+                // pedido passa ou não, por inteiro), por isso uma única árvore
+                // "Eventos" com leitura ampla (necessária para a pesquisa de todos
+                // os eventos públicos) deixava sempre os privados igualmente
+                // legíveis por qualquer conta autenticada, mesmo sem pertencer ao
+                // grupo. Ver docs/PLANO_DESENVOLVIMENTO.md.
+                if (gv.privado == "privado") {
+                    mAuth.getReference("EventosPrivados").child(numero.toString()).child(gv.nome)
+                        .setValue(evento)
+                } else {
+                    mAuth.getReference("EventosPublicos").child(gv.nome).setValue(evento)
+                }
 
 
 

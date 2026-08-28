@@ -33,6 +33,22 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
 
+    /**
+     * Devolve a referência do Firebase para o evento atualmente aberto,
+     * resolvendo para EventosPublicos ou EventosPrivados/{numeroGrupo}
+     * consoante gv.detalhesPrivado/gv.detalhesNumeroGrupo — preenchidos por
+     * quem quer que tenha navegado para este ecrã (ver VariaveisGlobais).
+     * Centralizado aqui para não repetir esta condição em cada sítio que
+     * precisa de aceder ao evento.
+     */
+    private fun referenciaEventoAtual(): DatabaseReference {
+        return if (gv.detalhesPrivado) {
+            mAuth.getReference("EventosPrivados").child(gv.detalhesNumeroGrupo).child(gv.detalhes)
+        } else {
+            mAuth.getReference("EventosPublicos").child(gv.detalhes)
+        }
+    }
+
     // Guardados quando o evento é lido em onCreate, para poderem ser
     // reutilizados em adicionarAoCalendario() sem precisar de nova leitura
     // ao Firebase.
@@ -74,7 +90,7 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback {
         val user = Auth.currentUser
 
         if (user != null) {
-            val mail = mAuth.getReference("Eventos").child(gv.detalhes)
+            val mail = referenciaEventoAtual()
             mail.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
 
@@ -127,7 +143,7 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-        val mail = mAuth.getReference("Eventos").child(gv.detalhes)
+        val mail = referenciaEventoAtual()
         mail.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val placeLat = dataSnapshot.child("Latitude").getValue()
@@ -164,7 +180,7 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback {
 
         val user = Auth.currentUser
         if (user != null) {
-            val mail = mAuth.getReference("Eventos").child(gv.detalhes).child("Presenças")
+            val mail = referenciaEventoAtual().child("Presenças")
             Log.d(
                 "detalhes", "detalhe: ${gv.detalhes}"
             )
@@ -237,7 +253,7 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback {
     fun marcarPresença() {
         val user = Auth.currentUser
         if (user != null) {
-            val mail = mAuth.getReference("Eventos").child(gv.detalhes)
+            val mail = referenciaEventoAtual()
             mail.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
 
@@ -262,7 +278,7 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback {
                     if (limite > 0 && numAtual >= limite) {
                         // Evento cheio — entra na lista de espera em vez de Presenças.
                         update["$numAtual"] = user.uid
-                        mAuth.getReference("Eventos").child(gv.detalhes).child("ListaEspera")
+                        referenciaEventoAtual().child("ListaEspera")
                             .updateChildren(update)
                         Toast.makeText(
                             this@DetalhesEventoActivity,
@@ -271,7 +287,7 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback {
                         ).show()
                     } else {
                         update["$numAtual"] = user.uid
-                        mAuth.getReference("Eventos").child(gv.detalhes).child("Presenças")
+                        referenciaEventoAtual().child("Presenças")
                             .updateChildren(update)
                     }
 
@@ -369,7 +385,7 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback {
 
         Toast.makeText(this, "A preparar lista de participantes…", Toast.LENGTH_SHORT).show()
 
-        mAuth.getReference("Eventos").child(nomeEvento).child("Presenças")
+        referenciaEventoAtual().child("Presenças")
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(presencasSnapshot: DataSnapshot) {
                     val uids = presencasSnapshot.children.mapNotNull {
@@ -446,12 +462,23 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback {
             return
         }
 
+        // Codifica tipo + grupo (se privado) + nome, separados por "::" — quem
+        // ler este código (ver Utils.kt/processarResultadoScanQR) precisa desta
+        // informação para saber em qual dos dois nós (EventosPublicos/
+        // EventosPrivados) procurar o evento. Antes da separação por
+        // privacidade, só o nome era codificado, porque só havia um nó.
+        val conteudoQR = if (gv.detalhesPrivado) {
+            "privado::${gv.detalhesNumeroGrupo}::$nomeEvento"
+        } else {
+            "publico::::$nomeEvento"
+        }
+
         val tamanho = (250 * resources.displayMetrics.density).toInt()
         val bitmap: android.graphics.Bitmap
         try {
             val writer = com.google.zxing.qrcode.QRCodeWriter()
             val matrizBits = writer.encode(
-                nomeEvento,
+                conteudoQR,
                 com.google.zxing.BarcodeFormat.QR_CODE,
                 tamanho,
                 tamanho

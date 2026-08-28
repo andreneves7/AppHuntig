@@ -51,6 +51,12 @@ class VariaveisGlobais : Application() {
 
     var Evento: String = ""
     var detalhes: String = ""
+    // Preenchidos sempre em conjunto com "detalhes", para DetalhesEventoActivity
+    // saber em qual dos dois nós (EventosPublicos / EventosPrivados/{numero})
+    // procurar o evento — necessário desde a separação dos eventos por
+    // privacidade (ver docs/PLANO_DESENVOLVIMENTO.md).
+    var detalhesPrivado: Boolean = false
+    var detalhesNumeroGrupo: String = ""
     var entrar: String = ""
     var ver: String = ""
     var nome: String = ""

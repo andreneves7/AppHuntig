@@ -41,9 +41,9 @@
       }
     },
 
-    "Eventos": {
+    "EventosPublicos": {
       ".read": "auth != null",
-      ".indexOn": ["dataFimTimestamp", "numeroGrupo"],
+      ".indexOn": ["dataFimTimestamp"],
 
       "$eventoId": {
         ".write": "auth != null && (root.child('Users').child(auth.uid).child('role').val() === 'organizacao' || root.child('Users').child(auth.uid).child('role').val() === 'superadmin')",
@@ -55,7 +55,7 @@
         },
 
         "Forma": {
-          ".validate": "newData.val() === 'publico' || newData.val() === 'privado'"
+          ".validate": "newData.val() === 'publico'"
         },
 
         "Presenças": {
@@ -64,6 +64,35 @@
 
         "ListaEspera": {
           ".write": "auth != null"
+        }
+      }
+    },
+
+    "EventosPrivados": {
+      "$numeroGrupo": {
+        ".read": "auth != null && root.child('Users').child(auth.uid).child('Grupos').child($numeroGrupo).exists()",
+        ".indexOn": ["dataFimTimestamp"],
+
+        "$eventoId": {
+          ".write": "auth != null && (root.child('Grupos').child($numeroGrupo).child('admin').val() === auth.uid || root.child('Users').child(auth.uid).child('role').val() === 'superadmin')",
+
+          ".validate": "newData.hasChildren(['nome', 'Forma'])",
+
+          "nome": {
+            ".validate": "newData.isString() && newData.val().length > 0"
+          },
+
+          "Forma": {
+            ".validate": "newData.val() === 'privado'"
+          },
+
+          "Presenças": {
+            ".write": "auth != null && root.child('Users').child(auth.uid).child('Grupos').child($numeroGrupo).exists()"
+          },
+
+          "ListaEspera": {
+            ".write": "auth != null && root.child('Users').child(auth.uid).child('Grupos').child($numeroGrupo).exists()"
+          }
         }
       }
     }

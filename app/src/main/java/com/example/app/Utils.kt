@@ -102,14 +102,27 @@ fun androidx.appcompat.app.AppCompatActivity.processarResultadoScanQR(
         requestCode, resultCode, data
     ) ?: return false
 
-    val nomeEvento = result.contents
-    if (nomeEvento == null) {
+    val conteudo = result.contents
+    if (conteudo == null) {
         // Utilizador cancelou a leitura, nada a fazer.
         return true
     }
 
+    // Formato codificado por DetalhesEventoActivity.mostrarQRCode():
+    // "tipo::numeroGrupo::nome" — necessário desde a separação dos eventos
+    // por privacidade (EventosPublicos/EventosPrivados), para saber em qual
+    // dos dois nós procurar o evento lido.
+    val partes = conteudo.split("::", limit = 3)
+    if (partes.size != 3) {
+        android.widget.Toast.makeText(this, "QR code não reconhecido.", android.widget.Toast.LENGTH_SHORT).show()
+        return true
+    }
+    val (tipo, numeroGrupo, nome) = partes
+
     val gv = application as VariaveisGlobais
-    gv.detalhes = nomeEvento
+    gv.detalhes = nome
+    gv.detalhesPrivado = tipo == "privado"
+    gv.detalhesNumeroGrupo = numeroGrupo
     startActivity(android.content.Intent(this, DetalhesEventoActivity::class.java))
     return true
 }
