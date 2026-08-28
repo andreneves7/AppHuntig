@@ -127,10 +127,7 @@ var num = 0
                     // fosse anterior à data de início (as duas datas são escolhidas em
                     // DatePickers independentes, sem nenhuma verificação cruzada).
                     if (!isPeriodoValido()) {
-                        Toast.makeText(
-                            this,
-                            "A data de fim não pode ser anterior à data de início",
-                            Toast.LENGTH_LONG
+                        Toast.makeText(this, this.getString(R.string.msg_a_data_de_fim_nao_pode_ser_anterior_a_da), Toast.LENGTH_LONG
                         ).show()
                         return
                     }
@@ -142,17 +139,17 @@ var num = 0
                     }
                     startActivity(intent)
                 } else {
-                    Toast.makeText(this, "Selecionar Tipo", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, this.getString(R.string.msg_selecionar_tipo), Toast.LENGTH_SHORT).show()
                 }
 
 
             } else {
-                Toast.makeText(this, "Horas mal preenchidas", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, this.getString(R.string.msg_horas_mal_preenchidas), Toast.LENGTH_SHORT).show()
             }
 
         } else {
 
-            Toast.makeText(this, "Preencha campo nome", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, this.getString(R.string.msg_preencha_campo_nome), Toast.LENGTH_SHORT).show()
 
 
         }

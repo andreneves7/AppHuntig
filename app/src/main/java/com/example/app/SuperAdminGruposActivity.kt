@@ -39,7 +39,7 @@ class SuperAdminGruposActivity : AppCompatActivity() {
 
         val gv = application as VariaveisGlobais
         if (gv.role != Roles.SUPERADMIN) {
-            Toast.makeText(this, "Acesso restrito", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, this.getString(R.string.msg_acesso_restrito), Toast.LENGTH_LONG).show()
             finish()
             return
         }

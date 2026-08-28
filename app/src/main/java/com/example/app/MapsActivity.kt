@@ -351,7 +351,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickListe
 
 
 
-                Toast.makeText(this, "evento criado", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, this.getString(R.string.msg_evento_criado), Toast.LENGTH_SHORT).show()
 
 
                 val intent = Intent(this, CriarOrgEventoActivity::class.java)
@@ -361,7 +361,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickListe
 
 
             } else {
-                Toast.makeText(this, "Tem de ter localização", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, this.getString(R.string.msg_tem_de_ter_localizacao), Toast.LENGTH_SHORT).show()
                 Log.d("Mapa", "$lastLocation}")
                 Log.d("Mapa", "latitude ${gv.Lat}}")
                 Log.d("Mapa", "longitude ${gv.Long}}")

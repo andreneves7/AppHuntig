@@ -82,25 +82,19 @@ class LoginActivity : AppCompatActivity() {
             .setPositiveButton("Enviar") { _, _ ->
                 val email = emailInput.text.toString().trim()
                 if (email.isEmpty()) {
-                    Toast.makeText(this, "Introduz o teu email", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, this.getString(R.string.msg_introduz_o_teu_email), Toast.LENGTH_SHORT).show()
                     return@setPositiveButton
                 }
                 Auth.sendPasswordResetEmail(email).addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        Toast.makeText(
-                            this,
-                            "Email enviado. Verifica a tua caixa de entrada.",
-                            Toast.LENGTH_LONG
+                        Toast.makeText(this, this.getString(R.string.msg_email_enviado_verifica_a_tua_caixa_de_en), Toast.LENGTH_LONG
                         ).show()
                     } else {
                         // Nota: por segurança, o Firebase às vezes não distingue "email não existe"
                         // de outros erros. Mostramos uma mensagem genérica em vez de confirmar/negar
                         // se o email está registado, para não revelar essa informação a terceiros.
                         Log.d("Login", "erro ao enviar reset de password: ${task.exception?.message}")
-                        Toast.makeText(
-                            this,
-                            "Não foi possível enviar o email. Verifica se está correto e tenta novamente.",
-                            Toast.LENGTH_LONG
+                        Toast.makeText(this, this.getString(R.string.msg_nao_foi_possivel_enviar_o_email_verifica), Toast.LENGTH_LONG
                         ).show()
                     }
                 }
@@ -149,19 +143,13 @@ class LoginActivity : AppCompatActivity() {
                                     startActivity(intent)
 
 
-                                    Toast.makeText(
-                                        this@LoginActivity,
-                                        "Successfully Logged in :)",
-                                        Toast.LENGTH_LONG
+                                    Toast.makeText(this@LoginActivity, this@LoginActivity.getString(R.string.msg_successfully_logged_in), Toast.LENGTH_LONG
                                     )
                                         .show()
                                     Log.d("Login", "user ${Auth.currentUser?.uid}")
                                 } else {
 
-                                    Toast.makeText(
-                                        this@LoginActivity,
-                                        "So pode entrar com caçador",
-                                        Toast.LENGTH_LONG
+                                    Toast.makeText(this@LoginActivity, this@LoginActivity.getString(R.string.msg_so_pode_entrar_com_cacador), Toast.LENGTH_LONG
                                     )
                                         .show()
                                 }
@@ -175,14 +163,14 @@ class LoginActivity : AppCompatActivity() {
 
 
                     } else {
-                        Toast.makeText(this, "verifique email", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, this.getString(R.string.msg_verifique_email), Toast.LENGTH_SHORT).show()
                     }
                 } else {
-                    Toast.makeText(this, "Error Logging in :(", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, this.getString(R.string.msg_error_logging_in), Toast.LENGTH_SHORT).show()
                 }
             }
         } else {
-            Toast.makeText(this, "Please fill up the credetianls", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, this.getString(R.string.msg_please_fill_up_the_credetianls), Toast.LENGTH_LONG).show()
         }
     }
 
@@ -293,18 +281,12 @@ class LoginActivity : AppCompatActivity() {
                                             })
 
                                         } else {
-                                            Toast.makeText(
-                                                this@LoginActivity,
-                                                "Esta fazer login errado mudar para Organização",
-                                                Toast.LENGTH_SHORT
+                                            Toast.makeText(this@LoginActivity, this@LoginActivity.getString(R.string.msg_esta_fazer_login_errado_mudar_para_organ), Toast.LENGTH_SHORT
                                             ).show();
                                         }
                                     } else {
 
-                                        Toast.makeText(
-                                            this@LoginActivity,
-                                            "Tem esperar pela aprovaçao",
-                                            Toast.LENGTH_SHORT
+                                        Toast.makeText(this@LoginActivity, this@LoginActivity.getString(R.string.msg_tem_esperar_pela_aprovacao), Toast.LENGTH_SHORT
                                         ).show();
 
                                     }
@@ -319,26 +301,23 @@ class LoginActivity : AppCompatActivity() {
 
 
                             })
-                            Toast.makeText(
-                                this,
-                                "Successfully Logged in :)",
-                                Toast.LENGTH_LONG
+                            Toast.makeText(this, this.getString(R.string.msg_successfully_logged_in), Toast.LENGTH_LONG
                             )
                                 .show()
                             Log.d("Login", "user ${Auth.currentUser?.uid}")
 
 
                         } else {
-                            Toast.makeText(this, "verifique email", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this, this.getString(R.string.msg_verifique_email), Toast.LENGTH_SHORT).show()
                         }
                     } else {
-                        Toast.makeText(this, "Error Logging in :(", Toast.LENGTH_SHORT)
+                        Toast.makeText(this, this.getString(R.string.msg_error_logging_in), Toast.LENGTH_SHORT)
                             .show()
                     }
 
                 }
         } else {
-            Toast.makeText(this, "Please fill up the credetianls", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, this.getString(R.string.msg_please_fill_up_the_credetianls), Toast.LENGTH_LONG).show()
         }
 
 

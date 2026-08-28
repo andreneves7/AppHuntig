@@ -12,9 +12,6 @@ import android.widget.Toast
  * perceber que algo tinha falhado. Ver docs/PLANO_DESENVOLVIMENTO.md.
  */
 fun Context.mostrarErroLigacao() {
-    Toast.makeText(
-        this,
-        "Não foi possível carregar os dados. Verifica a tua ligação e tenta novamente.",
-        Toast.LENGTH_LONG
+    Toast.makeText(this, this.getString(R.string.msg_nao_foi_possivel_carregar_os_dados_verif), Toast.LENGTH_LONG
     ).show()
 }

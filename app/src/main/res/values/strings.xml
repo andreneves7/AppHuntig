@@ -82,4 +82,43 @@
     <string name="ver_todos_os_utilizadores">Ver todos os utilizadores</string>
     <string name="ver_tudo">Ver Tudo</string>
     <!--endregion-->
+
+    <!--region Extraídas de Toast.makeText() em código Kotlin -->
+    <string name="msg_a_data_de_fim_nao_pode_ser_anterior_a_da">A data de fim não pode ser anterior à data de início</string>
+    <string name="msg_aceitou">Aceitou</string>
+    <string name="msg_acesso_restrito">Acesso restrito</string>
+    <string name="msg_atualizado">Atualizado</string>
+    <string name="msg_campos_nao_preenchidos">Campos nao preenchidos</string>
+    <string name="msg_cancel">Cancel</string>
+    <string name="msg_email_enviado_verifica_a_tua_caixa_de_en">Email enviado. Verifica a tua caixa de entrada.</string>
+    <string name="msg_erro_ao_aceitar_socio_tenta_novamente">Erro ao aceitar sócio, tenta novamente</string>
+    <string name="msg_erro_ao_carregar_organizacoes">Erro ao carregar organizações</string>
+    <string name="msg_erro_re_logged">Erro Re-Logged :)</string>
+    <string name="msg_error_email_update_re_loggin_try_aggain">Error email Update re-loggin try aggain</string>
+    <string name="msg_error_logging_in">Error Logging in :(</string>
+    <string name="msg_error_password_update">Error password Update</string>
+    <string name="msg_esta_fazer_login_errado_mudar_para_organ">Esta fazer login errado mudar para Organização</string>
+    <string name="msg_evento_criado">evento criado</string>
+    <string name="msg_horas_mal_preenchidas">Horas mal preenchidas</string>
+    <string name="msg_introduz_o_teu_email">Introduz o teu email</string>
+    <string name="msg_nao_foi_possivel_carregar_os_dados_verif">Não foi possível carregar os dados. Verifica a tua ligação e tenta novamente.</string>
+    <string name="msg_nao_foi_possivel_enviar_o_email_verifica">Não foi possível enviar o email. Verifica se está correto e tenta novamente.</string>
+    <string name="msg_password_nao_coincidem">Password nao coincidem</string>
+    <string name="msg_please_fill_up_the_credetianls">Please fill up the credetianls</string>
+    <string name="msg_preencha_campo_nome">Preencha campo nome</string>
+    <string name="msg_preencha_todos_os_campos">Preencha todos os campos</string>
+    <string name="msg_registo_com_sucesso">Registo COM sucesso</string>
+    <string name="msg_registo_sem_sucesso">Registo sem sucesso</string>
+    <string name="msg_rejeitado">Rejeitado</string>
+    <string name="msg_selecionar_tipo">Selecionar Tipo</string>
+    <string name="msg_selecione_um_pais">Selecione um pais </string>
+    <string name="msg_so_pode_entrar_com_cacador">So pode entrar com caçador</string>
+    <string name="msg_successfully_logged_in">Successfully Logged in :)</string>
+    <string name="msg_successfully_re_logged">Successfully Re-Logged :)</string>
+    <string name="msg_tem_de_ter_localizacao">Tem de ter localização</string>
+    <string name="msg_tem_esperar_pela_aprovacao">Tem esperar pela aprovaçao</string>
+    <string name="msg_update_email_success">Update email Success</string>
+    <string name="msg_update_password_success">Update password Success</string>
+    <string name="msg_verifique_email">verifique email</string>
+    <!--endregion-->
 </resources>

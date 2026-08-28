@@ -51,7 +51,7 @@ class SuperAdminActivity : AppCompatActivity() {
         // isto é apenas uma proteção adicional na app.
         val gv = application as VariaveisGlobais
         if (gv.role != Roles.SUPERADMIN) {
-            Toast.makeText(this, "Acesso restrito", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, this.getString(R.string.msg_acesso_restrito), Toast.LENGTH_LONG).show()
             finish()
             return
         }
@@ -109,10 +109,7 @@ class SuperAdminActivity : AppCompatActivity() {
 
             override fun onCancelled(error: DatabaseError) {
                 Log.d("SuperAdmin", "fail ao carregar organizacoes: ${error.message}")
-                Toast.makeText(
-                    this@SuperAdminActivity,
-                    "Erro ao carregar organizações",
-                    Toast.LENGTH_LONG
+                Toast.makeText(this@SuperAdminActivity, this@SuperAdminActivity.getString(R.string.msg_erro_ao_carregar_organizacoes), Toast.LENGTH_LONG
                 ).show()
             }
         })

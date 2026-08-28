@@ -378,18 +378,12 @@ class RegistoUserActivity : AppCompatActivity() {
                             )
                             when {
                                 it.isSuccessful -> {
-                                    Toast.makeText(
-                                        this,
-                                        "Registo COM sucesso",
-                                        Toast.LENGTH_SHORT
+                                    Toast.makeText(this, this.getString(R.string.msg_registo_com_sucesso), Toast.LENGTH_SHORT
                                     ).show()
 
                                 }
                                 else -> {
-                                    Toast.makeText(
-                                        this,
-                                        "Registo sem sucesso",
-                                        Toast.LENGTH_SHORT
+                                    Toast.makeText(this, this.getString(R.string.msg_registo_sem_sucesso), Toast.LENGTH_SHORT
                                     ).show()
                                 }
                             }
@@ -405,7 +399,7 @@ class RegistoUserActivity : AppCompatActivity() {
 
 
                 } else {
-                    Toast.makeText(this, "Selecione um pais ", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, this.getString(R.string.msg_selecione_um_pais), Toast.LENGTH_SHORT).show()
                 }
 
 
@@ -418,11 +412,11 @@ class RegistoUserActivity : AppCompatActivity() {
 //                    //register()
 //                    when {
 //                        it.isSuccessful -> {
-//                            Toast.makeText(this, "Registo COM sucesso", Toast.LENGTH_SHORT).show()
+//                            Toast.makeText(this, this.getString(R.string.msg_registo_com_sucesso), Toast.LENGTH_SHORT).show()
 //                            Auth.signOut()
 //                        }
 //                        else -> {
-//                            Toast.makeText(this, "Registo sem sucesso", Toast.LENGTH_SHORT).show()
+//                            Toast.makeText(this, this.getString(R.string.msg_registo_sem_sucesso), Toast.LENGTH_SHORT).show()
 //                        }
 //                    }
 //
@@ -434,7 +428,7 @@ class RegistoUserActivity : AppCompatActivity() {
 //                        Toast.makeText(this, exception.toString(), Toast.LENGTH_LONG).show()
 //                    }
             } else {
-                // Toast.makeText(this, "Preencha todos os campos", Toast.LENGTH_LONG).show()
+                // Toast.makeText(this, this.getString(R.string.msg_preencha_todos_os_campos), Toast.LENGTH_LONG).show()
                 Log.d("RegistoUser", "nao registo")
             }
 

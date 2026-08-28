@@ -104,7 +104,7 @@ class ProfileActivity : AppCompatActivity() {
         alertDialog.setCancelable(false)
 
         alertDialog.setNegativeButton("Cancel") { dialog, which ->
-            Toast.makeText(this, "Cancel", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, this.getString(R.string.msg_cancel), Toast.LENGTH_LONG).show()
         }
 
         alertDialog.setPositiveButton("Done") { dialog, which ->
@@ -117,10 +117,10 @@ class ProfileActivity : AppCompatActivity() {
             Auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task4 ->
                     if (task4.isSuccessful) {
-                        Toast.makeText(this, "Successfully Re-Logged :)", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this, this.getString(R.string.msg_successfully_re_logged), Toast.LENGTH_LONG).show()
                         Log.d("Profile", "user re-logged  ${Auth.currentUser?.uid}")
                     } else {
-                        Toast.makeText(this, "Erro Re-Logged :)", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this, this.getString(R.string.msg_erro_re_logged), Toast.LENGTH_LONG).show()
                         showAlertLogin()
                     }
                     Log.d("Profile", "done botao")
@@ -149,7 +149,7 @@ class ProfileActivity : AppCompatActivity() {
         alertDialog.setCancelable(false)
 
         alertDialog.setNegativeButton("Cancel") { dialog, which ->
-            Toast.makeText(this, "Cancel", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, this.getString(R.string.msg_cancel), Toast.LENGTH_LONG).show()
         }
 
         alertDialog.setPositiveButton("Done") { dialog, which ->
@@ -166,16 +166,13 @@ class ProfileActivity : AppCompatActivity() {
                         if (task2.isSuccessful) {
 
                            mail.child("email").setValue( userEmail)
-                            Toast.makeText(this, "Update email Success", Toast.LENGTH_LONG).show()
+                            Toast.makeText(this, this.getString(R.string.msg_update_email_success), Toast.LENGTH_LONG).show()
                             Log.d("Profile", "email update auth")
                             old()
 
 
                         } else {
-                            Toast.makeText(
-                                this,
-                                "Error email Update re-loggin try aggain",
-                                Toast.LENGTH_LONG
+                            Toast.makeText(this, this.getString(R.string.msg_error_email_update_re_loggin_try_aggain), Toast.LENGTH_LONG
                             ).show()
                             Log.d("Profile", "email erro auth")
                             showAlertLogin()
@@ -220,7 +217,7 @@ class ProfileActivity : AppCompatActivity() {
         alertDialog.setCancelable(false)
 
         alertDialog.setNegativeButton("Cancel") { dialog, which ->
-            Toast.makeText(this, "Cancel", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, this.getString(R.string.msg_cancel), Toast.LENGTH_LONG).show()
         }
 
         alertDialog.setPositiveButton("Done") { dialog, which ->
@@ -233,22 +230,22 @@ class ProfileActivity : AppCompatActivity() {
                 if (userConf == userPassword) {
                     user?.updatePassword(userPassword)?.addOnCompleteListener { task3 ->
                         if (task3.isSuccessful) {
-                            Toast.makeText(this, "Update password Success", Toast.LENGTH_LONG)
+                            Toast.makeText(this, this.getString(R.string.msg_update_password_success), Toast.LENGTH_LONG)
                                 .show()
                             Log.d("Profile", "password auth")
 
 
                         } else {
-                            Toast.makeText(this, "Error password Update", Toast.LENGTH_LONG).show()
+                            Toast.makeText(this, this.getString(R.string.msg_error_password_update), Toast.LENGTH_LONG).show()
                             showAlertLogin()
                         }
                     }
                 } else {
-                    Toast.makeText(this, "Password nao coincidem", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, this.getString(R.string.msg_password_nao_coincidem), Toast.LENGTH_LONG).show()
                     showAlertPass()
                 }
             } else {
-                Toast.makeText(this, "Campos nao preenchidos", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, this.getString(R.string.msg_campos_nao_preenchidos), Toast.LENGTH_LONG).show()
                 showAlertPass()
             }
 

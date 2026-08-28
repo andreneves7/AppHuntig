@@ -44,7 +44,7 @@ class SuperAdminUsersActivity : AppCompatActivity() {
 
         val gv = application as VariaveisGlobais
         if (gv.role != Roles.SUPERADMIN) {
-            Toast.makeText(this, "Acesso restrito", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, this.getString(R.string.msg_acesso_restrito), Toast.LENGTH_LONG).show()
             finish()
             return
         }
@@ -126,7 +126,7 @@ class SuperAdminUsersActivity : AppCompatActivity() {
                     3 -> confirmarPromoverSuperAdmin(uid)
                 }
                 if (which != 3) {
-                    Toast.makeText(this, "Atualizado", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, this.getString(R.string.msg_atualizado), Toast.LENGTH_SHORT).show()
                     carregarUtilizadores()
                 }
             }
@@ -144,7 +144,7 @@ class SuperAdminUsersActivity : AppCompatActivity() {
             .setMessage("Tens a certeza que queres dar acesso TOTAL de SuperAdmin a esta conta? Esta ação dá controlo completo sobre toda a plataforma.")
             .setPositiveButton("Sim, confirmar") { _, _ ->
                 mAuth.getReference("Users").child(uid).child("role").setValue(Roles.SUPERADMIN)
-                Toast.makeText(this, "Atualizado", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, this.getString(R.string.msg_atualizado), Toast.LENGTH_SHORT).show()
                 carregarUtilizadores()
             }
             .setNegativeButton("Cancelar", null)

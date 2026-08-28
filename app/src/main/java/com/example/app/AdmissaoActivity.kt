@@ -276,7 +276,7 @@ class AdmissaoActivity : AppCompatActivity() {
         alertDialog.setCancelable(false)
 
         alertDialog.setNegativeButton("Rejeitar") { _, _ ->
-            Toast.makeText(this, "Rejeitado", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, this.getString(R.string.msg_rejeitado), Toast.LENGTH_LONG).show()
         }
 
         alertDialog.setPositiveButton("Aceitar") { _, _ ->
@@ -358,15 +358,12 @@ class AdmissaoActivity : AppCompatActivity() {
 
                     override fun onCancelled(error: DatabaseError) {
                         Log.d("adesa", "fail ao aceitar socio: ${error.message}")
-                        Toast.makeText(
-                            this@AdmissaoActivity,
-                            "Erro ao aceitar sócio, tenta novamente",
-                            Toast.LENGTH_LONG
+                        Toast.makeText(this@AdmissaoActivity, this@AdmissaoActivity.getString(R.string.msg_erro_ao_aceitar_socio_tenta_novamente), Toast.LENGTH_LONG
                         ).show()
                     }
                 })
 
-            Toast.makeText(this, "Aceitou", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, this.getString(R.string.msg_aceitou), Toast.LENGTH_LONG).show()
         }
 
 
