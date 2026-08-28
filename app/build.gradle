@@ -6,12 +6,35 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.firebase.crashlytics'
 
+// Configuração de assinatura para releases — lê as credenciais de um ficheiro
+// keystore.properties LOCAL (nunca commitado, ver .gitignore) em vez de as
+// colocar diretamente aqui. Ver docs/RELEASE_CHECKLIST.md para os passos
+// completos de como criar a keystore e este ficheiro.
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+def temKeystoreConfigurada = keystorePropertiesFile.exists()
+if (temKeystoreConfigurada) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
 
 android {
     compileSdkVersion 33
     buildFeatures {
         viewBinding true
     }
+
+    signingConfigs {
+        release {
+            if (temKeystoreConfigurada) {
+                storeFile rootProject.file(keystoreProperties['storeFile'])
+                storePassword keystoreProperties['storePassword']
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+            }
+        }
+    }
+
     defaultConfig {
         applicationId "com.company.HuntigEvents"
         minSdkVersion 21
@@ -24,6 +47,14 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            if (temKeystoreConfigurada) {
+                signingConfig signingConfigs.release
+            }
+            // ⚠️ minifyEnabled está a "false" propositadamente. As regras de
+            // ProGuard/R8 em proguard-rules.pro já estão preparadas para Firebase,
+            // Maps e Glide, mas NUNCA foram testadas com uma compilação real (ver
+            // docs/RELEASE_CHECKLIST.md). Só mudar para "true" depois de testares
+            // uma build de release completa no teu telemóvel.
         }
     }
 
