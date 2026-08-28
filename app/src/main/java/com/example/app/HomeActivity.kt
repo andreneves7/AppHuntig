@@ -42,6 +42,18 @@ class HomeActivity : AppCompatActivity() {
         //val escolherFiltros = filtros
 
         eventos()
+
+        // Puxar a lista para baixo recarrega o ecrã por completo (recreate())
+        // em vez de tentar voltar a chamar eventos() sozinha — essa função
+        // anexa vários listeners aninhados ao Firebase, e chamá-la outra vez
+        // sem desanexar os anteriores acumularia listeners duplicados a cada
+        // "puxar", com entradas repetidas na lista com o tempo. recreate()
+        // destrói e reconstrói o ecrã do zero, evitando esse risco por
+        // completo — mais simples e seguro do que alterar a lógica interna
+        // de eventos() sem conseguir testar.
+        binding.swipeRefreshHome.setOnRefreshListener {
+            recreate()
+        }
         /*escolherFiltros.setOnClickListener {
             lista.setAdapter(null);
             showFiltros()
