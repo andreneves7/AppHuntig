@@ -11,7 +11,7 @@
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:gravity="center"
-        android:text="Lista de Socios:"
+        android:text="@string/lista_de_socios"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"

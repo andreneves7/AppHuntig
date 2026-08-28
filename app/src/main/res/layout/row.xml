@@ -22,14 +22,14 @@
             android:id="@+id/editNome"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Nome"
+            android:text="@string/label_nome"
             android:textSize="15sp" />
 
         <TextView
             android:id="@+id/editNumero"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Numero" />
+            android:text="@string/numero" />
     </LinearLayout>
 
 </LinearLayout>

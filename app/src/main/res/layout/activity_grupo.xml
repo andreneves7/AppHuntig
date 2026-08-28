@@ -21,7 +21,7 @@
         android:id="@+id/tNaoEventos"
         android:layout_width="360dp"
         android:layout_height="137dp"
-        android:text="Nao tem eventos Disponiveis"
+        android:text="@string/nao_tem_eventos_disponiveis"
         app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -44,7 +44,7 @@
 <!--        android:layout_width="wrap_content"-->
 <!--        android:layout_height="wrap_content"-->
 <!--        android:background="@drawable/botoes"-->
-<!--        android:text="Criar evento"-->
+<!--        android:text="@string/criar_evento"-->
 <!--        app:layout_constraintBottom_toBottomOf="parent"-->
 <!--        app:layout_constraintEnd_toEndOf="parent"-->
 <!--        app:layout_constraintStart_toStartOf="parent"-->

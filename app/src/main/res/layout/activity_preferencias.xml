@@ -28,7 +28,7 @@
         android:layout_width="91dp"
         android:layout_height="47dp"
         android:background="@drawable/botoes"
-        android:text="Pular"
+        android:text="@string/pular"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"

@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/botoes"
-        android:text="editar Password"
+        android:text="@string/editar_password"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.19"
@@ -26,7 +26,7 @@
 <!--        android:layout_width="wrap_content"-->
 <!--        android:layout_height="wrap_content"-->
 <!--        android:background="@drawable/botoes"-->
-<!--        android:text="guardar foto"-->
+<!--        android:text="@string/guardar_foto"-->
 <!--        app:layout_constraintBottom_toBottomOf="parent"-->
 <!--        app:layout_constraintEnd_toEndOf="parent"-->
 <!--        app:layout_constraintHorizontal_bias="0.851"-->
@@ -51,7 +51,7 @@
 <!--        android:layout_width="114dp"-->
 <!--        android:layout_height="128dp"-->
 <!--        android:background="@drawable/botao_redondo"-->
-<!--        android:text="adicionar foto"-->
+<!--        android:text="@string/adicionar_foto"-->
 <!--        android:textColor="@android:color/white"-->
 <!--        app:layout_constraintBottom_toBottomOf="parent"-->
 <!--        app:layout_constraintEnd_toEndOf="parent"-->
@@ -65,7 +65,7 @@
         android:layout_width="128dp"
         android:layout_height="49dp"
         android:background="@drawable/botoes"
-        android:text=" editar Email"
+        android:text="@string/editar_email"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.869"
@@ -77,7 +77,7 @@
         android:id="@+id/textView"
         android:layout_width="282dp"
         android:layout_height="70dp"
-        android:text="TextView"
+        android:text="@string/textview"
         android:textColor="#000000"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -91,7 +91,7 @@
         android:id="@+id/textView5"
         android:layout_width="282dp"
         android:layout_height="70dp"
-        android:text="Profile"
+        android:text="@string/profile"
         android:textAlignment="center"
         android:textColor="#000000"
         android:textSize="40dp"

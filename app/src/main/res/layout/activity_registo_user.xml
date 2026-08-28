@@ -98,7 +98,7 @@
                     android:layout_width="77dp"
                     android:layout_height="44dp"
                     android:background="@drawable/botoes"
-                    android:text="Pais" />
+                    android:text="@string/pais" />
                 <EditText
                     android:id="@+id/addPais_Outros"
                     android:layout_width="224dp"
@@ -254,7 +254,7 @@
                     android:id="@+id/checkBoxEspanha"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Espanha"
+                    android:text="@string/espanha"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.06"
@@ -266,7 +266,7 @@
                     android:id="@+id/checkBoxPortugal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Portugal"
+                    android:text="@string/portugal"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.06"
@@ -310,7 +310,7 @@
                 <!--                        android:layout_width="wrap_content"-->
                 <!--                        android:layout_height="wrap_content"-->
                 <!--                        android:background="@drawable/botoes"-->
-                <!--                        android:text="add" />-->
+                <!--                        android:text="@string/add" />-->
 
                 <!--                </LinearLayout>-->
                 <EditText
@@ -452,7 +452,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/botoes"
-                android:text="Registar" />
+                android:text="@string/registar" />
 
             <Space
                 android:layout_width="match_parent"
