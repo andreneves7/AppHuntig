@@ -16,10 +16,17 @@
         app:layout_constraintTop_toBottomOf="@+id/bPular"
         tools:context=".PreferenciasActivity">
 
-        <ListView
-            android:id="@+id/listViewPre"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefreshPreferencias"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
+
+            <ListView
+                android:id="@+id/listViewPre"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     </LinearLayout>
 

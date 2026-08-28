@@ -68,6 +68,10 @@ class PreferenciasActivity : AppCompatActivity() {
 
         listView = binding.listViewPre
 
+        binding.swipeRefreshPreferencias.setOnRefreshListener {
+            recreate()
+        }
+
         var d = mAuth.getReference("Grupos")
         var list = ArrayList<String>()
         // MIGRAÇÃO: Grupos passou a ser indexado por "Numero" em vez do nome
