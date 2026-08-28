@@ -49,7 +49,15 @@ class AdmissaoActivity : AppCompatActivity() {
         var socio = ""
 
         if (user != null) {
-            val mail = mAuth.getReference("Grupos")
+            // Antes: mAuth.getReference("Grupos") sem filtro — descarregava TODOS
+            // os grupos da plataforma só para descartar no cliente os que não são
+            // desta organização. Agora: filtrado no servidor por "admin" (sempre
+            // um uid do Firebase Auth, sem ambiguidade de tipo). A comparação por
+            // "Numero" mantém-se no cliente, porque esse campo nunca é escrito
+            // pela app (só manualmente na consola), e não há garantia de que
+            // esteja sempre gravado como número — uma query tipada errada
+            // falharia silenciosamente (zero resultados), por isso não arrisquei.
+            val mail = mAuth.getReference("Grupos").orderByChild("admin").equalTo(user)
 
             val values = ArrayList<Model>()
             val valor = ArrayList<String>()

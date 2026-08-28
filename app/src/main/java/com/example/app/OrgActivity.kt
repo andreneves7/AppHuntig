@@ -39,7 +39,14 @@ class OrgActivity : AppCompatActivity() {
         binding.progressOrg.isVisible = true
         binding.progressOrg.postDelayed({ binding.progressOrg.isVisible = false }, 5000)
         if (user != null) {
-            val mail = mAuth.getReference("Grupos")
+            // Antes: mAuth.getReference("Grupos") sem filtro nenhum — descarregava
+            // TODOS os grupos da plataforma, de todas as organizações, só para
+            // verificar no cliente (if (admin == user)) quais eram desta. Cresce
+            // mal à medida que existirem mais organizações. Agora: o próprio
+            // Firebase filtra do lado do servidor, só devolve os grupos que esta
+            // organização administra. Precisa do índice em "admin", já
+            // adicionado a database.rules.json.
+            val mail = mAuth.getReference("Grupos").orderByChild("admin").equalTo(user)
 
             val values = ArrayList<String>()
             val valor = ArrayList<String>()

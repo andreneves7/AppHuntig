@@ -34,7 +34,13 @@ class ListaGruposActivity : AppCompatActivity() {
         binding.progressListaGrupos.isVisible = true
         binding.progressListaGrupos.postDelayed({ binding.progressListaGrupos.isVisible = false }, 5000)
 
-        val gruposMemebro = mAuth.getReference("Grupos")
+        // Este ecrã lista TODOS os grupos da plataforma para o utilizador navegar
+        // e pedir adesão a um (não é "os meus grupos" — é um catálogo de
+        // descoberta). Por isso, ao contrário de OrgActivity/AdmissaoActivity, um
+        // limite simples aqui é seguro: não há risco de esconder algo específico
+        // do utilizador, só de não mostrar os últimos alfabeticamente se a
+        // plataforma vier a ter centenas de grupos.
+        val gruposMemebro = mAuth.getReference("Grupos").limitToFirst(300)
         val list = ArrayList<String>()
 
         val membro = object : ChildEventListener {

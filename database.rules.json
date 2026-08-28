@@ -24,6 +24,7 @@
 
     "Grupos": {
       ".read": "auth != null",
+      ".indexOn": ["admin"],
 
       "$grupoId": {
         ".write": "auth != null && (root.child('Grupos').child($grupoId).child('admin').val() === auth.uid || root.child('Users').child(auth.uid).child('role').val() === 'superadmin')",

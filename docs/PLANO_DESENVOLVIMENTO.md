@@ -169,12 +169,19 @@ Todos os 17 ficheiros `.kt` que usavam `kotlinx.android.synthetic` (incluindo os
 
 Se tudo isto correr bem, o padrão está validado e posso escalar aos restantes 19 ecrãs, um de cada vez, com o mesmo cuidado de verificação.
 
-### Paginação — solução implementada
+### Paginação de Eventos — solução implementada
 A tentativa inicial (`limitToLast()` na chave de `Eventos`) foi abandonada por a chave ser o nome do evento, não uma data — traria resultados alfabéticos, não cronológicos. Solução: adicionado um campo calculado e ordenável, `dataFimTimestamp` (epoch millis da data de fim do evento), gravado em `MapsActivity.kt` no momento da criação do evento. `HomeActivity` passou a consultar `.orderByChild("dataFimTimestamp").limitToFirst(200)` em vez de descarregar a coleção `Eventos` inteira sempre — a lógica de filtragem por data/tipo/formato que já existia manteve-se **exatamente igual**, isto só limita quantos nós o listener descarrega.
 
 **Nota sobre eventos antigos:** eventos criados antes desta alteração não têm o campo `dataFimTimestamp` — o Firebase Realtime Database trata a ausência do campo como "menor que qualquer valor" numa ordenação ascendente, por isso esses eventos ficam nos primeiros lugares da ordenação e são os primeiros a cair fora do limite de 200 à medida que a base de dados crescer. Não é preciso nenhuma migração para os eventos existentes continuarem a aparecer normalmente enquanto o total for menor que 200.
 
 **Ação necessária no Firebase:** o `database.rules.json` foi atualizado com `".indexOn": ["dataFimTimestamp"]` em `Eventos`, para esta query ser eficiente (sem índice, o Firebase ainda funciona mas avisa nos logs e faz uma pesquisa mais lenta). **Se já tinhas aplicado a versão anterior das regras, precisas de voltar a copiar e publicar a versão atualizada** — ver `docs/ACOES_MANUAIS.md` ponto 2️⃣.
+
+### Paginação de Grupos/Sócios — o que foi feito e o que ficou de fora
+- `OrgActivity` (grupos administrados pela organização): antes descarregava **todos** os grupos da plataforma e filtrava no cliente; agora usa `orderByChild("admin").equalTo(uid)`, filtrado no servidor. Seguro porque `admin` é sempre um uid do Firebase Auth (string, sem ambiguidade de tipo possível).
+- `AdmissaoActivity` (pedidos pendentes de um grupo): mesma otimização por `admin`, reduz de "todos os grupos da plataforma" para "só os grupos que esta organização administra".
+- `ListaGruposActivity` (catálogo de todos os grupos para pedir adesão): `limitToFirst(300)` — seguro aqui porque é mesmo um ecrã de descoberta/navegação de tudo, não uma pesquisa por algo específico do utilizador.
+
+**Deliberadamente não tocado:** a comparação por `Numero` (em `AdmissaoActivity`/`ListaSociosOrgActivity`) não pode usar `orderByChild("Numero").equalTo(...)` com segurança — esse campo nunca é escrito pela app (só manualmente na consola Firebase), por isso não há garantia de que esteja sempre gravado como número vs. texto; uma query tipada errada falha silenciosamente (zero resultados) em vez de dar erro visível. `ListaSociosOrgActivity` também não foi tocada — para além do mesmo problema do `Numero`, o código que lê a lista de sócios (`membros`) fá-lo convertendo o mapa inteiro para texto e fazendo *parsing* manual da string (`membros.split('{', ',', '=')`), em vez de percorrer os filhos normalmente — é código frágil que preferi não mexer sem conseguir testar, para não arriscar partir isto ao tentar otimizar aquilo. Fica ligado ao mesmo problema de fundo do alinhamento das chaves de `Grupos`.
 
 ### Strings hardcoded — o que foi feito
 Reconsiderei a decisão inicial de não mexer. Feito em duas fases, cada uma verificada separadamente antes de avançar para a seguinte:
