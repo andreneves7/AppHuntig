@@ -153,7 +153,7 @@ class SuperAdminUsersActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
-        inflater.inflate(R.menu.menu_direita_org, menu)
+        inflater.inflate(R.menu.menu_superadmin, menu)
         return true
     }
 
