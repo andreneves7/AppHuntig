@@ -100,6 +100,10 @@ class EventosProximosActivity : AppCompatActivity(), OnMapReadyCallback {
             atualizarVisibilidadeVista()
         }
 
+        binding.swipeRefreshEventosProximos.setOnRefreshListener {
+            pesquisar()
+        }
+
         pesquisar()
     }
 
@@ -165,6 +169,7 @@ class EventosProximosActivity : AppCompatActivity(), OnMapReadyCallback {
                 carregarEventos(LatLng(location.latitude, location.longitude))
             } else {
                 binding.progressEventosProximos.isVisible = false
+                binding.swipeRefreshEventosProximos.isRefreshing = false
                 Toast.makeText(
                     this,
                     "Não foi possível obter a tua localização atual. Verifica se o GPS está ligado.",
@@ -173,6 +178,7 @@ class EventosProximosActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }.addOnFailureListener {
             binding.progressEventosProximos.isVisible = false
+            binding.swipeRefreshEventosProximos.isRefreshing = false
             Toast.makeText(this, "Erro ao obter localização.", Toast.LENGTH_LONG).show()
         }
     }
@@ -207,6 +213,7 @@ class EventosProximosActivity : AppCompatActivity(), OnMapReadyCallback {
                     carregarEventos(pontoEncontrado)
                 } else {
                     binding.progressEventosProximos.isVisible = false
+                    binding.swipeRefreshEventosProximos.isRefreshing = false
                     Toast.makeText(
                         this,
                         "Não foi possível encontrar esse local. Tenta escrever de outra forma.",
@@ -228,6 +235,7 @@ class EventosProximosActivity : AppCompatActivity(), OnMapReadyCallback {
                 usarLocalizacaoAtual()
             } else {
                 binding.progressEventosProximos.isVisible = false
+                binding.swipeRefreshEventosProximos.isRefreshing = false
                 Toast.makeText(
                     this,
                     "Sem permissão de localização não é possível pesquisar pela tua posição atual — tenta escrever um local.",
@@ -243,6 +251,7 @@ class EventosProximosActivity : AppCompatActivity(), OnMapReadyCallback {
 
         if (!querPublicos && !querPrivados) {
             binding.progressEventosProximos.isVisible = false
+            binding.swipeRefreshEventosProximos.isRefreshing = false
             mostrarResultado(emptyList(), pontoPesquisa)
             return
         }
@@ -383,6 +392,7 @@ class EventosProximosActivity : AppCompatActivity(), OnMapReadyCallback {
 
         runOnUiThread {
             binding.progressEventosProximos.isVisible = false
+            binding.swipeRefreshEventosProximos.isRefreshing = false
             mostrarResultado(resultado, pontoPesquisa)
         }
     }

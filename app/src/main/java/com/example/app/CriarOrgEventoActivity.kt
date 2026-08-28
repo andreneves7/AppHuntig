@@ -35,6 +35,10 @@ class CriarOrgEventoActivity : AppCompatActivity() {
         val evento = binding.bEvento
         val soc = binding.bSocios
 
+        binding.swipeRefreshCriarOrgEvento.setOnRefreshListener {
+            recreate()
+        }
+
         busca()
 
         evento.setOnClickListener {
