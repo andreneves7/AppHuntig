@@ -1,0 +1,119 @@
+<resources>
+    <string name="app_name">HuntingEvent</string>
+    <string name="title_activity_maps">Mapa</string>
+    <string name="edit_message">Introduce un mensaje</string>
+    <string name="button_send">Enviar</string>
+
+    <!--region Adapter-->
+    <string name="carta_cacador">Nº Licencia de Caza: %1$s  </string>
+    <string name="nome">Nombre:  %1$s  </string>
+    <string name="num_socio">Nº Socio: %1$s  </string>
+    <!--endregion-->
+
+    <!--region Act_Admissao-->
+    <string name="pedidos_adesao_pendentes">Solicitudes de Admisión Pendientes:</string>
+    <string name="adesao_custom_textViewShow">Nombre:  %1$s  \n  Nº Licencia de Caza:   %2$d  \n  Nº Socio:  %3$d</string>
+
+    <!--endregion-->
+
+
+    <string-array name="zonas">
+        <item>Seleccionar Zonas</item>
+        <item>leon</item>
+        <item>galiza</item>
+
+    </string-array>
+
+    <!--region Extraídas dos layouts XML (antes hardcoded em android:text) -->
+    <string name="aceitar_socios">Aceptar Socios</string>
+    <string name="add">añadir</string>
+    <string name="adicionar_foto">añadir foto</string>
+    <string name="ainda_nao_existem_grupos_registados">Todavía no hay grupos registrados</string>
+    <string name="ainda_nao_existem_organizacoes_registada">Todavía no hay organizaciones registradas</string>
+    <string name="ainda_nao_existem_utilizadores_registado">Todavía no hay usuarios registrados</string>
+    <string name="caca_maior">Caza Mayor</string>
+    <string name="caca_menor">Caza Menor</string>
+    <string name="criar_evento">Crear evento</string>
+    <string name="data_da_realizacao_evento">Fecha del Evento:</string>
+    <string name="data_limite_de_inscricao">Fecha Límite de Inscripción:</string>
+    <string name="dias_caca">Días de Caza</string>
+    <string name="editar_email"> editar Email</string>
+    <string name="editar_password">editar Contraseña</string>
+    <string name="entidades_aderentes">Entidades Adheridas</string>
+    <string name="entrar">Entrar</string>
+    <string name="espanha">España</string>
+    <string name="esperas">Esperas</string>
+    <string name="esqueceu_se_da_password">¿Olvidaste tu contraseña?</string>
+    <string name="grupos_onde_e_administrador">Grupos que administras:</string>
+    <string name="grupos_onde_e_membro">Grupos a los que perteneces:</string>
+    <string name="guardar">Guardar</string>
+    <string name="guardar_foto">guardar foto</string>
+    <string name="lista_de_socios">Lista de Socios:</string>
+    <string name="localizacao">Ubicación</string>
+    <string name="login">Iniciar sesión</string>
+    <string name="marcar_presenca">Marcar Asistencia</string>
+    <string name="montarias">Monterías</string>
+    <string name="nao_faz_parte_de_grupo_nenhum">No perteneces a ningún grupo</string>
+    <string name="nao_tem_eventos_disponiveis">No hay eventos disponibles</string>
+    <string name="nao_tem_eventos_disponiveis_2">No hay eventos disponibles</string>
+    <string name="label_nome">Nombre</string>
+    <string name="numero">Número</string>
+    <string name="painel_superadmin_organizacoes">Panel SuperAdmin — Organizaciones</string>
+    <string name="pais">País</string>
+    <string name="portugal">Portugal</string>
+    <string name="privado">Privado</string>
+    <string name="profile">Perfil</string>
+    <string name="pular">Saltar</string>
+    <string name="registar">Registrar</string>
+    <string name="registo">Registro</string>
+    <string name="rolas">Tórtolas</string>
+    <string name="show_password">Mostrar Contraseña</string>
+    <string name="textview">TextView</string>
+    <string name="tipos">Tipos</string>
+    <string name="todos_os_grupos">Todos los grupos</string>
+    <string name="todos_os_utilizadores">Todos los usuarios</string>
+    <string name="tordos">Zorzales</string>
+    <string name="ver_todos_os_grupos">Ver todos los grupos</string>
+    <string name="ver_todos_os_utilizadores">Ver todos los usuarios</string>
+    <string name="ver_tudo">Ver Todo</string>
+    <!--endregion-->
+
+    <!--region Extraídas de Toast.makeText() em código Kotlin -->
+    <string name="msg_a_data_de_fim_nao_pode_ser_anterior_a_da">La fecha de fin no puede ser anterior a la fecha de inicio</string>
+    <string name="msg_aceitou">Aceptado</string>
+    <string name="msg_acesso_restrito">Acceso restringido</string>
+    <string name="msg_atualizado">Actualizado</string>
+    <string name="msg_campos_nao_preenchidos">Campos no rellenados</string>
+    <string name="msg_cancel">Cancelar</string>
+    <string name="msg_email_enviado_verifica_a_tua_caixa_de_en">Email enviado. Revisa tu bandeja de entrada.</string>
+    <string name="msg_erro_ao_aceitar_socio_tenta_novamente">Error al aceptar socio, inténtalo de nuevo</string>
+    <string name="msg_erro_ao_carregar_organizacoes">Error al cargar organizaciones</string>
+    <string name="msg_erro_re_logged">Error al reiniciar sesión :)</string>
+    <string name="msg_error_email_update_re_loggin_try_aggain">Error al actualizar email, inicia sesión de nuevo e inténtalo otra vez</string>
+    <string name="msg_error_logging_in">Error al iniciar sesión :(</string>
+    <string name="msg_error_password_update">Error al actualizar la contraseña</string>
+    <string name="msg_esta_fazer_login_errado_mudar_para_organ">Estás iniciando sesión de forma incorrecta, cambia a Organización</string>
+    <string name="msg_evento_criado">evento creado</string>
+    <string name="msg_horas_mal_preenchidas">La hora no está bien rellenada</string>
+    <string name="msg_introduz_o_teu_email">Introduce tu email</string>
+    <string name="msg_nao_foi_possivel_carregar_os_dados_verif">No se pudieron cargar los datos. Comprueba tu conexión e inténtalo de nuevo.</string>
+    <string name="msg_nao_foi_possivel_enviar_o_email_verifica">No se pudo enviar el email. Comprueba que sea correcto e inténtalo de nuevo.</string>
+    <string name="msg_password_nao_coincidem">Las contraseñas no coinciden</string>
+    <string name="msg_please_fill_up_the_credetianls">Por favor, rellena las credenciales</string>
+    <string name="msg_preencha_campo_nome">Rellena el campo del nombre</string>
+    <string name="msg_preencha_todos_os_campos">Rellena todos los campos</string>
+    <string name="msg_registo_com_sucesso">Registro exitoso</string>
+    <string name="msg_registo_sem_sucesso">Registro fallido</string>
+    <string name="msg_rejeitado">Rechazado</string>
+    <string name="msg_selecionar_tipo">Seleccionar Tipo</string>
+    <string name="msg_selecione_um_pais">Selecciona un país </string>
+    <string name="msg_so_pode_entrar_com_cacador">Solo puedes entrar como cazador</string>
+    <string name="msg_successfully_logged_in">Sesión iniciada correctamente :)</string>
+    <string name="msg_successfully_re_logged">Sesión reiniciada correctamente :)</string>
+    <string name="msg_tem_de_ter_localizacao">Se requiere ubicación</string>
+    <string name="msg_tem_esperar_pela_aprovacao">Debes esperar la aprobación</string>
+    <string name="msg_update_email_success">Email actualizado correctamente</string>
+    <string name="msg_update_password_success">Contraseña actualizada correctamente</string>
+    <string name="msg_verifique_email">verifica tu email</string>
+    <!--endregion-->
+</resources>
