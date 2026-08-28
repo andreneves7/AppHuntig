@@ -20,21 +20,18 @@ import com.example.app.databinding.ActivitySuperAdminBinding
  * Painel de gestão global da plataforma, acessível apenas a contas com
  * role == Roles.SUPERADMIN (ver Roles.kt e LoginActivity).
  *
- * Fase atual (v1): lista todas as organizações registadas.
- * Próximos passos previstos (ver docs/PLANO_DESENVOLVIMENTO.md):
- *   - Ver/editar todos os utilizadores da plataforma, independentemente da organização
- *   - Ver/editar todos os grupos e eventos, independentemente da organização
- *   - Aprovar/rejeitar novas organizações diretamente daqui
+ * Ecrã principal: lista todas as organizações registadas, com atalhos para
+ * SuperAdminUsersActivity (gerir/aprovar qualquer utilizador) e
+ * SuperAdminGruposActivity (ver todos os grupos), independentemente de
+ * quem os administra.
  *
  * NOTA IMPORTANTE: os ecrãs existentes de organização (ex: ListaSociosOrgActivity,
  * OrgActivity) foram construídos a partir do princípio de que o utilizador
  * autenticado É o admin dessa organização específica (comparam o uid do
  * utilizador com o campo "admin" de cada grupo/organização). Não são
  * diretamente reutilizáveis para o SuperAdmin ver dados de OUTRAS
- * organizações sem alterações a essa lógica de comparação. Por isso os
- * botões "Ver todos os utilizadores" / "Ver todos os grupos" ainda não
- * navegam para esses ecrãs — fica assinalado como próximo passo no plano,
- * para não dar a entender uma funcionalidade que ainda não está pronta.
+ * organizações sem alterações a essa lógica de comparação — por isso os
+ * ecrãs de gestão do SuperAdmin são novos e próprios, não reutilizações.
  */
 class SuperAdminActivity : AppCompatActivity() {
 
@@ -62,19 +59,11 @@ class SuperAdminActivity : AppCompatActivity() {
         carregarOrganizacoes()
 
         binding.bTodosUtilizadoresSuperAdmin.setOnClickListener {
-            Toast.makeText(
-                this,
-                "Ainda em desenvolvimento — ver docs/PLANO_DESENVOLVIMENTO.md",
-                Toast.LENGTH_LONG
-            ).show()
+            startActivity(Intent(this, SuperAdminUsersActivity::class.java))
         }
 
         binding.bTodosGruposSuperAdmin.setOnClickListener {
-            Toast.makeText(
-                this,
-                "Ainda em desenvolvimento — ver docs/PLANO_DESENVOLVIMENTO.md",
-                Toast.LENGTH_LONG
-            ).show()
+            startActivity(Intent(this, SuperAdminGruposActivity::class.java))
         }
     }
 

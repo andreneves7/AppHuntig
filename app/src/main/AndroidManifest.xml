@@ -96,6 +96,12 @@
         <activity
             android:name=".SuperAdminActivity"
             android:screenOrientation="fullSensor" />
+        <activity
+            android:name=".SuperAdminUsersActivity"
+            android:screenOrientation="fullSensor" />
+        <activity
+            android:name=".SuperAdminGruposActivity"
+            android:screenOrientation="fullSensor" />
     </application>
 
 </manifest>
