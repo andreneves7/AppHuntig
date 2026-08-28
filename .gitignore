@@ -1,5 +1,11 @@
 *.iml
 .gradle
+
+# Ficheiros de configuração sensíveis (Firebase / chaves)
+app/google-services.json
+*.keystore
+*.jks
+local.properties
 /local.properties
 /.idea/caches
 /.idea/libraries
