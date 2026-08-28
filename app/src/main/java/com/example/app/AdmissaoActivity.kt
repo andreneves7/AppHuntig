@@ -39,6 +39,76 @@ class AdmissaoActivity : AppCompatActivity() {
     }
 
 
+    /**
+     * Aprovação em lote — aceita de uma vez todos os pedidos pendentes deste
+     * grupo, em vez de um a um. Pede confirmação primeiro (ação em massa,
+     * mais fácil de tocar sem querer do que uma aceitação individual).
+     */
+    private fun confirmarAceitarTodos() {
+        val numeroGrupo = intent.getStringExtra(EXTRA_MESSAGE) ?: return
+
+        mAuth.getReference("Grupos").child(numeroGrupo).child("Pendentes")
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val total = snapshot.childrenCount
+                    if (total == 0L) {
+                        Toast.makeText(
+                            this@AdmissaoActivity,
+                            "Não há pedidos pendentes.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        return
+                    }
+
+                    AlertDialog.Builder(this@AdmissaoActivity)
+                        .setTitle("Aceitar todos")
+                        .setMessage("Tens a certeza que queres aceitar todos os $total pedidos pendentes deste grupo de uma vez?")
+                        .setPositiveButton("Sim, aceitar todos") { _, _ ->
+                            aceitarTodos(numeroGrupo, snapshot)
+                        }
+                        .setNegativeButton("Cancelar", null)
+                        .show()
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.d("todo_fix", "erro Firebase: ${error.message}")
+                    this@AdmissaoActivity.mostrarErroLigacao()
+                }
+            })
+    }
+
+    private fun aceitarTodos(numeroGrupo: String, pendentesSnapshot: DataSnapshot) {
+        var aceites = 0
+        for (pendenteSnap in pendentesSnapshot.children) {
+            val uid = pendenteSnap.key ?: continue
+            val numSoc = pendenteSnap.child("numero socio").getValue(String::class.java)
+                ?: pendenteSnap.child("numero socio").getValue(Int::class.java)?.toString()
+                ?: continue
+
+            val updateMembros = HashMap<String, Any>()
+            updateMembros[numSoc] = uid
+            mAuth.getReference("Grupos").child(numeroGrupo).child("membros")
+                .updateChildren(updateMembros)
+
+            val updateUser = HashMap<String, Any>()
+            updateUser[numeroGrupo] = numSoc
+            mAuth.getReference("Users").child(uid).child("Grupos")
+                .updateChildren(updateUser)
+
+            mAuth.getReference("Grupos").child(numeroGrupo).child("Pendentes")
+                .child(uid).removeValue()
+
+            aceites++
+        }
+
+        Toast.makeText(this, "$aceites pedidos aceites.", Toast.LENGTH_LONG).show()
+        // recreate() em vez de chamar dados() outra vez — essa função anexa um
+        // ChildEventListener a "Grupos", e chamá-la de novo sem desanexar o
+        // anterior acumularia listeners duplicados (mesmo cuidado já usado no
+        // pull-to-refresh de HomeActivity).
+        recreate()
+    }
+
     private fun dados() {
         val user = auth.currentUser?.uid
         val num = intent.getStringExtra(EXTRA_MESSAGE)?.toInt()
@@ -395,11 +465,15 @@ class AdmissaoActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
-        inflater.inflate(R.menu.menu_direita_org, menu)
+        inflater.inflate(R.menu.menu_admissao, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.aceitarTodos) {
+            confirmarAceitarTodos()
+        }
+
         if (item.itemId == R.id.signOut2) {
             auth.signOut()
             val intent = Intent(this, LoginActivity::class.java)
