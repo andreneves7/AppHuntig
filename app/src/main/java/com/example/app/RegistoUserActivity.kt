@@ -24,7 +24,6 @@ class RegistoUserActivity : AppCompatActivity() {
 
     val auth = FirebaseAuth.getInstance()
 
-    //val mStorage = FirebaseStorage.getInstance().reference
     lateinit var gv: VariaveisGlobais
 
 

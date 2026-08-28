@@ -1,27 +1,21 @@
 package com.example.app
 
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
-import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.AlarmClock
-import android.provider.MediaStore
 import android.text.method.PasswordTransformationMethod
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.ImageView
 import android.widget.Toast
-import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.storage.FirebaseStorage
 import com.example.app.databinding.ActivityProfileBinding
 import com.example.app.databinding.CustomViewBinding
 import com.example.app.databinding.EmailCustomViewBinding
@@ -34,7 +28,6 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var binding: ActivityProfileBinding
     val Auth = FirebaseAuth.getInstance()
     val mAuth = FirebaseDatabase.getInstance();
-    val mStorage = FirebaseStorage.getInstance()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,12 +37,6 @@ class ProfileActivity : AppCompatActivity() {
 
         val editar = binding.bEdit
         val editarPass = binding.bEditPass
-
-
-
-       // verificarImagem()
-
-
 
         editarPass.setOnClickListener {
             showAlertPass()
@@ -61,62 +48,9 @@ class ProfileActivity : AppCompatActivity() {
 
         })
 
-//        bFotoAdd.setOnClickListener {
-//
-//            uploadImageToFirebaseStorage()
-//            verImagem()
-//
-//
-//
-//        }
-
-
-//        bAdd.setOnClickListener {
-//            Log.d("Profile", "Try to show photo selector")
-//            val intent = Intent(Intent.ACTION_PICK)
-//            intent.type = "image/*"
-//            startActivityForResult(intent, 0)
-//        }
-
         old()
 
     }
-//
-//    private fun verificarImagem() {
-//        val imageUser = Auth.currentUser?.uid.toString()
-//        consulta.get().addOnSuccessListener { task ->
-//            if (task != null) {
-//                Log.d("Profile", "imagem1: $imageUser")
-//
-//                val image = task.data?.get("Photo").toString()
-//                if (image != null) {
-//                    Log.d("Profile", "imagem2: $image")
-//                    //val m = mStorage.getReference(image)
-//                    //Log.d("Profile", "imagem3: $m")
-//                    val imageView = findViewById<ImageView>(R.id.imageViewUser)
-//                    Glide.with(this/*context*/).load(image).into(imageView)
-//                }
-//            }
-//        }
-//    }
-
-
-//    private fun verImagem() {
-//        val imageUser = Auth.currentUser?.uid.toString()
-//
-//        consulta.get().addOnSuccessListener { task ->
-//            if (task != null) {
-//                Log.d("Profile", "imagem1: $imageUser")
-//
-//                val image = task.data?.get("Photo").toString()
-//                Log.d("Profile", "imagem2: $image")
-//                //val m = mStorage.getReference(image)
-//                //Log.d("Profile", "imagem3: $m")
-//                val imageView = findViewById<ImageView>(R.id.imageViewUser)
-//                Glide.with(this/*context*/).load(image).into(imageView)
-//            }
-//        }
-//    }
 
     private fun old() {
         val show = binding.textView
@@ -324,57 +258,6 @@ class ProfileActivity : AppCompatActivity() {
         val dialog = alertDialog.create()
         dialog.show()
     }
-
-
-   // var selectedPhotoUri: Uri? = null
-
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//
-//        if (requestCode == 0 && resultCode == Activity.RESULT_OK && data != null) {
-//            Log.d("Profile", "Photo was selected")
-//
-//            selectedPhotoUri = data.data
-//
-//            val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, selectedPhotoUri)
-//
-//            vImg.setImageBitmap(bitmap)
-//
-//            bAdd.alpha = 0f
-//
-//        }
-//    }
-
-//    private fun uploadImageToFirebaseStorage() {
-//        if (selectedPhotoUri == null) return
-//
-//        val filename = UUID.randomUUID().toString()
-//        val ref = mStorage.getReference("/images/$filename")
-//        val user = Auth.currentUser
-//
-//
-//
-//        ref.putFile(selectedPhotoUri!!)
-//            .addOnSuccessListener {
-//                Log.d("Profile", "Successfully upload image: ${it.metadata?.path}")
-//
-//                ref.downloadUrl.addOnSuccessListener {
-//                    Log.d("Profile", "File localition: $it")
-//
-//                    val p = it.toString()
-//
-//                    if (user != null) {
-//                        val pessoa = HashMap<String, Any>()
-//                        pessoa["Photo"] = p
-//                        Toast.makeText(this, "Imagem guardada", Toast.LENGTH_LONG).show()
-//                        verImagem()
-//                    }
-//
-//                }
-//
-//            }
-//
-//    }
 
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
