@@ -45,7 +45,7 @@ Aqui tens de criar uma **segunda chave** (repete os passos acima) restringida co
 
 **Porquê:** sem isto, qualquer pessoa com a app instalada consegue ler/escrever a tua base de dados inteira.
 
-> ⚠️ Se já tinhas aplicado uma versão anterior destas regras, o ficheiro foi atualizado mais uma vez (agora também valida o *formato* dos dados — nome e formato do evento obrigatórios, valores de `role` restritos aos 3 válidos) — volta a copiar e publicar a versão mais recente.
+> ⚠️ Se já tinhas aplicado uma versão anterior destas regras, o ficheiro foi atualizado outra vez — desta vez uma mudança importante: `Eventos` foi separado em `EventosPublicos`/`EventosPrivados`, para corrigir um problema real de privacidade (eventos privados eram legíveis por qualquer conta autenticada que soubesse o nome exato — ver `docs/PLANO_DESENVOLVIMENTO.md` secção 9). **Publicar a versão mais recente é importante desta vez, não só uma otimização.**
 
 **Passos:**
 1. Firebase Console → o teu projeto → **Realtime Database** → separador **Regras**

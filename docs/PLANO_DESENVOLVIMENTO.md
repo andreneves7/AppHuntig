@@ -265,4 +265,29 @@ Como não existe fluxo de registo para organizações nem superadmin dentro da a
 
 ---
 
+## 9. Separação de Eventos por privacidade — problema de segurança real, resolvido
+
+**Como surgiu:** ao planear a funcionalidade "partilhar um evento", percebi que precisava de perceber o que aconteceria ao partilhar um evento privado. Isso levou a investigar as regras de segurança, e a encontrar um problema real, não relacionado com a partilha em si.
+
+**O problema:** as regras de segurança do Firebase Realtime Database não conseguem filtrar *listas* — só decidem se um pedido passa ou não, por inteiro (documentado oficialmente pela Google). A app tem pesquisas que percorrem todos os eventos públicos da plataforma (`HomeActivity`, `EventosProximosActivity`), o que exige uma regra de leitura ampla sobre o nó `Eventos` inteiro. Essa mesma permissão aplicava-se também a leituras diretas de um evento específico — **incluindo os privados**. Qualquer conta autenticada já conseguia ler os detalhes completos de qualquer evento privado, bastando saber o nome exato — o campo `"Forma"` só controlava o que aparecia nas *listas*, nunca restringiu o acesso direto aos dados.
+
+**A solução:** separar num único nó `Eventos` para dois:
+- `EventosPublicos/{nome}` — leitura ampla, como antes
+- `EventosPrivados/{numeroGrupo}/{nome}` — leitura só para quem pertence a esse grupo (`Users/{uid}/Grupos/{numeroGrupo}.exists()`); escrita só para o admin desse grupo específico (antes, qualquer conta "organização" podia escrever em qualquer evento, mesmo de grupos que não administrava — também apertado)
+
+**Escala do trabalho:** tocou os 7 ficheiros que acediam a eventos (`MapsActivity`, `DetalhesEventoActivity`, `EventosProximosActivity`, `MeusEventosActivity`, `GrupoActivity`, `CriarOrgEventoActivity`, `HomeActivity`) e as regras do Firebase. `HomeActivity` (o mais complexo e frágil) foi alterado com o mínimo de mudança possível — só as referências ao nó do Firebase, sem tocar na lógica de filtragem por data/tipo já existente.
+
+**Efeito colateral positivo:** `GrupoActivity` e `CriarOrgEventoActivity` tinham um padrão muito ineficiente (percorrer *todos* os eventos da plataforma, reler cada um individualmente para verificar se pertencia ao grupo certo) — a migração obrigou a uma reescrita que também resolveu isso, agora são leituras diretas.
+
+**Um evento público continua ligado ao grupo que o criou** (o campo `numeroGrupo` é gravado sempre, independentemente de ser público ou privado) — por isso alguns ecrãs (`GrupoActivity`, `CriarOrgEventoActivity`) consultam os dois nós em paralelo para mostrar todos os eventos de um grupo.
+
+**QR code de check-in:** passou a codificar tipo + grupo + nome (antes só o nome), para quem lê o código saber onde procurar o evento.
+
+### ⚠️ Ação necessária da tua parte
+Confirmaste que os eventos que já tens são só de teste (mesma situação da migração de `Grupos`). Como os eventos só são criados através da própria app (ao contrário de `Grupos`, não há criação manual na consola), não precisas de fazer nada manualmente — os eventos de teste antigos (guardados no nó `Eventos`, que deixou de ser usado) ficam simplesmente órfãos e podes apagá-los na Firebase Console se quiseres limpar, mas a app já não os vai ler. Os próximos eventos que criares através da app vão automaticamente para o nó certo.
+
+**Voltar a publicar as regras** — como sempre que o `database.rules.json` muda, ver `docs/ACOES_MANUAIS.md` ponto 2️⃣.
+
+---
+
 *Última atualização: gerado automaticamente pela sessão de trabalho com Claude.*
