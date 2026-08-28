@@ -45,6 +45,67 @@ class LoginActivity : AppCompatActivity() {
         loginOrg.setOnClickListener(View.OnClickListener { view ->
             loginOrg()
         })
+
+        binding.tEsqueciPassword.setOnClickListener {
+            recuperarPassword()
+        }
+    }
+
+    /**
+     * Envia um email de recuperação de password através do Firebase Auth.
+     * Documentação oficial: https://firebase.google.com/docs/auth/android/manage-users#send_a_password_reset_email
+     */
+    private fun recuperarPassword() {
+        val emailInput = android.widget.EditText(this)
+        emailInput.hint = "Email"
+        emailInput.inputType = android.text.InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
+        // Pré-preenche com o que já estiver escrito no campo de email do login, se houver.
+        emailInput.setText(binding.idEmail.text.toString())
+
+        val padding = (16 * resources.displayMetrics.density).toInt()
+        val container = android.widget.FrameLayout(this)
+        val params = android.widget.FrameLayout.LayoutParams(
+            android.widget.FrameLayout.LayoutParams.MATCH_PARENT,
+            android.widget.FrameLayout.LayoutParams.WRAP_CONTENT
+        )
+        params.leftMargin = padding
+        params.rightMargin = padding
+        emailInput.layoutParams = params
+        container.addView(emailInput)
+
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("Recuperar password")
+            .setMessage("Introduz o teu email. Vamos enviar-te um link para definires uma password nova.")
+            .setView(container)
+            .setCancelable(true)
+            .setNegativeButton("Cancelar") { dialog, _ -> dialog.dismiss() }
+            .setPositiveButton("Enviar") { _, _ ->
+                val email = emailInput.text.toString().trim()
+                if (email.isEmpty()) {
+                    Toast.makeText(this, "Introduz o teu email", Toast.LENGTH_SHORT).show()
+                    return@setPositiveButton
+                }
+                Auth.sendPasswordResetEmail(email).addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Toast.makeText(
+                            this,
+                            "Email enviado. Verifica a tua caixa de entrada.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    } else {
+                        // Nota: por segurança, o Firebase às vezes não distingue "email não existe"
+                        // de outros erros. Mostramos uma mensagem genérica em vez de confirmar/negar
+                        // se o email está registado, para não revelar essa informação a terceiros.
+                        Log.d("Login", "erro ao enviar reset de password: ${task.exception?.message}")
+                        Toast.makeText(
+                            this,
+                            "Não foi possível enviar o email. Verifica se está correto e tenta novamente.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+            }
+            .show()
     }
 
     fun loginOrg() {
