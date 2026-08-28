@@ -136,7 +136,24 @@ Todos os 17 ficheiros `.kt` que usavam `kotlinx.android.synthetic` (incluindo os
 - [x] Paginação de listas — implementada para a lista principal de eventos (`HomeActivity`), ver nota abaixo. As restantes listas (grupos, sócios) continuam sem paginação — ficam para uma iteração futura se o volume de dados justificar.
 - [x] Extrair strings hardcoded para `strings.xml` — feito de forma faseada e verificada (ver nota abaixo). 51 strings de layouts XML + 36 strings de `Toast.makeText()` no código Kotlin.
 - [x] 17 dos 21 layouts com larguras fixas em dp — 5 corrigidos com critério mais rigoroso nesta ronda (só `ListView`/`fragment`/`TextView` com Start+End já presentes e sem `bias` deliberado). Os restantes ficam deliberadamente por mexer — ver nota abaixo.
-- [ ] Alinhar as chaves de `Grupos` (nome → número)
+- [x] Alinhar as chaves de `Grupos` (nome → número) — feito, ver detalhes abaixo
+
+### Alinhar as chaves de `Grupos` — o que foi feito
+`Grupos` estava indexado pelo **nome** do grupo; `Users/{uid}/Grupos` sempre esteve indexado pelo **número**. Isto obrigava a maior parte dos ecrãs a percorrer todos os grupos e comparar campos no cliente, em vez de irem diretamente ao sítio certo — e impedia regras de segurança e queries mais precisas (ver limitações já documentadas nas secções de segurança e paginação).
+
+**Mudança:** `Grupos` passa a ser indexado pelo **número** do grupo, tal como `Users/{uid}/Grupos` já era. Os dois ficam consistentes.
+
+**Ficheiros alterados** (7): `ListaGruposActivity`, `PreferenciasActivity` — adicionada uma lista paralela de números ao lado da lista de nomes (a lista continua a *mostrar* nomes ao utilizador, só a chave interna de acesso ao Firebase mudou). `OrgActivity`, `AdmissaoActivity`, `HomeActivity`, `VerGrupoActivity` — o número já estava disponível no `dataSnapshot` recebido, só passou a ser usado como chave em vez do nome. `AdesaoActivity` — **não precisou de nenhuma alteração**, já estava bem desenhado (trata o identificador recebido como uma chave opaca, sem assumir que era o nome).
+
+**Não precisaram de alteração:** `GrupoActivity` e `CriarOrgEventoActivity` já trabalhavam só com o número. `ListaSociosOrgActivity` e `SuperAdminGruposActivity` não fazem lookups por chave específica (só leem os dados já disponíveis do scan).
+
+**Porque é seguro usar `.child(numero)` sem o problema de tipo que referi na secção de paginação:** ali, o risco era usar `orderByChild("Numero").equalTo(...)` — uma *query* que exige o tipo exato (número vs texto) da forma como o campo foi gravado. Aqui é diferente: `.child(numero)` usa o número só como **chave** do Firebase, e chaves no Realtime Database são **sempre texto**, independentemente de como o campo "Numero" foi originalmente escrito — não há ambiguidade de tipo possível numa chave.
+
+### ⚠️ Ação necessária da tua parte
+Como confirmaste, os grupos que já tens são só de teste. Como `Grupos` continua a ser criado manualmente na consola (nenhum código da app cria grupos), precisas de:
+1. Apagar os grupos de teste antigos (indexados por nome) no Firebase Console
+2. Recriá-los com a **chave a ser o número do grupo** (ex: em vez do nó se chamar `"Grupo dos Amigos"`, deve chamar-se `"5"` — o número, escrito como está, o Firebase trata sempre a chave como texto) — os campos lá dentro (`nome`, `Numero`, `admin`, `membros`, `Pendentes`) continuam exatamente iguais
+3. Confirma que `Users/{uid}/Grupos/{numero}` (a lista de grupos de cada sócio) usa esse mesmo número como referência — já devia estar assim, não muda nada aí
 
 ## 7. Prova de conceito: migração Activity → Fragment (Navigation Component)
 

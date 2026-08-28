@@ -290,7 +290,7 @@ class AdmissaoActivity : AppCompatActivity() {
         alertDialog.setPositiveButton("Aceitar") { _, _ ->
 
 
-            mAuth.getReference("Grupos").child(nomeGrupo).addListenerForSingleValueEvent(
+            mAuth.getReference("Grupos").child(numeroGrupo).addListenerForSingleValueEvent(
                 object : ValueEventListener {
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
 
@@ -349,7 +349,7 @@ class AdmissaoActivity : AppCompatActivity() {
                         updateUser[numeroGrupo] = numSoc
 
                         //adiciona ao grupo nos membros se ele for aceite
-                        mAuth.getReference("Grupos").child(nomeGrupo).child("membros")
+                        mAuth.getReference("Grupos").child(numeroGrupo).child("membros")
                             .updateChildren(update)
 
                         //adiciona no utilizador o a secçao dos grupos o seu numero de socio se ele for aceite
@@ -357,7 +357,7 @@ class AdmissaoActivity : AppCompatActivity() {
                             .updateChildren(updateUser)
 
                         //remove o utilizador da lista de pendetes
-                        mAuth.getReference("Grupos").child(nomeGrupo).child("Pendentes")
+                        mAuth.getReference("Grupos").child(numeroGrupo).child("Pendentes")
                             .child(uid)
                             .removeValue()
 

@@ -70,6 +70,11 @@ class PreferenciasActivity : AppCompatActivity() {
 
         var d = mAuth.getReference("Grupos")
         var list = ArrayList<String>()
+        // MIGRAÇÃO: Grupos passou a ser indexado por "Numero" em vez do nome
+        // (ver docs/PLANO_DESENVOLVIMENTO.md). "list" continua a mostrar o
+        // nome; esta lista paralela guarda o número de cada grupo, na mesma
+        // posição, para usar como chave real do Firebase.
+        var listNumeros = ArrayList<String>()
 
         val c = object : ChildEventListener {
             override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
@@ -78,9 +83,11 @@ class PreferenciasActivity : AppCompatActivity() {
                 val grupo = dataSnapshot.getValue()
 
                 val g = dataSnapshot.child("nome").getValue().toString()
+                val numero = dataSnapshot.child("Numero").getValue().toString()
                 list.add(
                     "${g}"
                 )
+                listNumeros.add(numero)
 
                 Log.d(
                     "Preferencias",
@@ -109,11 +116,10 @@ class PreferenciasActivity : AppCompatActivity() {
                             id: Long
                         ) {
 
-                            val itemValue = listView.getItemAtPosition(position)
-                            val message = itemValue as String
-                            Log.d("Preferencias", "mensagem: $message" + "item: $itemValue ")
+                            val message = listNumeros[position]
+                            Log.d("Preferencias", "numero: $message" + "posicao: $position ")
 
-                            var b = mAuth.getReference("Grupos").child(itemValue.toString())
+                            var b = mAuth.getReference("Grupos").child(message)
 
                             b.addValueEventListener(object : ValueEventListener {
                                 override fun onDataChange(snapshot: DataSnapshot) {

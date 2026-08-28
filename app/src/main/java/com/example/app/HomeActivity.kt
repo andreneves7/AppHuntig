@@ -280,6 +280,9 @@ class HomeActivity : AppCompatActivity() {
                     val uid = Auth.currentUser?.uid
 
                     val g = dataSnapshot.child("nome").getValue().toString()
+                    // MIGRAÇÃO: Grupos passou a ser indexado por "Numero" em vez
+                    // do nome (ver docs/PLANO_DESENVOLVIMENTO.md).
+                    val numero = dataSnapshot.child("Numero").getValue().toString()
                     Log.d(
                         "home75",
                         "g : ${
@@ -296,10 +299,10 @@ class HomeActivity : AppCompatActivity() {
                         }"
                     )
 
-                    val m = mAuth.getReference("Grupos").child(g)
+                    val m = mAuth.getReference("Grupos").child(numero)
 
 
-                    val t = mAuth.getReference("Grupos").child(g).child("membros")
+                    val t = mAuth.getReference("Grupos").child(numero).child("membros")
 
                     Log.d(
                         "home75",

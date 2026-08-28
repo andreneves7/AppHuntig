@@ -42,23 +42,23 @@ class ListaGruposActivity : AppCompatActivity() {
         // plataforma vier a ter centenas de grupos.
         val gruposMemebro = mAuth.getReference("Grupos").limitToFirst(300)
         val list = ArrayList<String>()
+        // MIGRAÇÃO: Grupos passou a ser indexado por "Numero" em vez do nome
+        // (ver docs/PLANO_DESENVOLVIMENTO.md). A lista continua a MOSTRAR o
+        // nome (é o que faz sentido para o utilizador ler), mas guarda em
+        // paralelo o número de cada grupo, na mesma posição/ordem, para usar
+        // como chave real do Firebase e no Intent para AdesaoActivity.
+        val listNumeros = ArrayList<String>()
 
         val membro = object : ChildEventListener {
             override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
 
                 binding.progressListaGrupos.isVisible = false
 
-                //val grupo = dataSnapshot.getValue()
-
                 val g = dataSnapshot.child("nome").value.toString()
-                list.add(
-                    g
-                )
+                val numero = dataSnapshot.child("Numero").value.toString()
+                list.add(g)
+                listNumeros.add(numero)
 
-//                Log.d(
-//                    "ListaGruposActivity",
-//                    " pref $grupo"
-//                )
                 Log.d(
                     "ListaGruposActivity",
                     " pref $g"
@@ -73,11 +73,10 @@ class ListaGruposActivity : AppCompatActivity() {
 
                 listView.onItemClickListener =
                     AdapterView.OnItemClickListener { _, view, position, _ ->
-                        val itemValue = listView.getItemAtPosition(position)
-                        val message = itemValue as String
-                        Log.d("ListaGruposActivity", "mensagem: $message" + "item: $itemValue ")
+                        val message = listNumeros[position]
+                        Log.d("ListaGruposActivity", "numero: $message" + "posicao: $position ")
 
-                        val b = mAuth.getReference("Grupos").child(itemValue.toString())
+                        val b = mAuth.getReference("Grupos").child(message)
 
                         b.addValueEventListener(object : ValueEventListener {
                             override fun onDataChange(snapshot: DataSnapshot) {

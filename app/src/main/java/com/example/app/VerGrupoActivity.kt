@@ -43,6 +43,12 @@ class VerGrupoActivity : AppCompatActivity() {
 
             val values = ArrayList<String>()
             val valor = ArrayList<String>()
+            // MIGRAÇÃO: Grupos passou a ser indexado por "Numero" em vez do
+            // nome (ver docs/PLANO_DESENVOLVIMENTO.md). "valor" continua a
+            // guardar o nome (mostrado na lista ao utilizador); esta lista
+            // paralela guarda o número de cada grupo, na mesma posição, para
+            // usar como chave real do Firebase quando um item é clicado.
+            val valorNumeros = ArrayList<String>()
 
             val m = object : ChildEventListener {
                 override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
@@ -50,6 +56,7 @@ class VerGrupoActivity : AppCompatActivity() {
                     binding.progressVerGrupo.isVisible = false
 
                     val g = dataSnapshot.child("nome").value.toString()
+                    val numero = dataSnapshot.child("Numero").value.toString()
 
                     Log.d(
                         "VerGrupo2",
@@ -58,14 +65,14 @@ class VerGrupoActivity : AppCompatActivity() {
 
                     values.add(g)
 
-                    val m = mAuth.getReference("Grupos").child(g)
+                    val m = mAuth.getReference("Grupos").child(numero)
 
                     Log.d(
                         "VerGrupo2",
                         " $m"
                     )
 
-                    val t = mAuth.getReference("Grupos").child(g).child("membros")
+                    val t = mAuth.getReference("Grupos").child(numero).child("membros")
 
 
                     val f = object : ChildEventListener {
@@ -110,6 +117,7 @@ class VerGrupoActivity : AppCompatActivity() {
                                         gv = application as VariaveisGlobais
 
                                         valor.add(g)
+                                        valorNumeros.add(numero)
                                         val adapter =
                                             ArrayAdapter(this@VerGrupoActivity, R.layout.listview_item, valor)
 
@@ -119,8 +127,7 @@ class VerGrupoActivity : AppCompatActivity() {
 
                                         list.onItemClickListener =
                                             AdapterView.OnItemClickListener { _, view, position, _ ->
-                                                val itemValue =
-                                                    list.getItemAtPosition(position) as String
+                                                val itemValue = valorNumeros[position]
                                                 mAuth.getReference("Grupos").child(itemValue).addValueEventListener(object : ValueEventListener {
                                                     override fun onDataChange(snapshot: DataSnapshot) {
                                                         val num =

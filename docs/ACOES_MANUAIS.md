@@ -117,6 +117,18 @@ keytool -list -v -keystore apphuntig-release.jks -alias apphuntig
 
 ---
 
+## 6️⃣ Recriar os grupos de teste com a nova chave
+
+**Porquê:** `Grupos` passou a ser indexado pelo número do grupo em vez do nome (ver `docs/PLANO_DESENVOLVIMENTO.md`, secção "Alinhar as chaves de Grupos"). Confirmaste que os grupos que tens hoje são só de teste — por isso a via mais simples é apagar e recriar, em vez de migrar dados.
+
+**Passos:**
+1. Firebase Console → Realtime Database → localiza o nó `Grupos`
+2. Apaga os grupos de teste que lá tiveres
+3. Recria-os, mas desta vez com a **chave do nó a ser o número do grupo** (ex: o nó chama-se `5`, não `"Grupo dos Amigos"`) — os campos dentro (`nome`, `Numero`, `admin`, `membros`, `Pendentes`) mantêm-se exatamente como antes
+4. Confirma que os campos `Users/{uid}/Grupos/{numero}` de cada sócio de teste continuam a corresponder ao mesmo número
+
+---
+
 ## Depois de tudo isto feito
 
 Segue para o `docs/RELEASE_CHECKLIST.md` secção 3 (compilar e testar) — essa parte já não depende de mais nenhuma chave ou consola, só de correres o build no Android Studio.

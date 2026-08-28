@@ -58,6 +58,9 @@ class OrgActivity : AppCompatActivity() {
 
                     val g = dataSnapshot.child("nome").getValue().toString()
                     val admin = dataSnapshot.child("admin").getValue().toString()
+                    // MIGRAÇÃO: Grupos passou a ser indexado por "Numero" em vez
+                    // do nome (ver docs/PLANO_DESENVOLVIMENTO.md).
+                    val numero = dataSnapshot.child("Numero").getValue().toString()
 
                     Log.d(
                         "VerGrupo2",
@@ -66,14 +69,14 @@ class OrgActivity : AppCompatActivity() {
 
                     values.add(g)
 
-                    val m = mAuth.getReference("Grupos").child(g)
+                    val m = mAuth.getReference("Grupos").child(numero)
 
                     Log.d(
                         "VerGrupo2",
                         " ${m}"
                     )
 
-                    val t = mAuth.getReference("Grupos").child(g)
+                    val t = mAuth.getReference("Grupos").child(numero)
                     if (admin == user) {
 
                         m.addValueEventListener(object : ValueEventListener {
