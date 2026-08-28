@@ -67,6 +67,24 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback {
         binding = ActivityDetalhesEventoBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Se este ecrã foi aberto a partir de um link de partilha
+        // (apphuntig://evento?...), interpreta os parâmetros e preenche
+        // gv.detalhes/detalhesPrivado/detalhesNumeroGrupo aqui — nos outros
+        // casos (navegação normal a partir de outro ecrã da app), estes já
+        // vêm preenchidos por quem chamou startActivity, e intent.data é nulo.
+        val dadosLink = intent.data
+        if (dadosLink != null) {
+            val nome = dadosLink.getQueryParameter("nome")
+            if (nome.isNullOrEmpty()) {
+                Toast.makeText(this, "Link de evento inválido.", Toast.LENGTH_LONG).show()
+                finish()
+                return
+            }
+            gv.detalhes = nome
+            gv.detalhesPrivado = dadosLink.getQueryParameter("privado") == "true"
+            gv.detalhesNumeroGrupo = dadosLink.getQueryParameter("grupo") ?: ""
+        }
+
         val showDetalhe = binding.tShowDetalhes
         val marcar = binding.bPresença
 
@@ -455,6 +473,53 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback {
         startActivity(Intent.createChooser(intent, "Partilhar lista de participantes"))
     }
 
+    /**
+     * Partilha o evento — mensagem de texto com os detalhes (para quem não
+     * tem a app), seguida de um link clicável (para quem já tem — abre
+     * diretamente aqui, respeitando as mesmas regras de privacidade de
+     * sempre, verificadas no Firebase).
+     *
+     * O link usa um esquema próprio da app (apphuntig://evento?...), que só
+     * funciona em telemóveis que já têm a app instalada — ver
+     * docs/PLANO_DESENVOLVIMENTO.md secção 10 para o caminho de evolução
+     * para um link https:// verdadeiro (também funciona sem a app
+     * instalada, leva à Play Store), que precisa de um domínio próprio e
+     * fica documentado para mais tarde.
+     */
+    private fun partilharEvento() {
+        val nomeEvento = gv.detalhes
+        if (nomeEvento.isEmpty()) {
+            Toast.makeText(this, "Evento ainda não identificado.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val uriBuilder = android.net.Uri.Builder()
+            .scheme("apphuntig")
+            .authority("evento")
+            .appendQueryParameter("nome", nomeEvento)
+            .appendQueryParameter("privado", gv.detalhesPrivado.toString())
+        if (gv.detalhesPrivado) {
+            uriBuilder.appendQueryParameter("grupo", gv.detalhesNumeroGrupo)
+        }
+        val link = uriBuilder.build().toString()
+
+        val dataTexto = if (eventoDia != null && eventoMes != null && eventoAno != null) {
+            "\nData: $eventoDia/$eventoMes/$eventoAno"
+        } else {
+            ""
+        }
+
+        val texto = "Vem a este evento: $nomeEvento$dataTexto\n\n" +
+            "Se já tens a HuntingEvent instalada, abre diretamente aqui:\n$link"
+
+        val intent = Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            putExtra(Intent.EXTRA_SUBJECT, "Convite: $nomeEvento")
+            putExtra(Intent.EXTRA_TEXT, texto)
+        }
+        startActivity(Intent.createChooser(intent, "Partilhar evento"))
+    }
+
     private fun mostrarQRCode() {
         val nomeEvento = gv.detalhes
         if (nomeEvento.isEmpty()) {
@@ -519,6 +584,10 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback {
 
         if (item.itemId == R.id.exportarParticipantes) {
             exportarParticipantes()
+        }
+
+        if (item.itemId == R.id.partilharEvento) {
+            partilharEvento()
         }
 
         if (item.itemId == R.id.adicionarCalendario) {

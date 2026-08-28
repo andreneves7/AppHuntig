@@ -290,4 +290,34 @@ Confirmaste que os eventos que já tens são só de teste (mesma situação da m
 
 ---
 
+## 10. Partilhar evento — link "Tipo 2" feito, caminho para "Tipo 1" documentado
+
+**O que existe agora:** `DetalhesEventoActivity` tem uma opção "Partilhar evento" que monta uma mensagem de texto (nome, data) seguida de um link `apphuntig://evento?nome=...&privado=...&grupo=...`. Ao tocar nesse link, **num telemóvel que já tem a app instalada**, abre diretamente nos detalhes do evento certo — respeitando as mesmas regras de privacidade de sempre (se a pessoa não pertencer ao grupo de um evento privado, o Firebase recusa o pedido, tal como aconteceria a navegar até lá manualmente).
+
+**A limitação atual, deliberada:** este é um link "Tipo 2" — um esquema próprio da app (`apphuntig://`), sem verificação de domínio. Não funciona para quem **ainda não tem** a app instalada (o link simplesmente não reage, não leva à Play Store nem mostra nada). A alternativa ("Tipo 1", um link `https://` normal que funciona sempre e leva à Play Store se a app não estiver instalada) precisa de um domínio próprio, verificado — infraestrutura externa que não posso configurar a partir daqui, é preciso decidires um domínio, comprá-lo, e publicares um ficheiro nele.
+
+### Como evoluir para o Tipo 1 mais tarde (passo a passo)
+
+1. **Decide e regista um domínio** para o projeto (ex: `huntingevent.pt`, `apphuntig.com` — o que preferires)
+2. **Publica um ficheiro de verificação** em `https://TEU_DOMINIO/.well-known/assetlinks.json`, com este conteúdo (substitui `TEU_DOMINIO` e o `SHA256_DA_TUA_CHAVE_DE_ASSINATURA` — este último obténs com `keytool -list -v -keystore apphuntig-release.jks`, depois de criares a keystore do ponto 5️⃣ de `docs/ACOES_MANUAIS.md`):
+
+```json
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.company.HuntigEvents",
+    "sha256_cert_fingerprints": ["SHA256_DA_TUA_CHAVE_DE_ASSINATURA"]
+  }
+}]
+```
+
+3. **Muda o intent-filter** em `AndroidManifest.xml` (a mesma entrada de `DetalhesEventoActivity` que já existe para o Tipo 2) para usar `android:scheme="https"` e `android:host="TEU_DOMINIO"` em vez de `apphuntig://evento`, e acrescenta `android:autoVerify="true"` ao `<intent-filter>` — isto é o que diz ao Android para verificar o `assetlinks.json` automaticamente
+4. **Atualiza `partilharEvento()`** em `DetalhesEventoActivity.kt` para construir `https://TEU_DOMINIO/evento?...` em vez de `apphuntig://evento?...`
+5. **Testa num dispositivo real** — a verificação de App Links não funciona sempre corretamente em emuladores
+
+Documentação oficial: https://developer.android.com/training/app-links/verify-android-applinks
+
+---
+
 *Última atualização: gerado automaticamente pela sessão de trabalho com Claude.*

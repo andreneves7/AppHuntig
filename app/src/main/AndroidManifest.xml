@@ -76,7 +76,22 @@
             android:screenOrientation="fullSensor" />
         <activity
             android:name=".DetalhesEventoActivity"
-            android:screenOrientation="fullSensor" />
+            android:exported="true"
+            android:screenOrientation="fullSensor">
+            <!-- Link de partilha de evento (Tipo 2 — esquema próprio da app,
+                 sem verificação de domínio: só funciona em telemóveis que já
+                 têm a app instalada. Ver docs/PLANO_DESENVOLVIMENTO.md secção
+                 10 para o caminho de evolução para um verdadeiro App Link
+                 https:// (Tipo 1), que também funciona para quem ainda não
+                 tem a app instalada — precisa de um domínio próprio, por
+                 isso fica documentado para mais tarde, não feito agora. -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="apphuntig" android:host="evento" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".VerGrupoActivity"
             android:screenOrientation="fullSensor" /> <!-- <activity -->
