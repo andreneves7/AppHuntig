@@ -32,6 +32,13 @@ class OrgActivity : AppCompatActivity() {
         pedirPermissaoNotificacoes()
         HuntigMessagingService.guardarTokenAtualNoFirebase()
 
+        // recreate() em vez de reconstruir a lógica de carregamento — mesmo
+        // cuidado já aplicado em HomeActivity/AdmissaoActivity, evita
+        // duplicar o ChildEventListener já anexado.
+        binding.swipeRefreshOrg.setOnRefreshListener {
+            recreate()
+        }
+
         val semGrupos = binding.tNaoGrupos2
         val list = binding.ListView3
 

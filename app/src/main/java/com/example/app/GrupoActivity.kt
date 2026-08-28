@@ -93,6 +93,9 @@ class GrupoActivity : AppCompatActivity() {
 
         semEventos.isInvisible = true
 
+        binding.swipeRefreshGrupo.setOnRefreshListener {
+            recreate()
+        }
 
         busca()
 

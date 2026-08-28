@@ -37,6 +37,10 @@ class VerGrupoActivity : AppCompatActivity() {
         binding.progressVerGrupo.isVisible = true
         binding.progressVerGrupo.postDelayed({ binding.progressVerGrupo.isVisible = false }, 5000)
 
+        binding.swipeRefreshVerGrupo.setOnRefreshListener {
+            recreate()
+        }
+
         val user = auth.currentUser?.uid
         if (user != null) {
             val mail = mAuth.getReference("Grupos")
