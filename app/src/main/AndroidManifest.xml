@@ -12,6 +12,14 @@
          — antes disso não existia, o pedido é ignorado em versões anteriores.
          Documentação oficial: https://developer.android.com/develop/ui/views/notifications/notification-permission -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Necessária para ler QR codes de check-in (zxing-android-embedded).
+         A biblioteca trata do pedido em tempo de execução sozinha através do
+         seu próprio ecrã de câmara (CaptureActivity), mas a permissão tem de
+         estar declarada aqui de qualquer forma. -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
     <!-- REMOVIDO: WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE e STORAGE não são
          usadas por nenhum código ativo (só pela funcionalidade de foto de perfil,
          que está desativada/comentada em ProfileActivity.kt). Pedir permissões que a

@@ -345,8 +345,66 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback {
         return true
     }
 
+    /**
+     * Gera e mostra um QR code que codifica o nome do evento (a mesma chave
+     * usada em Eventos/{nome} no Firebase — Eventos não foi migrado para
+     * chave numérica, ao contrário de Grupos, ver
+     * docs/PLANO_DESENVOLVIMENTO.md). Um caçador que leia este código com
+     * "Check-in por QR Code" (menu principal) é levado diretamente para
+     * este ecrã, já pronto para marcar presença.
+     */
+    private fun mostrarQRCode() {
+        val nomeEvento = gv.detalhes
+        if (nomeEvento.isEmpty()) {
+            Toast.makeText(this, "Evento ainda não identificado.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val tamanho = (250 * resources.displayMetrics.density).toInt()
+        val bitmap: android.graphics.Bitmap
+        try {
+            val writer = com.google.zxing.qrcode.QRCodeWriter()
+            val matrizBits = writer.encode(
+                nomeEvento,
+                com.google.zxing.BarcodeFormat.QR_CODE,
+                tamanho,
+                tamanho
+            )
+            bitmap = android.graphics.Bitmap.createBitmap(
+                tamanho, tamanho, android.graphics.Bitmap.Config.RGB_565
+            )
+            for (x in 0 until tamanho) {
+                for (y in 0 until tamanho) {
+                    bitmap.setPixel(
+                        x, y,
+                        if (matrizBits[x, y]) android.graphics.Color.BLACK else android.graphics.Color.WHITE
+                    )
+                }
+            }
+        } catch (e: Exception) {
+            Log.d("QRCode", "erro ao gerar QR code: ${e.message}")
+            Toast.makeText(this, "Não foi possível gerar o QR code.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val imageView = android.widget.ImageView(this)
+        imageView.setImageBitmap(bitmap)
+        imageView.setPadding(32, 32, 32, 32)
+
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("QR Code de check-in")
+            .setMessage(nomeEvento)
+            .setView(imageView)
+            .setPositiveButton("Fechar", null)
+            .show()
+    }
+
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item!!.itemId == R.id.adicionarCalendario) {
+        if (item!!.itemId == R.id.mostrarQRCode) {
+            mostrarQRCode()
+        }
+
+        if (item.itemId == R.id.adicionarCalendario) {
             adicionarAoCalendario()
         }
 

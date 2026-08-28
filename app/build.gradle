@@ -116,6 +116,14 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment-ktx:2.7.5'
     implementation 'androidx.navigation:navigation-ui-ktx:2.7.5'
 
+    // QR code: geração (core) e leitura (embedded, fornece um ecrã de câmara
+    // pronto a usar via IntentIntegrator, sem precisar de configurar CameraX
+    // manualmente). Bibliotecas amplamente usadas e estáveis, mas — tal como
+    // tudo o resto nesta sessão — nunca compiladas neste ambiente; testar
+    // com atenção redobrada por serem dependências completamente novas.
+    implementation 'com.google.zxing:core:3.5.2'
+    implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
+
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'

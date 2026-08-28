@@ -14,6 +14,11 @@
             app:showAsAction="never" />
 
         <item
+            android:id="@+id/mostrarQRCode"
+            android:title="Mostrar QR Code de check-in"
+            app:showAsAction="never" />
+
+        <item
             android:id="@+id/home"
             android:title="home"
             app:showAsAction="never" />

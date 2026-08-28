@@ -160,6 +160,10 @@ class ListaGruposActivity : AppCompatActivity() {
             startActivity(Intent(this, EventosProximosActivity::class.java))
         }
 
+        if (item.itemId == R.id.checkInQR) {
+            iniciarScanQR()
+        }
+
         if (item.itemId == R.id.home) {
             val marca = 0
             val intent = Intent(this, FiltrosActivity::class.java).apply {
@@ -169,5 +173,11 @@ class ListaGruposActivity : AppCompatActivity() {
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (!processarResultadoScanQR(requestCode, resultCode, data)) {
+            super.onActivityResult(requestCode, resultCode, data)
+        }
     }
 }

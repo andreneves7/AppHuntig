@@ -189,12 +189,22 @@ var num = 0
             startActivity(Intent(this, EventosProximosActivity::class.java))
         }
 
+        if (item.itemId == R.id.checkInQR) {
+            iniciarScanQR()
+        }
+
         if (item.itemId == R.id.home) {
 
             startActivity(Intent(this, FiltrosActivity::class.java))
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (!processarResultadoScanQR(requestCode, resultCode, data)) {
+            super.onActivityResult(requestCode, resultCode, data)
+        }
     }
 
     /**

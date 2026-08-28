@@ -19,6 +19,11 @@
             app:showAsAction="never" />
 
         <item
+            android:id="@+id/checkInQR"
+            android:title="Check-in por QR Code"
+            app:showAsAction="never" />
+
+        <item
             android:id="@+id/profile"
             android:title="Profile"
             app:showAsAction="never" />

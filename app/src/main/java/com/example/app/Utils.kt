@@ -68,3 +68,48 @@ fun androidx.appcompat.app.AppCompatActivity.pedirPermissaoNotificacoes() {
         androidx.core.app.ActivityCompat.requestPermissions(this, arrayOf(permissao), 1001)
     }
 }
+
+/**
+ * Inicia a câmara para ler um QR code de check-in de evento (ver
+ * DetalhesEventoActivity.mostrarQRCode() para o que é codificado). Usa
+ * IntentIntegrator da biblioteca zxing-android-embedded — trata da
+ * permissão de câmara e do ecrã de leitura sozinho.
+ *
+ * Chamar processarResultadoScanQR() no onActivityResult da Activity que
+ * chamou isto, para tratar o resultado.
+ */
+fun androidx.appcompat.app.AppCompatActivity.iniciarScanQR() {
+    val integrator = com.journeyapps.barcodescanner.IntentIntegrator(this)
+    integrator.setPrompt("Aponta a câmara para o QR code do evento")
+    integrator.setBeepEnabled(true)
+    integrator.initiateScan()
+}
+
+/**
+ * Processa o resultado de iniciarScanQR(). Devolve true se o resultado era
+ * mesmo de um scan de QR code (tratado aqui, incluindo o caso de o
+ * utilizador ter cancelado) — nesse caso a Activity chamadora NÃO deve
+ * chamar super.onActivityResult(). Devolve false se o resultado não tinha
+ * nada a ver com QR code, e a Activity deve continuar o processamento
+ * normal (super.onActivityResult()).
+ */
+fun androidx.appcompat.app.AppCompatActivity.processarResultadoScanQR(
+    requestCode: Int,
+    resultCode: Int,
+    data: android.content.Intent?
+): Boolean {
+    val result = com.journeyapps.barcodescanner.IntentIntegrator.parseActivityResult(
+        requestCode, resultCode, data
+    ) ?: return false
+
+    val nomeEvento = result.contents
+    if (nomeEvento == null) {
+        // Utilizador cancelou a leitura, nada a fazer.
+        return true
+    }
+
+    val gv = application as VariaveisGlobais
+    gv.detalhes = nomeEvento
+    startActivity(android.content.Intent(this, DetalhesEventoActivity::class.java))
+    return true
+}
