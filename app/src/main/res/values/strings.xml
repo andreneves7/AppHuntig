@@ -17,7 +17,7 @@
 
     <!--region Act_Admissao-->
     <string name="pedidos_adesao_pendentes">Pedidos adesão Pendentes:</string>
-    <string name="adesao_custom_textViewShow">Nome:  %1$s  \n  Nº Carta Caçador:   %2$i  \n  Nº Socio:  %3$i</string>
+    <string name="adesao_custom_textViewShow">Nome:  %1$s  \n  Nº Carta Caçador:   %2$d  \n  Nº Socio:  %3$d</string>
 
     <!--endregion-->
 
