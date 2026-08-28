@@ -128,7 +128,16 @@ Todos os 17 ficheiros `.kt` que usavam `kotlinx.android.synthetic` (incluindo os
 - [x] Validação de email, password, e comprimento de campos no registo (`RegistoUserActivity`) — corrigido também um bug em que a falha de validação não mostrava nada ao utilizador
 - [x] Validação de datas de evento (fim não pode ser antes do início) — `EventoActivity`
 - [x] Estados de loading + tratamento de erros visível (indicador de carregamento em `HomeActivity` como referência do padrão; 30 `onCancelled` silenciosos em 11 ficheiros passaram a mostrar Toast de erro ao utilizador)
+- [x] Loading state replicado pelos 6 ecrãs restantes (`OrgActivity`, `GrupoActivity`, `VerGrupoActivity`, `ListaGruposActivity`, `ListaSociosOrgActivity`, `AdmissaoActivity`)
+- [ ] Paginação de listas — **investigado, não implementado, ver nota abaixo**
+- [ ] Extrair strings hardcoded para `strings.xml` — **decisão explicada abaixo**
 - [ ] Alinhar as chaves de `Grupos` (nome → número)
+
+### Paginação — porque não foi implementada às cegas
+Tentei adicionar um limite simples (`limitToLast()`) à query de `Eventos` em `HomeActivity`, mas parei ao perceber que **`Eventos` é indexado pelo nome do evento, não por data** — um `limitToLast()` traria os eventos alfabeticamente últimos, não os mais recentes, o que podia esconder eventos válidos e futuros em vez de ajudar. Para fazer paginação a sério, é preciso primeiro: (1) guardar um campo de data num formato ordenável (ex: timestamp Unix) em cada evento, (2) usar `orderByChild("timestamp")`, e só depois (3) aplicar `limitToLast`/`startAfter`. É uma mudança de modelo de dados, não uma linha de código — fica para tratar em conjunto com o ponto de alinhar as chaves de `Grupos`.
+
+### Strings hardcoded — porque não foram extraídas
+A app inteira (não só o que eu escrevi) tem virtualmente todos os textos escritos diretamente no código Kotlin (`Toast.makeText(this, "texto", ...)`), não só nos layouts XML — são centenas de ocorrências em todos os ficheiros, praticamente desde o commit inicial. Extrair só as ~15 strings que eu próprio introduzi nesta sessão criaria uma inconsistência sem resolver o problema de fundo (a maioria continuaria hardcoded). Fica documentado como tarefa de grande escala, não urgente para funcionar — só relevante se algum dia quiseres preparar a app para outro idioma, ou por preferência de organização de código.
 
 ### Erros visíveis (onCancelled) — detalhes
 Criado `Utils.kt` com a função `Context.mostrarErroLigacao()`, reutilizada em todos os `onCancelled` que antes só escreviam num `Log.d` silencioso (30 ocorrências em 11 ficheiros). Isto é especialmente relevante depois de aplicares as regras de segurança do `database.rules.json` — se uma leitura for recusada, o utilizador agora vê um aviso em vez de um ecrã parado sem explicação.
