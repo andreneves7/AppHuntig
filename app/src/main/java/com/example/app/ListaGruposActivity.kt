@@ -156,6 +156,10 @@ class ListaGruposActivity : AppCompatActivity() {
 
 
 
+        if (item.itemId == R.id.eventosProximos) {
+            startActivity(Intent(this, EventosProximosActivity::class.java))
+        }
+
         if (item.itemId == R.id.home) {
             val marca = 0
             val intent = Intent(this, FiltrosActivity::class.java).apply {

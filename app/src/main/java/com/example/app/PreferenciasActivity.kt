@@ -200,6 +200,10 @@ class PreferenciasActivity : AppCompatActivity() {
 
 
 
+        if (item.itemId == R.id.eventosProximos) {
+            startActivity(Intent(this, EventosProximosActivity::class.java))
+        }
+
         if (item.itemId == R.id.home) {
 
             val intent = Intent(this, FiltrosActivity::class.java)

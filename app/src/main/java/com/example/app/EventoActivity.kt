@@ -185,6 +185,10 @@ var num = 0
             startActivity(Intent(this, ListaGruposActivity::class.java))
         }
 
+        if (item.itemId == R.id.eventosProximos) {
+            startActivity(Intent(this, EventosProximosActivity::class.java))
+        }
+
         if (item.itemId == R.id.home) {
 
             startActivity(Intent(this, FiltrosActivity::class.java))

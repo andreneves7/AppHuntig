@@ -14,6 +14,11 @@
             app:showAsAction="never" />
 
         <item
+            android:id="@+id/eventosProximos"
+            android:title="Eventos perto de mim"
+            app:showAsAction="never" />
+
+        <item
             android:id="@+id/profile"
             android:title="Profile"
             app:showAsAction="never" />
