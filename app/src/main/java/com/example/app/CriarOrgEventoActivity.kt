@@ -23,7 +23,6 @@ class CriarOrgEventoActivity : AppCompatActivity() {
     lateinit var gv: VariaveisGlobais
     val Auth = FirebaseAuth.getInstance()
 
-    //val mAuth = FirebaseFirestore.getInstance()
     val mAuth = FirebaseDatabase.getInstance()
     var numero = 0
 

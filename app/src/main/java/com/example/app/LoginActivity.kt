@@ -17,7 +17,6 @@ import java.util.*
 
 class LoginActivity : AppCompatActivity() {
 
-//    val mAuth = FirebaseFirestore.getInstance()
 
     val mAuth = FirebaseDatabase.getInstance()
     val Auth = FirebaseAuth.getInstance()

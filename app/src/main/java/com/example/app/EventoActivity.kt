@@ -22,7 +22,6 @@ class EventoActivity : AppCompatActivity() {
 
     val Auth = FirebaseAuth.getInstance()
 
-    //val gAuth = FirebaseFirestore.getInstance().collection("Grupo")
     lateinit var gv: VariaveisGlobais
 var num = 0
 

@@ -14,7 +14,6 @@ import android.widget.ArrayAdapter
 import android.widget.ListView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_preferencias.*
 
 class PreferenciasActivity : AppCompatActivity() {
@@ -113,7 +112,6 @@ class PreferenciasActivity : AppCompatActivity() {
 
                             var b = mAuth.getReference("Grupos").child(itemValue.toString())
 
-                            //var b = mAuth.collection("Grupos").document(itemValue.toString())
                             b.addValueEventListener(object : ValueEventListener {
                                 override fun onDataChange(snapshot: DataSnapshot) {
 

@@ -10,12 +10,10 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_filtros.*
 
 class FiltrosActivity : AppCompatActivity() {
 
-    val mAuth = FirebaseFirestore.getInstance()
     val Auth = FirebaseAuth.getInstance()
 
 

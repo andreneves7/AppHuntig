@@ -17,7 +17,6 @@ import kotlinx.android.synthetic.main.activity_ver_grupo.*
 
 class VerGrupoActivity : AppCompatActivity() {
 
-    //    val mAuth = FirebaseFirestore.getInstance()
     val mAuth = FirebaseDatabase.getInstance()
     val auth = FirebaseAuth.getInstance()
 

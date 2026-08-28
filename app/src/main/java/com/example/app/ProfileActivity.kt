@@ -21,7 +21,6 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_profile.*
 import kotlinx.android.synthetic.main.email_custom_view.view.*
@@ -84,7 +83,6 @@ class ProfileActivity : AppCompatActivity() {
 //
 //    private fun verificarImagem() {
 //        val imageUser = Auth.currentUser?.uid.toString()
-//        val consulta = mAuth.collection("Users").document(imageUser)
 //        consulta.get().addOnSuccessListener { task ->
 //            if (task != null) {
 //                Log.d("Profile", "imagem1: $imageUser")
@@ -105,7 +103,6 @@ class ProfileActivity : AppCompatActivity() {
 //    private fun verImagem() {
 //        val imageUser = Auth.currentUser?.uid.toString()
 //
-//        val consulta = mAuth.collection("Users").document(imageUser)
 //        consulta.get().addOnSuccessListener { task ->
 //            if (task != null) {
 //                Log.d("Profile", "imagem1: $imageUser")
@@ -365,7 +362,6 @@ class ProfileActivity : AppCompatActivity() {
 //                    if (user != null) {
 //                        val pessoa = HashMap<String, Any>()
 //                        pessoa["Photo"] = p
-//                        mAuth.collection("Users").document(user.uid).update(pessoa)
 //                        Toast.makeText(this, "Imagem guardada", Toast.LENGTH_LONG).show()
 //                        verImagem()
 //                    }

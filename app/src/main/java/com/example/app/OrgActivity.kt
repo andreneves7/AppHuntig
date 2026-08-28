@@ -13,13 +13,11 @@ import android.widget.ArrayAdapter
 import androidx.core.view.isVisible
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_org.*
 import kotlinx.android.synthetic.main.activity_ver_grupo.*
 
 class OrgActivity : AppCompatActivity() {
 
-    //val mAuth = FirebaseFirestore.getInstance()
     val mAuth = FirebaseDatabase.getInstance()
     val Auth = FirebaseAuth.getInstance()
 

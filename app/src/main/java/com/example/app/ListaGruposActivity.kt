@@ -64,7 +64,6 @@ class ListaGruposActivity : AppCompatActivity() {
 
                         val b = mAuth.getReference("Grupos").child(itemValue.toString())
 
-                        //var b = mAuth.collection("Grupos").document(itemValue.toString())
                         b.addValueEventListener(object : ValueEventListener {
                             override fun onDataChange(snapshot: DataSnapshot) {
 

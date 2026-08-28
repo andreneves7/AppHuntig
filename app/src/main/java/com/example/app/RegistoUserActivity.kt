@@ -19,10 +19,8 @@ import kotlinx.android.synthetic.main.activity_registo_user.*
 
 class RegistoUserActivity : AppCompatActivity() {
 
-    //    val mAuth = FirebaseFirestore.getInstance()
     val mAuth = FirebaseDatabase.getInstance()
 
-    //val gAuth = FirebaseFirestore.getInstance().collection("Grupos")
     val auth = FirebaseAuth.getInstance()
 
     //val mStorage = FirebaseStorage.getInstance().reference
@@ -473,7 +471,6 @@ class RegistoUserActivity : AppCompatActivity() {
 //        )
 
 
-        //mAuth.collection("Users").document("$uid").set(pessoa)
 
 
         if (g == "Portugal") {

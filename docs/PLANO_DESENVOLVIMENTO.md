@@ -18,10 +18,12 @@
 
 ## 2. Problemas identificados no código atual
 
+> **Atualização:** o ponto #2 original ("app usa Firestore e Realtime Database ao mesmo tempo") foi investigado a fundo e **não era o problema real**. Confirmação: em toda a base de código, todas as referências a `FirebaseFirestore`/`.collection(...)` eram imports não usados ou código comentado/morto (incluindo um bloco de 161 linhas em `HomeActivity.kt`). **A app corre inteiramente sobre o Realtime Database** — nunca existiu duplicação de dados ativa, era resíduo de uma tentativa de migração para Firestore que foi abandonada a meio. Já foi tudo limpo (imports, código morto, e a dependência `firebase-firestore` removida do `build.gradle`). Não há necessidade de "unificar" nada — só resta decidir se, no futuro, faz sentido migrar de Realtime DB para Firestore de propósito (não é urgente).
+
 | # | Problema | Ficheiro(s) | Risco/Impacto |
 |---|---|---|---|
 | 1 | `google-services.json` (chave de configuração Firebase) está versionado no Git, incluindo no histórico | `app/google-services.json` | Médio — não é a chave secreta do servidor, mas não é boa prática expô-la publicamente; API keys do Firebase devem ser restringidas nas definições da Google Cloud Console |
-| 2 | Uso simultâneo de **Firebase Realtime Database** e **Cloud Firestore** para os mesmos dados (`Eventos`, `Users`) | `HomeActivity.kt`, `LoginActivity.kt`, outros | Alto — duplicação de lógica, inconsistência de dados, mais superfície para bugs |
+| 2 | ~~Uso simultâneo de Firebase Realtime Database e Cloud Firestore~~ **[CORRIGIDO — ver nota abaixo]** | — | — |
 | 3 | Uso de `kotlin-android-extensions` / `kotlinx.android.synthetic`, **descontinuado** pelo JetBrains | `build.gradle`, todas as Activities | Médio — deixará de compilar em versões futuras do Kotlin/Android Gradle Plugin |
 | 4 | Biblioteca `Anko`, **sem manutenção desde 2019** | `build.gradle` | Médio — risco de segurança/compatibilidade a prazo |
 | 5 | Não existe atualmente nenhum papel de **SuperUser/Admin** nem regras de segurança Firebase visíveis no repositório | — | Alto — é um requisito novo confirmado, tem de ser desenhado de raiz |
@@ -49,40 +51,29 @@ role: "cacador" | "organizacao" | "superadmin"
 
 Isto **não posso testar/aplicar diretamente** — não tenho acesso à tua consola Firebase. Vou deixando aqui os passos exatos para aplicares (ou dares-me acesso temporário, se preferires).
 
-### 4.1 Regras de segurança do Firestore (a rever/criar)
-Regras sugeridas (rascunho inicial, por rever):
+### 4.1 Regras de segurança do Realtime Database (a rever/criar)
+Regras sugeridas (rascunho inicial, por rever — sintaxe correta para **Realtime Database**, formato JSON, documentação oficial: https://firebase.google.com/docs/database/security/rules-conditions):
 
-```
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-
-    function isSignedIn() {
-      return request.auth != null;
-    }
-    function role() {
-      return get(/databases/$(database)/documents/Users/$(request.auth.uid)).data.role;
-    }
-    function isSuperAdmin() {
-      return isSignedIn() && role() == 'superadmin';
-    }
-    function isOrg() {
-      return isSignedIn() && role() == 'organizacao';
-    }
-
-    match /Users/{userId} {
-      allow read: if isSignedIn();
-      allow write: if isSignedIn() && (request.auth.uid == userId || isSuperAdmin());
-    }
-
-    match /Eventos/{eventoId} {
-      allow read: if isSignedIn();
-      allow write: if isOrg() || isSuperAdmin();
-    }
-
-    match /Grupos/{grupoId} {
-      allow read: if isSignedIn();
-      allow write: if isOrg() || isSuperAdmin();
+```json
+{
+  "rules": {
+    "Users": {
+      "$uid": {
+        ".read": "auth != null",
+        ".write": "auth != null && ($uid === auth.uid || root.child('Users').child(auth.uid).child('role').val() === 'superadmin')"
+      }
+    },
+    "Eventos": {
+      ".read": "auth != null",
+      "$eventoId": {
+        ".write": "auth != null && (root.child('Users').child(auth.uid).child('role').val() === 'organizacao' || root.child('Users').child(auth.uid).child('role').val() === 'superadmin')"
+      }
+    },
+    "Grupos": {
+      ".read": "auth != null",
+      "$grupoId": {
+        ".write": "auth != null && (root.child('Users').child(auth.uid).child('role').val() === 'organizacao' || root.child('Users').child(auth.uid).child('role').val() === 'superadmin')"
+      }
     }
   }
 }
@@ -94,7 +85,7 @@ service cloud.firestore {
 1. Confirmar na Firebase Console se já existem regras de segurança ativas (Firestore → Regras).
 2. Restringir a API Key do `google-services.json` na Google Cloud Console (Credentials → restringir por app/pacote).
 3. Criar manualmente o(s) documento(s) `Users/{teu-uid}` com `role: "superadmin"`.
-4. Decidir: mantemos os dados espalhados por Realtime Database **e** Firestore, ou migramos tudo para um só (recomendo Firestore, é o que a Google recomenda para dados estruturados como este — ver documentação oficial: https://firebase.google.com/docs/firestore/rtdb-vs-firestore).
+4. ~~Decidir: mantemos os dados espalhados por Realtime Database e Firestore...~~ **Resolvido:** a app usa só Realtime Database (ver nota na secção 2). Regras de segurança a aplicar são as do **Realtime Database**, não as do Firestore — o rascunho na secção 4.1 acima está escrito em sintaxe Firestore e precisa de ser reescrito em sintaxe de regras do Realtime Database antes de aplicares (formato JSON, não `service cloud.firestore`). Documentação oficial: https://firebase.google.com/docs/database/security
 
 ---
 
@@ -108,7 +99,7 @@ service cloud.firestore {
 - [x] Atualizar `RegistoUserActivity` para gravar `role: "cacador"` nas novas contas
 - [x] Criar `SuperAdminActivity` v1 — lista todas as organizações da plataforma
 - [ ] `SuperAdminActivity` v2 — ver/gerir todos os utilizadores e grupos de qualquer organização (bloqueado por: os ecrãs existentes de organização assumem que o utilizador autenticado É o admin dessa organização; precisa de nova lógica de acesso, não reutilização direta)
-- [ ] Unificar acesso a dados (escolher Firestore **ou** Realtime DB, não os dois)
+- [x] ~~Unificar acesso a dados~~ — não era necessário; Firestore nunca esteve ativo, era só código morto (removido: imports, ~170 linhas de código comentado, e a dependência do `build.gradle`)
 - [ ] Migrar `kotlinx.android.synthetic` → View Binding
 - [ ] Substituir dependências Anko por alternativas atuais
 - [ ] Rever/corrigir layouts XML afetados
