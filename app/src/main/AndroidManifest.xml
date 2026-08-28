@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
@@ -9,12 +8,15 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32"
-        tools:ignore="ScopedStorage" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32" />
-    <uses-permission android:name="android.permission.STORAGE" />
+    <!-- REMOVIDO: WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE e STORAGE não são
+         usadas por nenhum código ativo (só pela funcionalidade de foto de perfil,
+         que está desativada/comentada em ProfileActivity.kt). Pedir permissões que a
+         app não usa é má prática — gera desconfiança e atrito na revisão da Play
+         Store. "android.permission.STORAGE" nem sequer é uma permissão válida do
+         Android (não existe essa constante). Se a funcionalidade de foto for
+         terminada no futuro, adicionar antes READ_MEDIA_IMAGES (Android 13+, API
+         33+), que é a permissão correta e mais restrita para esse caso — ver
+         https://developer.android.com/about/versions/13/behavior-changes-13#granular-media-permissions -->
 
     <application
         android:name=".VariaveisGlobais"
@@ -26,8 +28,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ListaSociosOrgActivity"
-            android:exported="true" />
+            android:name=".ListaSociosOrgActivity" />
+        <!-- CORRIGIDO: esta activity tinha exported="true" sem intent-filter, o que
+             permitia a QUALQUER outra app no telemóvel abri-la diretamente (mostra
+             nomes e números de cartão de caçador de sócios), sem passar pelo login.
+             Só a activity de arranque (VerificarLoginActivity, com o intent-filter
+             MAIN/LAUNCHER) deve ter exported="true". -->
         <activity android:name=".AdmissaoActivity" />
         <activity android:name=".CriarOrgEventoActivity" />
         <activity android:name=".OrgActivity" /> <!-- <activity android:name=".VerGrupoOrgActivity" /> -->
