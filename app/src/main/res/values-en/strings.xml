@@ -1,0 +1,119 @@
+<resources>
+    <string name="app_name">HuntingEvent</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="edit_message">Enter a message</string>
+    <string name="button_send">Send</string>
+
+    <!--region Adapter-->
+    <string name="carta_cacador">Hunting License No.: %1$s  </string>
+    <string name="nome">Name:  %1$s  </string>
+    <string name="num_socio">Member No.: %1$s  </string>
+    <!--endregion-->
+
+    <!--region Act_Admissao-->
+    <string name="pedidos_adesao_pendentes">Pending Membership Requests:</string>
+    <string name="adesao_custom_textViewShow">Name:  %1$s  \n  Hunting License No.:   %2$d  \n  Member No.:  %3$d</string>
+
+    <!--endregion-->
+
+
+    <string-array name="zonas">
+        <item>Select Areas</item>
+        <item>leon</item>
+        <item>galiza</item>
+
+    </string-array>
+
+    <!--region Extraídas dos layouts XML (antes hardcoded em android:text) -->
+    <string name="aceitar_socios">Accept Members</string>
+    <string name="add">add</string>
+    <string name="adicionar_foto">add photo</string>
+    <string name="ainda_nao_existem_grupos_registados">No groups registered yet</string>
+    <string name="ainda_nao_existem_organizacoes_registada">No organizations registered yet</string>
+    <string name="ainda_nao_existem_utilizadores_registado">No users registered yet</string>
+    <string name="caca_maior">Big Game</string>
+    <string name="caca_menor">Small Game</string>
+    <string name="criar_evento">Create event</string>
+    <string name="data_da_realizacao_evento">Event Date:</string>
+    <string name="data_limite_de_inscricao">Registration Deadline:</string>
+    <string name="dias_caca">Hunting Days</string>
+    <string name="editar_email"> edit Email</string>
+    <string name="editar_password">edit Password</string>
+    <string name="entidades_aderentes">Participating Entities</string>
+    <string name="entrar">Enter</string>
+    <string name="espanha">Spain</string>
+    <string name="esperas">Waiting Grounds</string>
+    <string name="esqueceu_se_da_password">Forgot your password?</string>
+    <string name="grupos_onde_e_administrador">Groups you administer:</string>
+    <string name="grupos_onde_e_membro">Groups you are a member of:</string>
+    <string name="guardar">Save</string>
+    <string name="guardar_foto">save photo</string>
+    <string name="lista_de_socios">Member List:</string>
+    <string name="localizacao">Location</string>
+    <string name="login">Login</string>
+    <string name="marcar_presenca">Mark Attendance</string>
+    <string name="montarias">Drive Hunts</string>
+    <string name="nao_faz_parte_de_grupo_nenhum">You are not part of any group</string>
+    <string name="nao_tem_eventos_disponiveis">No events available</string>
+    <string name="nao_tem_eventos_disponiveis_2">No events available</string>
+    <string name="label_nome">Name</string>
+    <string name="numero">Number</string>
+    <string name="painel_superadmin_organizacoes">SuperAdmin Panel — Organizations</string>
+    <string name="pais">Country</string>
+    <string name="portugal">Portugal</string>
+    <string name="privado">Private</string>
+    <string name="profile">Profile</string>
+    <string name="pular">Skip</string>
+    <string name="registar">Register</string>
+    <string name="registo">Registration</string>
+    <string name="rolas">Turtle Doves</string>
+    <string name="show_password">Show Password</string>
+    <string name="textview">TextView</string>
+    <string name="tipos">Types</string>
+    <string name="todos_os_grupos">All groups</string>
+    <string name="todos_os_utilizadores">All users</string>
+    <string name="tordos">Thrushes</string>
+    <string name="ver_todos_os_grupos">View all groups</string>
+    <string name="ver_todos_os_utilizadores">View all users</string>
+    <string name="ver_tudo">View All</string>
+    <!--endregion-->
+
+    <!--region Extraídas de Toast.makeText() em código Kotlin -->
+    <string name="msg_a_data_de_fim_nao_pode_ser_anterior_a_da">The end date cannot be earlier than the start date</string>
+    <string name="msg_aceitou">Accepted</string>
+    <string name="msg_acesso_restrito">Restricted access</string>
+    <string name="msg_atualizado">Updated</string>
+    <string name="msg_campos_nao_preenchidos">Fields not filled in</string>
+    <string name="msg_cancel">Cancel</string>
+    <string name="msg_email_enviado_verifica_a_tua_caixa_de_en">Email sent. Check your inbox.</string>
+    <string name="msg_erro_ao_aceitar_socio_tenta_novamente">Error accepting member, please try again</string>
+    <string name="msg_erro_ao_carregar_organizacoes">Error loading organizations</string>
+    <string name="msg_erro_re_logged">Login refresh error :)</string>
+    <string name="msg_error_email_update_re_loggin_try_aggain">Error updating email, log in again and try again</string>
+    <string name="msg_error_logging_in">Error logging in :(</string>
+    <string name="msg_error_password_update">Error updating password</string>
+    <string name="msg_esta_fazer_login_errado_mudar_para_organ">You are logging in the wrong way, switch to Organization</string>
+    <string name="msg_evento_criado">event created</string>
+    <string name="msg_horas_mal_preenchidas">Time is incorrectly filled in</string>
+    <string name="msg_introduz_o_teu_email">Enter your email</string>
+    <string name="msg_nao_foi_possivel_carregar_os_dados_verif">Could not load the data. Check your connection and try again.</string>
+    <string name="msg_nao_foi_possivel_enviar_o_email_verifica">Could not send the email. Check that it is correct and try again.</string>
+    <string name="msg_password_nao_coincidem">Passwords do not match</string>
+    <string name="msg_please_fill_up_the_credetianls">Please fill up the credentials</string>
+    <string name="msg_preencha_campo_nome">Fill in the name field</string>
+    <string name="msg_preencha_todos_os_campos">Fill in all fields</string>
+    <string name="msg_registo_com_sucesso">Registration successful</string>
+    <string name="msg_registo_sem_sucesso">Registration unsuccessful</string>
+    <string name="msg_rejeitado">Rejected</string>
+    <string name="msg_selecionar_tipo">Select Type</string>
+    <string name="msg_selecione_um_pais">Select a country </string>
+    <string name="msg_so_pode_entrar_com_cacador">You can only log in as a hunter</string>
+    <string name="msg_successfully_logged_in">Successfully logged in :)</string>
+    <string name="msg_successfully_re_logged">Successfully logged in again :)</string>
+    <string name="msg_tem_de_ter_localizacao">Location is required</string>
+    <string name="msg_tem_esperar_pela_aprovacao">You need to wait for approval</string>
+    <string name="msg_update_email_success">Email updated successfully</string>
+    <string name="msg_update_password_success">Password updated successfully</string>
+    <string name="msg_verifique_email">check your email</string>
+    <!--endregion-->
+</resources>
