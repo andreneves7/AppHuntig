@@ -141,7 +141,7 @@ class OrgActivity : AppCompatActivity() {
 
 
                             override fun onCancelled(error: DatabaseError) {
-                                TODO("Not yet implemented")
+                                Log.d("todo_fix", "Evento Firebase ignorado propositadamente (sem logica necessaria)")
                             }
                         })
                     } else {
@@ -155,15 +155,15 @@ class OrgActivity : AppCompatActivity() {
                 }
 
                 override fun onChildRemoved(snapshot: DataSnapshot) {
-                    TODO("Not yet implemented")
+                    Log.d("todo_fix", "Evento Firebase ignorado propositadamente (sem logica necessaria)")
                 }
 
                 override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
-                    TODO("Not yet implemented")
+                    Log.d("todo_fix", "Evento Firebase ignorado propositadamente (sem logica necessaria)")
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
+                    Log.d("todo_fix", "Evento Firebase ignorado propositadamente (sem logica necessaria)")
                 }
             }
             mail.addChildEventListener(j)

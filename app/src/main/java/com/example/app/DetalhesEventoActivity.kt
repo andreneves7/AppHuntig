@@ -88,7 +88,7 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
+                    Log.d("todo_fix", "Evento Firebase ignorado propositadamente (sem logica necessaria)")
                 }
             })
         }
@@ -111,7 +111,7 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
+                Log.d("todo_fix", "Evento Firebase ignorado propositadamente (sem logica necessaria)")
             }
 
         })
@@ -188,11 +188,11 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
 
                 override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
-                    TODO("Not yet implemented")
+                    Log.d("todo_fix", "Evento Firebase ignorado propositadamente (sem logica necessaria)")
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
+                    Log.d("todo_fix", "Evento Firebase ignorado propositadamente (sem logica necessaria)")
                 }
 
 
@@ -248,7 +248,7 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
+                    Log.d("todo_fix", "Evento Firebase ignorado propositadamente (sem logica necessaria)")
                 }
             })
         }

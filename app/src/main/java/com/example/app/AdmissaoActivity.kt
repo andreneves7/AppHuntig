@@ -77,13 +77,22 @@ class AdmissaoActivity : AppCompatActivity() {
                     if (num == numeroGrupo.toInt()) {
                         if (admin == user) {
 
-                            t.addValueEventListener(object : ValueEventListener {
+                            // FIX: usa addListenerForSingleValueEvent em vez de addValueEventListener.
+                            // O listener anterior era contínuo (disparava sempre que QUALQUER dado em
+                            // "Users" mudasse) e reconstruía a lista sem a limpar primeiro, pelo que
+                            // cada novo evento ADICIONAVA duplicados por cima dos já existentes em
+                            // "values", em vez de a substituir. Isto fazia a lista de pendentes
+                            // corromper-se rapidamente (entradas repetidas, cliques a apontarem para
+                            // a pessoa errada) e dava a aparência de "só aceitar 1" corretamente.
+                            t.addListenerForSingleValueEvent(object : ValueEventListener {
                                 override fun onDataChange(snapshot: DataSnapshot) {
 
                                     val teste = snapshot.children
-                                    //valor.add(teste.toString())
                                     Log.d("adesa", "teste= $teste")
-                                    //Log.d("adesa", "valor= $valor")
+
+                                    // FIX: limpa a lista antes de a repovoar, para nunca acumular
+                                    // duplicados entre chamadas.
+                                    values.clear()
 
                                     for (i in teste) {
                                         Log.d("adesa", "t= ${i.key}")
@@ -124,89 +133,73 @@ class AdmissaoActivity : AppCompatActivity() {
 
                                             uid = i.key.toString()
                                         }
-                                        lista.adapter = MyListAdapter(
-                                            this@AdmissaoActivity,
-                                            R.layout.listview_item_pendentes,
-                                            values
+                                    }
+
+                                    // FIX: adapter e click listener saem de dentro do ciclo `for` e
+                                    // passam a ser definidos UMA só vez, depois da lista completa
+                                    // estar montada — antes eram recriados a cada iteração.
+                                    lista.adapter = MyListAdapter(
+                                        this@AdmissaoActivity,
+                                        R.layout.listview_item_pendentes,
+                                        values
+                                    )
+
+                                    lista.setOnItemClickListener { parent, _, position, _ ->
+
+                                        val elemnt = parent.getItemAtPosition(position) as Model
+                                        Log.d(
+                                            "adesa",
+                                            "ffff :$elemnt"
                                         )
 
-                                        lista.setOnItemClickListener { parent, _, position, _ ->
+                                        mAuth.getReference("Users").child(elemnt.toString())
+                                            .addListenerForSingleValueEvent(object :
+                                                ValueEventListener {
+                                                override fun onDataChange(snapshot: DataSnapshot) {
 
-//                                        lista.onItemClickListener =
-//                                            object : AdapterView.OnItemClickListener {
-//                                                override fun onItemClick(
-//                                                    parent: AdapterView<*>?,
-//                                                    view: View?,
-//                                                    position: Int,
-//                                                    id: Long
-//                                                ) {
-
-
-                                            val elemnt = parent.getItemAtPosition(position) as Model
-                                            val itemValue = lista.getItemIdAtPosition(position)
-                                            Log.d(
-                                                "adesa",
-                                                "ffff :$elemnt"
-                                            )
-
-
-
-
-                                            mAuth.getReference("Users").child(elemnt.toString())
-                                                .addValueEventListener(object :
-                                                    ValueEventListener {
-                                                    override fun onDataChange(snapshot: DataSnapshot) {
-
-                                                        val name =
-                                                            snapshot.child("name")
-                                                                .value.toString()
-
-
-                                                        val cartacc =
-                                                            snapshot.child("Carta Caçadore")
-                                                                .value.toString()
-
-
-                                                        val numSocio = snapshot.child("Grupos")
-                                                            .child(
-                                                                num.toString()
-                                                            ).child("Socio")
+                                                    val name =
+                                                        snapshot.child("name")
                                                             .value.toString()
 
-                                                        val refUser = snapshot.child("uid")
+
+                                                    val cartacc =
+                                                        snapshot.child("Carta Caçadore")
                                                             .value.toString()
 
-                                                        n = name
-                                                        c = cartacc.toInt()
-                                                        s = socio.toInt()
+
+                                                    val numSocio = snapshot.child("Grupos")
+                                                        .child(
+                                                            num.toString()
+                                                        ).child("Socio")
+                                                        .value.toString()
+
+                                                    val refUser = snapshot.child("uid")
+                                                        .value.toString()
+
+                                                    n = name
+                                                    c = cartacc.toInt()
+                                                    s = socio.toInt()
 
 
-                                                        uid = refUser
-                                                        Log.d(
-                                                            "adesa",
-                                                            "ffff :${nameGrupo}"
-                                                        )
+                                                    uid = refUser
+                                                    Log.d(
+                                                        "adesa",
+                                                        "ffff :${nameGrupo}"
+                                                    )
 
-                                                        open(n, c, s, nameGrupo, uid, numeroGrupo)
-                                                    }
+                                                    open(n, c, s, nameGrupo, uid, numeroGrupo)
+                                                }
 
-                                                    override fun onCancelled(error: DatabaseError) {
-                                                        TODO("Not yet implemented")
-                                                    }
-                                                })
-
-                                            // }
-
-                                            //}
-                                        }
-
-
+                                                override fun onCancelled(error: DatabaseError) {
+                                                    Log.d("adesa", "fail dados utilizador")
+                                                }
+                                            })
                                     }
 
                                 }
 
                                 override fun onCancelled(error: DatabaseError) {
-                                    TODO("Not yet implemented")
+                                    Log.d("adesa", "fail dados users")
                                 }
 
 
@@ -231,15 +224,16 @@ class AdmissaoActivity : AppCompatActivity() {
                 }
 
                 override fun onChildRemoved(snapshot: DataSnapshot) {
-                    TODO("Not yet implemented")
+                    // Não precisamos de reagir a remoções de Grupos aqui; apenas registamos.
+                    Log.d("adesa", "grupo removido: ${snapshot.key}")
                 }
 
                 override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
-                    TODO("Not yet implemented")
+                    // Não aplicável a esta listagem (não depende de ordenação).
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
+                    Log.d("adesa", "fail dados grupos: ${error.message}")
                 }
             }
             mail.addChildEventListener(j)
@@ -355,7 +349,12 @@ class AdmissaoActivity : AppCompatActivity() {
                     }
 
                     override fun onCancelled(error: DatabaseError) {
-                        TODO("Not yet implemented")
+                        Log.d("adesa", "fail ao aceitar socio: ${error.message}")
+                        Toast.makeText(
+                            this@AdmissaoActivity,
+                            "Erro ao aceitar sócio, tenta novamente",
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
                 })
 

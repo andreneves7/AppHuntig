@@ -2,6 +2,7 @@ package com.example.app
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import org.jetbrains.anko.startActivity
 import android.content.Intent
@@ -42,7 +43,7 @@ class VerificarLoginActivity : AppCompatActivity() {
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
+                    Log.d("todo_fix", "Evento Firebase ignorado propositadamente (sem logica necessaria)")
                 }
             })
         }

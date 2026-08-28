@@ -99,7 +99,7 @@ class AdesaoActivity : AppCompatActivity() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
+                Log.d("todo_fix", "Evento Firebase ignorado propositadamente (sem logica necessaria)")
             }
 
 
