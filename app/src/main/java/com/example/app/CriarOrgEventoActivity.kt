@@ -66,146 +66,91 @@ class CriarOrgEventoActivity : AppCompatActivity() {
     }
 
 
+    /**
+     * Mostra todos os eventos deste grupo — públicos e privados. Mesma
+     * lógica e mesma razão de existir das duas leituras já usada em
+     * GrupoActivity.busca() (ver esse ficheiro para a explicação completa):
+     * um evento público continua ligado ao grupo que o criou, por isso é
+     * preciso consultar EventosPublicos (filtrados por numeroGrupo) E
+     * EventosPrivados/{numeroGrupo} separadamente.
+     *
+     * "numero" (variável da classe, usada pelos botões "Criar Evento" e
+     * "Sócios") passa a ser definida logo aqui, diretamente do valor já
+     * confiável vindo do Intent — antes esperava-se por uma "confirmação"
+     * assíncrona via Firebase que não acrescentava nada (o valor não podia
+     * ser diferente do que já vinha no Intent).
+     */
     fun busca() {
         val semEventos = binding.tNaoEventos2
         semEventos.isInvisible = true
         val user = Auth.currentUser
-        if (user != null) {
+        if (user == null) return
 
-            val valu = ArrayList<String>()
+        val t = intent.getStringExtra(AlarmClock.EXTRA_MESSAGE).toInt()
+        numero = t
 
-            val t = intent.getStringExtra(AlarmClock.EXTRA_MESSAGE).toInt()
-            val mail = mAuth.getReference("Eventos")
-            val m = object : ChildEventListener {
-                override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
+        val encontrados = java.util.Collections.synchronizedList(ArrayList<Pair<String, Boolean>>())
+        var pendentes = 2
 
-                    val nome = dataSnapshot.child("nome").getValue().toString()
+        fun concluir() {
+            pendentes--
+            if (pendentes == 0) {
+                mostrarEventosDoGrupo(encontrados)
+            }
+        }
 
-                    mAuth.getReference("Eventos").child(nome)
-                        .addListenerForSingleValueEvent(object : ValueEventListener {
-                            override fun onDataChange(snapshot: DataSnapshot) {
-
-                                val refe =
-                                    snapshot.child("numeroGrupo").getValue().toString().toInt()
-
-
-
-
-
-
-                                Log.d(
-                                    "Grupo",
-                                    " refe $refe"
-                                )
-
-                                if (refe == t) {
-                                    Log.d(
-                                        "Grupo",
-                                        " grupos deste user"
-                                    )
-
-                                    numero = refe
-                                    semEventos.isVisible = false
-                                    valu.add(snapshot.child("nome").getValue().toString())
-
-
-                                    val adapter = ArrayAdapter(
-                                        this@CriarOrgEventoActivity,
-                                        R.layout.listview_item,
-                                        valu
-                                    )
-                                    val lista = binding.ListView4
-                                    lista.adapter = adapter
-
-                                    lista.onItemClickListener =
-                                        object : AdapterView.OnItemClickListener {
-
-
-                                            override fun onItemClick(
-                                                parent: AdapterView<*>, view: View,
-                                                position: Int, id: Long
-                                            ) {
-
-                                                val itemValue = lista.getItemAtPosition(position)
-                                                gv.detalhes = itemValue as String
-                                                Log.d(
-                                                    "Grupo",
-                                                    "ffff :$itemValue"
-                                                )
-
-                                                var eve = mAuth.getReference("Eventos")
-                                                    .child(itemValue.toString())
-
-                                                eve.addValueEventListener(object :
-                                                    ValueEventListener {
-                                                    override fun onDataChange(snapshot: DataSnapshot) {
-                                                        startActivity(
-                                                            Intent(
-                                                                view.context,
-                                                                DetalhesEventoActivity::class.java
-                                                            )
-                                                        )
-                                                    }
-
-                                                    override fun onCancelled(error: DatabaseError) {
-                                                        Log.d("todo_fix", "erro Firebase: ${error.message}")
-                                                        this@CriarOrgEventoActivity.mostrarErroLigacao()
-                                                    }
-                                                })
-
-
-//                                Toast.makeText(
-//                                    this@GrupoActivity,
-//                                    "Position :$position\nItem Value : $itemValue",
-//                                    Toast.LENGTH_LONG
-//                                )
-//                                    .show()
-
-
-                                            }
-
-                                        }
-
-
-                                } else {
-                                    Log.d(
-                                        "Grupo",
-                                        " sem grupos deste user ${valu.size}"
-                                    )
-                                    if (valu.size == 0) {
-
-                                        semEventos.isVisible = true
-                                    }
-
-                                }
-
-
-                            }
-
-                            override fun onCancelled(error: DatabaseError) {
-                                Log.d("todo_fix", "erro Firebase: ${error.message}")
-                                this@CriarOrgEventoActivity.mostrarErroLigacao()
-                            }
-                        })
-                }
-
-                override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-                    Log.d("todo_fix", "Evento Firebase ignorado propositadamente (sem logica necessaria)")
-                }
-
-                override fun onChildRemoved(snapshot: DataSnapshot) {
-                    Log.d("todo_fix", "Evento Firebase ignorado propositadamente (sem logica necessaria)")
-                }
-
-                override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
-                    Log.d("todo_fix", "Evento Firebase ignorado propositadamente (sem logica necessaria)")
+        mAuth.getReference("EventosPublicos")
+            .orderByChild("numeroGrupo")
+            .equalTo(t.toDouble())
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    for (eventoSnap in snapshot.children) {
+                        val nome = eventoSnap.child("nome").getValue(String::class.java)
+                            ?: eventoSnap.key ?: continue
+                        encontrados.add(Pair(nome, false))
+                    }
+                    concluir()
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    Log.d("Grupo", "No such document")
+                    Log.d("Grupo", "erro ao ler eventos publicos: ${error.message}")
+                    concluir()
                 }
-            }
-            mail.addChildEventListener(m)
+            })
+
+        mAuth.getReference("EventosPrivados").child(t.toString())
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    for (eventoSnap in snapshot.children) {
+                        val nome = eventoSnap.child("nome").getValue(String::class.java)
+                            ?: eventoSnap.key ?: continue
+                        encontrados.add(Pair(nome, true))
+                    }
+                    concluir()
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.d("Grupo", "erro ao ler eventos privados: ${error.message}")
+                    concluir()
+                }
+            })
+    }
+
+    private fun mostrarEventosDoGrupo(eventos: List<Pair<String, Boolean>>) {
+        val semEventos = binding.tNaoEventos2
+        semEventos.isVisible = eventos.isEmpty()
+
+        val nomes = eventos.map { it.first }
+        val adapter = ArrayAdapter(this, R.layout.listview_item, nomes)
+        val lista = binding.ListView4
+        lista.adapter = adapter
+
+        lista.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
+            val (nome, privado) = eventos[position]
+            gv.detalhes = nome
+            gv.detalhesPrivado = privado
+            gv.detalhesNumeroGrupo = if (privado) numero.toString() else ""
+            startActivity(Intent(this, DetalhesEventoActivity::class.java))
         }
     }
 
