@@ -46,6 +46,10 @@ class MeusEventosActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        binding.swipeRefreshMeusEventos.setOnRefreshListener {
+            carregarMeusEventos()
+        }
+
         carregarMeusEventos()
     }
 
@@ -54,7 +58,7 @@ class MeusEventosActivity : AppCompatActivity() {
 
         binding.progressMeusEventos.isVisible = true
         binding.progressMeusEventos.postDelayed(
-            { binding.progressMeusEventos.isVisible = false }, 5000
+            { binding.progressMeusEventos.isVisible = false; binding.swipeRefreshMeusEventos.isRefreshing = false }, 5000
         )
 
         // Primeiro descobre a que grupos (números) o utilizador pertence.
@@ -65,6 +69,7 @@ class MeusEventosActivity : AppCompatActivity() {
 
                     if (numerosGrupos.isEmpty()) {
                         binding.progressMeusEventos.isVisible = false
+                        binding.swipeRefreshMeusEventos.isRefreshing = false
                         binding.tSemMeusEventos.isVisible = true
                         return
                     }
@@ -74,6 +79,7 @@ class MeusEventosActivity : AppCompatActivity() {
 
                 override fun onCancelled(error: DatabaseError) {
                     binding.progressMeusEventos.isVisible = false
+                    binding.swipeRefreshMeusEventos.isRefreshing = false
                     Log.d("MeusEventos", "erro Firebase: ${error.message}")
                     this@MeusEventosActivity.mostrarErroLigacao()
                 }
@@ -135,12 +141,14 @@ class MeusEventosActivity : AppCompatActivity() {
         if (queriesPendentes == 0) {
             // Nenhum número de grupo era válido.
             binding.progressMeusEventos.isVisible = false
+            binding.swipeRefreshMeusEventos.isRefreshing = false
             binding.tSemMeusEventos.isVisible = true
         }
     }
 
     private fun mostrarResultado(eventos: List<Pair<String, Long>>) {
         binding.progressMeusEventos.isVisible = false
+        binding.swipeRefreshMeusEventos.isRefreshing = false
 
         val ordenados = eventos.sortedBy { it.second }
         binding.tSemMeusEventos.isVisible = ordenados.isEmpty()
