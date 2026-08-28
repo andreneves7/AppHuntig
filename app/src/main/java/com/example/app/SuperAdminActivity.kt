@@ -58,6 +58,10 @@ class SuperAdminActivity : AppCompatActivity() {
 
         carregarOrganizacoes()
 
+        binding.swipeRefreshSuperAdmin.setOnRefreshListener {
+            carregarOrganizacoes()
+        }
+
         pedirPermissaoNotificacoes()
         HuntigMessagingService.guardarTokenAtualNoFirebase()
 
@@ -74,6 +78,7 @@ class SuperAdminActivity : AppCompatActivity() {
         val ref = mAuth.getReference("Users")
         ref.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
+                binding.swipeRefreshSuperAdmin.isRefreshing = false
                 val nomesOrgs = ArrayList<String>()
                 val uidsOrgs = ArrayList<String>()
 
@@ -111,6 +116,7 @@ class SuperAdminActivity : AppCompatActivity() {
             }
 
             override fun onCancelled(error: DatabaseError) {
+                binding.swipeRefreshSuperAdmin.isRefreshing = false
                 Log.d("SuperAdmin", "fail ao carregar organizacoes: ${error.message}")
                 Toast.makeText(this@SuperAdminActivity, this@SuperAdminActivity.getString(R.string.msg_erro_ao_carregar_organizacoes), Toast.LENGTH_LONG
                 ).show()

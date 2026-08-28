@@ -49,19 +49,24 @@ class SuperAdminUsersActivity : AppCompatActivity() {
             return
         }
 
+        binding.swipeRefreshSuperAdminUsers.setOnRefreshListener {
+            carregarUtilizadores()
+        }
+
         carregarUtilizadores()
     }
 
     private fun carregarUtilizadores() {
         binding.progressSuperAdminUsers.isVisible = true
         binding.progressSuperAdminUsers.postDelayed(
-            { binding.progressSuperAdminUsers.isVisible = false }, 5000
+            { binding.progressSuperAdminUsers.isVisible = false; binding.swipeRefreshSuperAdminUsers.isRefreshing = false }, 5000
         )
 
         val ref = mAuth.getReference("Users")
         ref.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 binding.progressSuperAdminUsers.isVisible = false
+                binding.swipeRefreshSuperAdminUsers.isRefreshing = false
 
                 val linhas = ArrayList<String>()
                 val uids = ArrayList<String>()
@@ -97,6 +102,7 @@ class SuperAdminUsersActivity : AppCompatActivity() {
 
             override fun onCancelled(error: DatabaseError) {
                 binding.progressSuperAdminUsers.isVisible = false
+                binding.swipeRefreshSuperAdminUsers.isRefreshing = false
                 Log.d("SuperAdminUsers", "erro ao carregar utilizadores: ${error.message}")
                 this@SuperAdminUsersActivity.mostrarErroLigacao()
             }

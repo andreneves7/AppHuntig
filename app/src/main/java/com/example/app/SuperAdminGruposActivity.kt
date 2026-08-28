@@ -44,19 +44,24 @@ class SuperAdminGruposActivity : AppCompatActivity() {
             return
         }
 
+        binding.swipeRefreshSuperAdminGrupos.setOnRefreshListener {
+            carregarGrupos()
+        }
+
         carregarGrupos()
     }
 
     private fun carregarGrupos() {
         binding.progressSuperAdminGrupos.isVisible = true
         binding.progressSuperAdminGrupos.postDelayed(
-            { binding.progressSuperAdminGrupos.isVisible = false }, 5000
+            { binding.progressSuperAdminGrupos.isVisible = false; binding.swipeRefreshSuperAdminGrupos.isRefreshing = false }, 5000
         )
 
         val ref = mAuth.getReference("Grupos")
         ref.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 binding.progressSuperAdminGrupos.isVisible = false
+                binding.swipeRefreshSuperAdminGrupos.isRefreshing = false
 
                 val linhas = ArrayList<String>()
                 val detalhes = ArrayList<String>()
@@ -93,6 +98,7 @@ class SuperAdminGruposActivity : AppCompatActivity() {
 
             override fun onCancelled(error: DatabaseError) {
                 binding.progressSuperAdminGrupos.isVisible = false
+                binding.swipeRefreshSuperAdminGrupos.isRefreshing = false
                 Log.d("SuperAdminGrupos", "erro ao carregar grupos: ${error.message}")
                 this@SuperAdminGruposActivity.mostrarErroLigacao()
             }
