@@ -6,6 +6,11 @@ app/google-services.json
 *.keystore
 *.jks
 local.properties
+
+# Chaves da API do Google Maps — geradas pelo Android Studio, específicas de
+# cada máquina/certificado de assinatura. Não devem ser partilhadas no repositório.
+app/src/debug/res/values/google_maps_api.xml
+app/src/release/res/values/google_maps_api.xml
 /local.properties
 /.idea/caches
 /.idea/libraries

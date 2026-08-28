@@ -94,7 +94,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, OnMarkerClickListe
     }
 
     private fun search() {
-        val apiKey = getString(R.string.api_key)
+        // Consolidado: antes havia duas chaves duplicadas (R.string.api_key em
+        // strings.xml, e R.string.google_maps_key em google_maps_api.xml) com o
+        // mesmo valor. Passa a usar só uma fonte, para nunca ficarem dessincronizadas
+        // se alguma for regenerada.
+        val apiKey = getString(R.string.google_maps_key)
 
 
         if (!Places.isInitialized()) {

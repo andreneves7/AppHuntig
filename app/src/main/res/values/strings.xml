@@ -1,7 +1,11 @@
 <resources>
     <string name="app_name">HuntingEvent</string>
     <string name="title_activity_maps">Map</string>
-    <string name="api_key">AIzaSyCR_5PdNIjarIMG5-GBDPLvBj0rSbGu8bY</string>
+    <!-- REMOVIDO: "api_key" era uma cópia duplicada e exposta da mesma chave que já
+         existe em google_maps_api.xml (google_maps_key). Ver
+         docs/PLANO_DESENVOLVIMENTO.md — precisa de ser regenerada/restringida na
+         Google Cloud Console antes de publicares, independentemente desta limpeza,
+         porque já esteve exposta no histórico do repositório. -->
     <string name="edit_message">Enter a message</string>
     <string name="button_send">Send</string>
 

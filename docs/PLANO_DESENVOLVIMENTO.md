@@ -5,6 +5,29 @@
 
 ---
 
+## 0. 🚨 AÇÃO URGENTE — chave da API do Google Maps exposta
+
+Encontrada durante a revisão de boas práticas para publicação. **Mais urgente do que tudo o resto neste documento.**
+
+**O que se passa:**
+- A chave `AIzaSyCR_5PdNIjarIMG5-GBDPLvBj0rSbGu8bY` estava duplicada em dois sítios do repositório: `strings.xml` (string `api_key`) e `app/src/debug/res/values/google_maps_api.xml` (string `google_maps_key`) — **ambos versionados publicamente no GitHub**, sem proteção nenhuma do `.gitignore`.
+- O ficheiro de release (`app/src/release/res/values/google_maps_api.xml`) tem apenas um placeholder `YOUR_KEY_HERE` — ou seja, **o mapa não funcionaria de todo numa build de release/Play Store**, mesmo sem o problema de segurança.
+- O comentário dentro do próprio ficheiro sugere que a chave pode ter sido pedida/restringida para o pacote `com.example.app` — mas a app publica-se como `com.company.HuntigEvents` (ver `applicationId` no `build.gradle`). Se a restrição de pacote estiver mesmo errada, a chave pode estar efetivamente **sem restrição útil nenhuma**, disponível a qualquer pessoa que a copie do GitHub.
+
+**O que já fiz (código):**
+- Removida a duplicação: o código usa agora só uma fonte (`google_maps_key`)
+- `google_maps_api.xml` (debug e release) adicionados ao `.gitignore` e removidos do controlo de versão a partir de agora (ficam no teu disco, a tua build local continua a funcionar)
+
+**O que só tu podes fazer (Google Cloud Console):**
+1. Vai a https://console.cloud.google.com/apis/credentials do projeto associado a esta app
+2. **Considera esta chave comprometida** — já esteve pública no GitHub, mesmo que a apagues agora do repositório, continua no histórico de commits antigos
+3. Gera uma **chave nova**
+4. Restringe-a corretamente: por aplicação Android (pacote `com.company.HuntigEvents` + impressão digital SHA-1 do teu certificado de assinatura, debug E release), e por API (só "Maps SDK for Android" e "Places API", nada mais)
+5. Substitui o valor em `app/src/debug/res/values/google_maps_api.xml` (chave de debug) e cria uma chave de release equivalente para `app/src/release/res/values/google_maps_api.xml`
+6. Documentação oficial: https://developers.google.com/maps/documentation/android-sdk/get-api-key
+
+---
+
 ## 1. Contexto e requisitos confirmados
 
 - App para **caçadores** e **organizações de caça** (associações), com eventos, grupos e adesões.
