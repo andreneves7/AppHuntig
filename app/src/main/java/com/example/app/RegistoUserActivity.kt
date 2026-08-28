@@ -15,10 +15,11 @@ import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
-import kotlinx.android.synthetic.main.activity_registo_user.*
+import com.example.app.databinding.ActivityRegistoUserBinding
 
 class RegistoUserActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityRegistoUserBinding
     val mAuth = FirebaseDatabase.getInstance()
 
     val auth = FirebaseAuth.getInstance()
@@ -29,29 +30,30 @@ class RegistoUserActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_registo_user)
+        binding = ActivityRegistoUserBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         gv = application as VariaveisGlobais
 
 
-        val outros = addPais_Outros
-        val linceca = addLicencaCacaPortugal
-        val nomeSeguradoraExtra = addNomeSeguradoraExtra
-        val numApoliceExtra = addNumeroApoliceExtra
-        val numCaca = addNumPassCaca
-        val licencaP = editTextLicencaPortugal
-        val licencaE = addLicencaCacaEspanha
-        val passaporte = addNumero_Passaporte
-        val dni = addDNI
-        val bi = addCartao
-        val nif = addNif
-        val licencaEspanha = addEspanhaExtra
+        val outros = binding.addPais_Outros
+        val linceca = binding.addLicencaCacaPortugal
+        val nomeSeguradoraExtra = binding.addNomeSeguradoraExtra
+        val numApoliceExtra = binding.addNumeroApoliceExtra
+        val numCaca = binding.addNumPassCaca
+        val licencaP = binding.editTextLicencaPortugal
+        val licencaE = binding.addLicencaCacaEspanha
+        val passaporte = binding.addNumero_Passaporte
+        val dni = binding.addDNI
+        val bi = binding.addCartao
+        val nif = binding.addNif
+        val licencaEspanha = binding.addEspanhaExtra
 
 
-        val btnPop = bPais_User
-        val buttonRegistar = bRegistar
+        val btnPop = binding.bPais_User
+        val buttonRegistar = binding.bRegistar
 
-        val e = checkBoxEspanha
-        val p = checkBoxPortugal
+        val e = binding.checkBoxEspanha
+        val p = binding.checkBoxPortugal
 
 
         var g = ""
@@ -198,17 +200,17 @@ class RegistoUserActivity : AppCompatActivity() {
         buttonRegistar.setOnClickListener {
 
 
-            val email = addEmail.text.toString()
-            val password = addPass.text.toString()
-            val name = addNome.text.toString()
-            val tele = addTele.text.toString()
-            val local = addLocalidade.text.toString()
-            val morada = addMorada.text.toString()
-            val postal = addPostal.text.toString()
-            val cartaCaca = addCartaCaca.text.toString()
-            val licencaArma = addLicencaArma.text.toString()
-            val nomeSeguradora = addNomeSeguradora.text.toString()
-            val numApolice = addNumeroApolice.text.toString()
+            val email = binding.addEmail.text.toString()
+            val password = binding.addPass.text.toString()
+            val name = binding.addNome.text.toString()
+            val tele = binding.addTele.text.toString()
+            val local = binding.addLocalidade.text.toString()
+            val morada = binding.addMorada.text.toString()
+            val postal = binding.addPostal.text.toString()
+            val cartaCaca = binding.addCartaCaca.text.toString()
+            val licencaArma = binding.addLicencaArma.text.toString()
+            val nomeSeguradora = binding.addNomeSeguradora.text.toString()
+            val numApolice = binding.addNumeroApolice.text.toString()
 
             registoAuth(
                 password,
@@ -272,17 +274,17 @@ class RegistoUserActivity : AppCompatActivity() {
     ) {
 
         val teste = arrayListOf<EditText>(
-            addPass,
-            addEmail,
-            addNome,
-            addTele,
-            addLocalidade,
-            addMorada,
-            addPostal,
-            addCartaCaca,
-            addLicencaArma,
-            addNomeSeguradora,
-            addNumeroApolice
+            binding.addPass,
+            binding.addEmail,
+            binding.addNome,
+            binding.addTele,
+            binding.addLocalidade,
+            binding.addMorada,
+            binding.addPostal,
+            binding.addCartaCaca,
+            binding.addLicencaArma,
+            binding.addNomeSeguradora,
+            binding.addNumeroApolice
 //                bi,
 //                nif,
 //                licencaP,
@@ -405,7 +407,7 @@ class RegistoUserActivity : AppCompatActivity() {
 
         }
         //        else if (email.isEmpty()) {
-//            addEmail.error = "This is error"
+//            binding.addEmail.error = "This is error"
 //        }
     }
 
@@ -689,9 +691,9 @@ class RegistoUserActivity : AppCompatActivity() {
 
 
     private fun clearInputs() {
-        addNome.text.clear()
-        addEmail.text.clear()
-        addPass.text.clear()
+        binding.addNome.text.clear()
+        binding.addEmail.text.clear()
+        binding.addPass.text.clear()
     }
 
 

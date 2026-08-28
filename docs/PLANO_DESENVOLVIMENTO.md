@@ -100,8 +100,15 @@ Regras sugeridas (rascunho inicial, por rever — sintaxe correta para **Realtim
 - [x] Criar `SuperAdminActivity` v1 — lista todas as organizações da plataforma
 - [ ] `SuperAdminActivity` v2 — ver/gerir todos os utilizadores e grupos de qualquer organização (bloqueado por: os ecrãs existentes de organização assumem que o utilizador autenticado É o admin dessa organização; precisa de nova lógica de acesso, não reutilização direta)
 - [x] ~~Unificar acesso a dados~~ — não era necessário; Firestore nunca esteve ativo, era só código morto (removido: imports, ~170 linhas de código comentado, e a dependência do `build.gradle`)
-- [ ] Migrar `kotlinx.android.synthetic` → View Binding
-- [ ] Substituir dependências Anko por alternativas atuais
+- [x] Migrar `kotlinx.android.synthetic` → View Binding (17/17 ficheiros — ver nota abaixo)
+- [x] Substituir dependências Anko por alternativas atuais (Anko só era realmente usado num único ficheiro, `VerificarLoginActivity.kt`; removido por completo, incluindo do `build.gradle`)
+
+### Migração para View Binding — detalhes
+Todos os 17 ficheiros `.kt` que usavam `kotlinx.android.synthetic` (incluindo os que inflavam diálogos customizados como `adesao_custom_view`, `custom_view`, `email_custom_view`, `pass_custom_view`) foram convertidos para View Binding. O plugin descontinuado `kotlin-android-extensions` foi removido do `build.gradle`.
+
+⚠️ **Bug pré-existente encontrado durante a migração (não introduzido por mim):** o layout `activity_registo_user.xml` tem **dois IDs duplicados** — `scrollView3` e `layoutVer2` aparecem cada um duas vezes no mesmo ficheiro. Isto já existia antes (o sistema antigo `synthetic` também sofria disto, silenciosamente). Com View Binding, tal como acontecia antes, o binding aponta sempre para a mesma vista (a primeira encontrada), portanto **não é um problema novo introduzido agora**, mas fica assinalado porque provavelmente há um segundo bloco de UI nesse ecrã que nunca é acedido corretamente. Recomendo dares uma vista de olhos a esse layout com calma.
+
+**Validação necessária antes do merge:** esta foi a alteração de maior volume (17 ficheiros, ~150 substituições de IDs). Fiz verificação sistemática por scripts (procura de imports `kotlinx` residuais — zero encontrados; procura de duplo-prefixo `binding.binding.` por erro de substituição — zero encontrados), mas **não consegui compilar nada disto**. É essencial correres `./gradlew build` no Android Studio antes de fazeres merge para `master`.
 - [ ] Rever/corrigir layouts XML afetados
 - [ ] Testar fluxos principais (login caçador, login organização, login superadmin, criação de evento, adesão a grupo) — **ver nota abaixo sobre limitação de teste**
 

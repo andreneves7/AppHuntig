@@ -12,11 +12,12 @@ import android.widget.ArrayAdapter
 import androidx.core.view.isVisible
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import kotlinx.android.synthetic.main.activity_ver_grupo.*
+import com.example.app.databinding.ActivityVerGrupoBinding
 
 
 class VerGrupoActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityVerGrupoBinding
     val mAuth = FirebaseDatabase.getInstance()
     val auth = FirebaseAuth.getInstance()
 
@@ -26,11 +27,12 @@ class VerGrupoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         gv = application as VariaveisGlobais
-        setContentView(R.layout.activity_ver_grupo)
+        binding = ActivityVerGrupoBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
 
-        val semGrupos = tNaoGrupos
-        val list = ListView2
+        val semGrupos = binding.tNaoGrupos
+        val list = binding.ListView2
 
         val user = auth.currentUser?.uid
         if (user != null) {

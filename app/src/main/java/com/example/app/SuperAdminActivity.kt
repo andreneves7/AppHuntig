@@ -14,7 +14,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import kotlinx.android.synthetic.main.activity_super_admin.*
+import com.example.app.databinding.ActivitySuperAdminBinding
 
 /**
  * Painel de gestão global da plataforma, acessível apenas a contas com
@@ -38,12 +38,14 @@ import kotlinx.android.synthetic.main.activity_super_admin.*
  */
 class SuperAdminActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivitySuperAdminBinding
     val auth = FirebaseAuth.getInstance()
     val mAuth = FirebaseDatabase.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_super_admin)
+        binding = ActivitySuperAdminBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         // Segurança extra do lado do cliente: se por alguma razão esta Activity
         // for aberta sem o utilizador ter role de superadmin, expulsa-o.
@@ -59,7 +61,7 @@ class SuperAdminActivity : AppCompatActivity() {
 
         carregarOrganizacoes()
 
-        bTodosUtilizadoresSuperAdmin.setOnClickListener {
+        binding.bTodosUtilizadoresSuperAdmin.setOnClickListener {
             Toast.makeText(
                 this,
                 "Ainda em desenvolvimento — ver docs/PLANO_DESENVOLVIMENTO.md",
@@ -67,7 +69,7 @@ class SuperAdminActivity : AppCompatActivity() {
             ).show()
         }
 
-        bTodosGruposSuperAdmin.setOnClickListener {
+        binding.bTodosGruposSuperAdmin.setOnClickListener {
             Toast.makeText(
                 this,
                 "Ainda em desenvolvimento — ver docs/PLANO_DESENVOLVIMENTO.md",
@@ -96,16 +98,16 @@ class SuperAdminActivity : AppCompatActivity() {
                     }
                 }
 
-                tSemOrgsSuperAdmin.isVisible = nomesOrgs.isEmpty()
+                binding.tSemOrgsSuperAdmin.isVisible = nomesOrgs.isEmpty()
 
                 val adapter = ArrayAdapter(
                     this@SuperAdminActivity,
                     R.layout.listview_item,
                     nomesOrgs
                 )
-                ListViewOrgsSuperAdmin.adapter = adapter
+                binding.ListViewOrgsSuperAdmin.adapter = adapter
 
-                ListViewOrgsSuperAdmin.setOnItemClickListener { _, _, position, _ ->
+                binding.ListViewOrgsSuperAdmin.setOnItemClickListener { _, _, position, _ ->
                     val uid = uidsOrgs.getOrNull(position)
                     Log.d("SuperAdmin", "organizacao selecionada uid=$uid")
                     Toast.makeText(

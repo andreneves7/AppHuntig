@@ -22,16 +22,16 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
-import kotlinx.android.synthetic.main.activity_profile.*
-import kotlinx.android.synthetic.main.email_custom_view.view.*
-import kotlinx.android.synthetic.main.pass_custom_view.view.showPass
-import kotlinx.android.synthetic.main.custom_view.view.*
-import kotlinx.android.synthetic.main.pass_custom_view.view.*
+import com.example.app.databinding.ActivityProfileBinding
+import com.example.app.databinding.CustomViewBinding
+import com.example.app.databinding.EmailCustomViewBinding
+import com.example.app.databinding.PassCustomViewBinding
 import java.util.*
 
 @Suppress("DEPRECATION")
 class ProfileActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityProfileBinding
     val Auth = FirebaseAuth.getInstance()
     val mAuth = FirebaseDatabase.getInstance();
     val mStorage = FirebaseStorage.getInstance()
@@ -39,10 +39,11 @@ class ProfileActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_profile)
+        binding = ActivityProfileBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val editar = bEdit
-        val editarPass = bEditPass
+        val editar = binding.bEdit
+        val editarPass = binding.bEditPass
 
 
 
@@ -118,7 +119,7 @@ class ProfileActivity : AppCompatActivity() {
 //    }
 
     private fun old() {
-        val show = textView
+        val show = binding.textView
         val user = Auth.currentUser
         val uid = Auth.currentUser?.uid.toString()
         val userEmail = Auth.currentUser?.email
@@ -147,12 +148,13 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun showAlertLogin() {
         val inflater = layoutInflater
-        val inflate_view = inflater.inflate(R.layout.custom_view, null)
+        val dialogBinding = CustomViewBinding.inflate(inflater)
+        val inflate_view = dialogBinding.root
 
-        val userEmailEdt = inflate_view.userEmail
-        val userPassEdt = inflate_view.userPass
+        val userEmailEdt = dialogBinding.userEmail
+        val userPassEdt = dialogBinding.userPass
 
-        val checkBoxTooggle = inflate_view.showPass
+        val checkBoxTooggle = dialogBinding.showPass
 
         checkBoxTooggle.setOnCheckedChangeListener { buttonView, isChecked ->
             if (!isChecked) {
@@ -201,9 +203,10 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun showAlertEmail() {
         val inflater = layoutInflater
-        val inflate_view = inflater.inflate(R.layout.email_custom_view, null)
+        val dialogBinding = EmailCustomViewBinding.inflate(inflater)
+        val inflate_view = dialogBinding.root
 
-        val userEmailEdt = inflate_view.userNewEmail
+        val userEmailEdt = dialogBinding.userNewEmail
 
 
         val alertDialog = AlertDialog.Builder(this)
@@ -258,13 +261,14 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun showAlertPass() {
         val inflater = layoutInflater
-        val inflate_view = inflater.inflate(R.layout.pass_custom_view, null)
+        val dialogBinding = PassCustomViewBinding.inflate(inflater)
+        val inflate_view = dialogBinding.root
 
-        val userPassEdt = inflate_view.userNewPass
-        val userConfPassEdt = inflate_view.userConfPass
+        val userPassEdt = dialogBinding.userNewPass
+        val userConfPassEdt = dialogBinding.userConfPass
 
 
-        val checkBoxTooggle = inflate_view.showPass
+        val checkBoxTooggle = dialogBinding.showPass
 
         checkBoxTooggle.setOnCheckedChangeListener { buttonView, isChecked ->
             if (!isChecked) {
