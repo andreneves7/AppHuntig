@@ -4,19 +4,22 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.MenuItem
-import android.view.View
 import android.widget.EditText
-import android.widget.PopupMenu
-import android.widget.Switch
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isInvisible
-import androidx.core.view.isVisible
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.example.app.databinding.ActivityRegistoUserBinding
 
+/**
+ * Formulário de registo — simplificado para recolher só o que é
+ * necessário ao funcionamento da app (nome, email, password, telemóvel,
+ * número da Carta de Caçador). Antes recolhia também morada, código
+ * postal, contribuinte, bilhete de identidade/passaporte/DNI, licença de
+ * uso e porte de arma, e dados de seguradora — removido a pedido
+ * explícito, por serem dados pessoais sensíveis sem necessidade real para
+ * o funcionamento da app (ver docs/PLANO_DESENVOLVIMENTO.md).
+ */
 class RegistoUserActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityRegistoUserBinding
@@ -33,243 +36,25 @@ class RegistoUserActivity : AppCompatActivity() {
         setContentView(binding.root)
         gv = application as VariaveisGlobais
 
-
-        val outros = binding.addPais_Outros
-        val linceca = binding.addLicencaCacaPortugal
-        val nomeSeguradoraExtra = binding.addNomeSeguradoraExtra
-        val numApoliceExtra = binding.addNumeroApoliceExtra
-        val numCaca = binding.addNumPassCaca
-        val licencaP = binding.editTextLicencaPortugal
-        val licencaE = binding.addLicencaCacaEspanha
-        val passaporte = binding.addNumero_Passaporte
-        val dni = binding.addDNI
-        val bi = binding.addCartao
-        val nif = binding.addNif
-        val licencaEspanha = binding.addEspanhaExtra
-
-
-        val btnPop = binding.bPais_User
         val buttonRegistar = binding.bRegistar
 
-        val e = binding.checkBoxEspanha
-        val p = binding.checkBoxPortugal
-
-
-        var g = ""
-
-
-        nomeSeguradoraExtra.setVisibility(View.INVISIBLE)
-        numApoliceExtra.setVisibility(View.INVISIBLE)
-        numCaca.setVisibility(View.INVISIBLE)
-        linceca.setVisibility(View.INVISIBLE)
-        licencaP.setVisibility(View.INVISIBLE)
-        licencaEspanha.setVisibility(View.INVISIBLE)
-        licencaE.setVisibility(View.INVISIBLE)
-
-
-        e.setVisibility(View.INVISIBLE)
-        p.setVisibility(View.INVISIBLE)
-
-
-        outros.isInvisible = true
-        dni.isInvisible = true
-        bi.isInvisible = true
-        nif.isInvisible = true
-        passaporte.isInvisible = true
-
-
-
-
-
-
-        btnPop.setOnClickListener {
-
-            val popMenu = PopupMenu(this@RegistoUserActivity, btnPop)
-            popMenu.menuInflater.inflate(R.menu.menu_pop2, popMenu.menu)
-            popMenu.setOnMenuItemClickListener(object : PopupMenu.OnMenuItemClickListener {
-                override fun onMenuItemClick(item: MenuItem?): Boolean {
-                    when (item!!.itemId) {
-
-                        R.id.checkPortugal -> {
-                            "Portugal"
-                            bi.isVisible = true
-                            nif.isVisible = true
-                            nif.isFocusableInTouchMode = true
-                            licencaP.visibility = View.VISIBLE
-                            e.visibility = View.VISIBLE
-
-                            p.visibility = View.INVISIBLE
-                            dni.isInvisible = true
-                            outros.isInvisible = true
-                            passaporte.isInvisible = true
-                            licencaE.visibility = View.INVISIBLE
-
-
-                            //Log.d("RegistoUser", "putas")
-
-                            g = "Portugal"
-                            e.setOnClickListener {
-                                if (e.isChecked) {
-
-                                    nomeSeguradoraExtra.visibility = View.VISIBLE
-                                    numApoliceExtra.visibility = View.VISIBLE
-                                    numCaca.visibility = View.VISIBLE
-                                    licencaEspanha.visibility = View.VISIBLE
-
-                                } else {
-
-                                    licencaEspanha.visibility = View.INVISIBLE
-                                    nomeSeguradoraExtra.visibility = View.INVISIBLE
-                                    numApoliceExtra.visibility = View.INVISIBLE
-                                    numCaca.visibility = View.INVISIBLE
-                                    linceca.visibility = View.INVISIBLE
-                                }
-                            }
-
-                        }
-                        R.id.checkOutros -> {
-                            outros.isVisible = true
-                            passaporte.isVisible = true
-                            nif.isInvisible = true
-                            dni.isInvisible = true
-                            bi.isInvisible = true
-                            numCaca.setVisibility(View.VISIBLE)
-
-
-
-                            licencaEspanha.setVisibility(View.INVISIBLE)
-                            licencaP.setVisibility(View.INVISIBLE)
-                            licencaE.setVisibility(View.INVISIBLE)
-                            p.setVisibility(View.INVISIBLE)
-                            e.setVisibility(View.INVISIBLE)
-                            Log.d("RegistoUser", g)
-                        }
-                        R.id.checkEspanha -> {
-                            "Espanha"
-                            dni.isVisible = true
-                            bi.isInvisible = true
-                            nif.isInvisible = true
-                            outros.isInvisible = true
-                            passaporte.isInvisible = true
-                            licencaE.setVisibility(View.VISIBLE)
-                            p.setVisibility(View.VISIBLE)
-                            Log.d("RegistoUser", "putas2")
-
-
-
-
-                            g = "Espanha"
-
-                            licencaP.setVisibility(View.INVISIBLE)
-                            e.setVisibility(View.INVISIBLE)
-
-                            p.setOnClickListener {
-                                if (p.isChecked) {
-                                    nomeSeguradoraExtra.setVisibility(View.VISIBLE)
-                                    numApoliceExtra.setVisibility(View.VISIBLE)
-                                    numCaca.setVisibility(View.VISIBLE)
-                                    linceca.setVisibility(View.VISIBLE)
-                                } else {
-                                    nomeSeguradoraExtra.setVisibility(View.INVISIBLE)
-                                    numApoliceExtra.setVisibility(View.INVISIBLE)
-                                    numCaca.setVisibility(View.INVISIBLE)
-                                    linceca.setVisibility(View.INVISIBLE)
-                                }
-                            }
-                        }
-                    }
-                    return true
-                }
-
-            })
-            popMenu.show()
-        }
-
-        //portugal
-
-
-        //outros
-        passaporte.text.toString()
-        g = outros.text.toString()
-
-        //espanha
-        dni.text.toString()
-        licencaE.text.toString()
-
         buttonRegistar.evitarDuploClique {
-
-
             val email = binding.addEmail.text.toString()
             val password = binding.addPass.text.toString()
             val name = binding.addNome.text.toString()
             val tele = binding.addTele.text.toString()
-            val local = binding.addLocalidade.text.toString()
-            val morada = binding.addMorada.text.toString()
-            val postal = binding.addPostal.text.toString()
             val cartaCaca = binding.addCartaCaca.text.toString()
-            val licencaArma = binding.addLicencaArma.text.toString()
-            val nomeSeguradora = binding.addNomeSeguradora.text.toString()
-            val numApolice = binding.addNumeroApolice.text.toString()
 
-            registoAuth(
-                password,
-                email,
-                name,
-                tele,
-                morada,
-                local,
-                postal,
-                cartaCaca,
-                licencaArma,
-                nomeSeguradora,
-                numApolice,
-                g,
-                bi,
-                nif,
-                licencaP,
-                passaporte,
-                dni, licencaE,
-                e,
-                p,
-                nomeSeguradoraExtra,
-                numApoliceExtra,
-                numCaca,
-                linceca,
-                licencaEspanha
-
-            )
-
-
+            registoAuth(email, password, name, tele, cartaCaca)
         }
     }
 
-
     private fun registoAuth(
-        password: String,
         email: String,
+        password: String,
         name: String,
         tele: String,
-        morada: String,
-        local: String,
-        postal: String,
-        cartaCaca: String,
-        licencaArma: String,
-        nomeSeguradora: String,
-        numApolice: String,
-        g: String,
-        bi: EditText,
-        nif: EditText,
-        licencaP: EditText,
-        passaporte: EditText,
-        dni: EditText,
-        licencaE: EditText,
-        e: Switch,
-        p: Switch,
-        nomeSeguradoraExtra: EditText,
-        numApoliceExtra: EditText,
-        numCaca: EditText,
-        linceca: EditText,
-        licencaEspanha: EditText
+        cartaCaca: String
     ) {
 
         val teste = arrayListOf<EditText>(
@@ -277,407 +62,84 @@ class RegistoUserActivity : AppCompatActivity() {
             binding.addEmail,
             binding.addNome,
             binding.addTele,
-            binding.addLocalidade,
-            binding.addMorada,
-            binding.addPostal,
-            binding.addCartaCaca,
-            binding.addLicencaArma,
-            binding.addNomeSeguradora,
-            binding.addNumeroApolice
-//                bi,
-//                nif,
-//                licencaP,
-//                passaporte,
-//                dni,
-//                licencaE,
-//                nomeSeguradoraExtra,
-//                numApoliceExtra,
-//                numCaca,
-//                linceca,
-//                licencaEspanha
+            binding.addCartaCaca
         )
 
-
-
-        if (verificaCampos(teste) == true) {
-
-            // Validação de formato de email — antes só se verificava que não estava vazio.
-            // Usa Validacoes.isEmailValido (regex Kotlin puro) em vez de
-            // android.util.Patterns.EMAIL_ADDRESS, para a validação poder ser
-            // testada em ValidacoesTest.kt sem precisar do framework Android.
-            if (!Validacoes.isEmailValido(email)) {
-                binding.addEmail.error = "Email inválido"
-                return
-            }
-
-            // O Firebase Auth exige um mínimo de 6 caracteres na password; validamos aqui
-            // primeiro para dar feedback imediato, em vez de esperar pela resposta do servidor.
-            if (!Validacoes.isPasswordValida(password)) {
-                binding.addPass.error = "A password tem de ter pelo menos 6 caracteres"
-                return
-            }
-
-            // Antes desta correção: se algum destes campos tivesse o comprimento errado,
-            // nada acontecia visualmente (o Toast estava comentado) — o botão "Registar"
-            // parecia simplesmente não fazer nada. Agora sinalizamos exatamente qual campo
-            // está errado, tal como o resto da validação já faz.
-            var camposComprimentoInvalido = false
-            if (!Validacoes.isTelefoneValido(tele)) {
-                binding.addTele.error = "Deve ter 9 dígitos"
-                camposComprimentoInvalido = true
-            }
-            if (!Validacoes.isCodigoPostalValido(postal)) {
-                binding.addPostal.error = "Formato: 0000-000"
-                camposComprimentoInvalido = true
-            }
-            if (!Validacoes.isCartaCacaValida(cartaCaca)) {
-                binding.addCartaCaca.error = "Deve ter 6 caracteres"
-                camposComprimentoInvalido = true
-            }
-            if (!Validacoes.isLicencaArmaValida(licencaArma)) {
-                binding.addLicencaArma.error = "Deve ter 5 caracteres"
-                camposComprimentoInvalido = true
-            }
-            if (!Validacoes.isNumeroApoliceValido(numApolice)) {
-                binding.addNumeroApolice.error = "Deve ter 10 caracteres"
-                camposComprimentoInvalido = true
-            }
-
-            if (!camposComprimentoInvalido) {
-                if (!g.isEmpty()) {
-
-
-                    auth.createUserWithEmailAndPassword(email, password)
-                        .addOnCompleteListener { it ->
-
-                            if (!it.isSuccessful) return@addOnCompleteListener
-
-                            Log.d(
-                                "RegistoUser",
-                                "user auth com uid: ${it.result?.user?.uid}"
-                            )
-                            register(
-                                name,
-                                email,
-                                tele,
-                                morada,
-                                local,
-                                postal,
-                                cartaCaca,
-                                licencaArma,
-                                nomeSeguradora,
-                                numApolice,
-                                g,
-                                bi,
-                                nif,
-                                licencaP,
-                                e,
-                                p,
-                                licencaEspanha,
-                                nomeSeguradoraExtra,
-                                numApoliceExtra,
-                                numCaca,
-                                linceca, dni, licencaE, passaporte
-                            )
-                            when {
-                                it.isSuccessful -> {
-                                    Toast.makeText(this, this.getString(R.string.msg_registo_com_sucesso), Toast.LENGTH_SHORT
-                                    ).show()
-
-                                }
-                                else -> {
-                                    Toast.makeText(this, this.getString(R.string.msg_registo_sem_sucesso), Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                            }
-
-
-                        }
-
-
-                        .addOnFailureListener { exception: Exception ->
-                            Toast.makeText(this, exception.toString(), Toast.LENGTH_LONG)
-                                .show()
-                        }
-
-
-                } else {
-                    Toast.makeText(this, this.getString(R.string.msg_selecione_um_pais), Toast.LENGTH_SHORT).show()
-                }
-
-
-////copiado para cada pais com as suas restricoes
-//                Auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { it ->
-//
-//                    if (!it.isSuccessful) return@addOnCompleteListener
-//
-//                    Log.d("RegistoUser", "user auth com uid: ${it.result?.user?.uid}")
-//                    //register()
-//                    when {
-//                        it.isSuccessful -> {
-//                            Toast.makeText(this, this.getString(R.string.msg_registo_com_sucesso), Toast.LENGTH_SHORT).show()
-//                            Auth.signOut()
-//                        }
-//                        else -> {
-//                            Toast.makeText(this, this.getString(R.string.msg_registo_sem_sucesso), Toast.LENGTH_SHORT).show()
-//                        }
-//                    }
-//
-//
-//                }
-//
-//
-//                    .addOnFailureListener { exception: Exception ->
-//                        Toast.makeText(this, exception.toString(), Toast.LENGTH_LONG).show()
-//                    }
-            } else {
-                // Toast.makeText(this, this.getString(R.string.msg_preencha_todos_os_campos), Toast.LENGTH_LONG).show()
-                Log.d("RegistoUser", "nao registo")
-            }
-
+        if (verificaCampos(teste) != true) {
+            return
         }
-        //        else if (email.isEmpty()) {
-//            binding.addEmail.error = "This is error"
-//        }
+
+        // Validação de formato de email — usa Validacoes.isEmailValido (regex
+        // Kotlin puro) em vez de android.util.Patterns.EMAIL_ADDRESS, para a
+        // validação poder ser testada em ValidacoesTest.kt sem precisar do
+        // framework Android.
+        if (!Validacoes.isEmailValido(email)) {
+            binding.addEmail.error = "Email inválido"
+            return
+        }
+
+        // O Firebase Auth exige um mínimo de 6 caracteres na password; validamos
+        // aqui primeiro para dar feedback imediato, em vez de esperar pela
+        // resposta do servidor.
+        if (!Validacoes.isPasswordValida(password)) {
+            binding.addPass.error = "A password tem de ter pelo menos 6 caracteres"
+            return
+        }
+
+        var camposComprimentoInvalido = false
+        if (!Validacoes.isTelefoneValido(tele)) {
+            binding.addTele.error = "Deve ter 9 dígitos"
+            camposComprimentoInvalido = true
+        }
+        if (!Validacoes.isCartaCacaValida(cartaCaca)) {
+            binding.addCartaCaca.error = "Deve ter 6 caracteres"
+            camposComprimentoInvalido = true
+        }
+        if (camposComprimentoInvalido) {
+            return
+        }
+
+        auth.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener { resultado ->
+                if (!resultado.isSuccessful) return@addOnCompleteListener
+
+                Log.d("RegistoUser", "user auth com uid: ${resultado.result?.user?.uid}")
+                register(name, email, tele, cartaCaca)
+
+                Toast.makeText(
+                    this,
+                    this.getString(R.string.msg_registo_com_sucesso),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            .addOnFailureListener { exception: Exception ->
+                Toast.makeText(this, exception.toString(), Toast.LENGTH_LONG).show()
+            }
     }
 
-
-    private fun register(
-        name: String,
-        email: String,
-        tele: String,
-        morada: String,
-        local: String,
-        postal: String,
-        cartaCaca: String,
-        licencaArma: String,
-        nomeSeguradora: String,
-        numApolice: String,
-        g: String,
-        bi: EditText,
-        nif: EditText,
-        licencaP: EditText,
-        e: Switch,
-        p: Switch,
-        licencaEspanha: EditText,
-        nomeSeguradoraExtra: EditText,
-        numApoliceExtra: EditText,
-        numCaca: EditText,
-        linceca: EditText,
-        dni: EditText,
-        licencaE: EditText,
-        passaporte: EditText
-    ) {
-
+    private fun register(name: String, email: String, tele: String, cartaCaca: String) {
         val uid = auth.uid.toString()
-//        val ref = mAuth.document("$uid")
-//
-        val NomeSeguradoraExtra = nomeSeguradoraExtra.text.toString()
-        val NumApoliceExtra = numApoliceExtra.text.toString()
-        val NumCaca = numCaca.text.toString()
 
         val pessoa = HashMap<String, Any>()
-//        val pessoa: MutableMap<String, Any> = HashMap()
-
         pessoa["uid"] = uid
         pessoa["email"] = email
         pessoa["name"] = name
         pessoa["telemovel"] = tele
-        pessoa["morada"] = morada
-        pessoa["localidade"] = local
-        pessoa["Codigo Postal"] = postal
         pessoa["Carta Caçadore"] = cartaCaca
-        pessoa["Licença Arma"] = licencaArma
-        pessoa["Nome Seguradora"] = nomeSeguradora
-        pessoa["Numero Apolice"] = numApolice
-        //pessoa["grupo"] = ArrayList<String>()
-        pessoa["Pais"] = g
         pessoa["FirstTime"] = true
         pessoa["Org"] = false // campo legado, mantido por compatibilidade — ver Roles.kt
         pessoa["role"] = Roles.CACADOR
         pessoa["Controlo"] = false
 
-//        val pessoa = hashMapOf(
-//            "uid" to uid,
-//            "email" to email
-//        )
+        mAuth.getReference("Users").child(uid).setValue(pessoa)
 
-
-
-
-        if (g == "Portugal") {
-
-            val Bi = bi.text.toString()
-            val Nif = nif.text.toString()
-            val LicencaP = licencaP.text.toString()
-            val teste = arrayListOf<EditText>(
-                bi,
-                nif,
-                licencaP
-            )
-
-            if (verificaCampos(teste) == true) {
-
-
-                pessoa["BI"] = Bi
-                pessoa["Nif"] = Nif
-                pessoa["Licenca Portugal"] = LicencaP
-
-
-                Log.d("RegistoUser", "user firestore registo1")
-
-                val LicencaEspanha = licencaEspanha.text.toString()
-                if (e.isChecked) {
-                    val teste2 = arrayListOf<EditText>(
-
-                        nomeSeguradoraExtra,
-                        numApoliceExtra,
-                        numCaca,
-                        licencaEspanha
-                    )
-
-                    if (verificaCampos(teste2) == true) {
-
-
-                        pessoa["Licenca Espanha"] = LicencaEspanha
-                        pessoa["nome Seguradora Extra"] = NomeSeguradoraExtra
-                        pessoa["numero Apolice Extra"] = NumApoliceExtra
-                        pessoa["Numero Passaporte Europeu"] = NumCaca
-                        mAuth.getReference("Users").child(uid).setValue(pessoa)
-
-                        sendEmailVerification()
-                        Log.d("RegistoUser", "email enviado")
-                        clearInputs()
-                        val intent = Intent(this, LoginActivity::class.java)
-                        intent.flags =
-                            Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        startActivity(intent)
-                        auth.signOut()
-
-                        Log.d("RegistoUser", "user firestore registo2")
-
-
-                    }
-
-
-                } else {
-                    mAuth.getReference("Users").child(uid).setValue(pessoa)
-
-                    sendEmailVerification()
-                    Log.d("RegistoUser", "email enviado")
-                    clearInputs()
-                    val intent = Intent(this, LoginActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    startActivity(intent)
-
-                    Log.d("RegistoUser", "user firestore registo3")
-                }
-            } else {
-
-                val user = auth.currentUser
-                user?.delete()
-            }
-
-
-        } else if (g == "Espanha") {
-
-            val Dni = dni.text.toString()
-            val LicencaE = licencaE.text.toString()
-            val teste = arrayListOf<EditText>(
-//                passaporte,
-                dni,
-                licencaE
-//                nomeSeguradoraExtra,
-//                numApoliceExtra,
-//                numCaca,
-//                linceca,
-//                licencaEspanha
-            )
-
-            if (verificaCampos(teste) == true) {
-
-                pessoa["Dni"] = Dni
-                pessoa["Licenca Espanha"] = LicencaE
-                Log.d("RegistoUser", "user firestore registo4")
-
-                val LicencaPortuguesa = linceca.text.toString()
-
-
-//
-
-                if (p.isChecked) {
-                    val teste2 = arrayListOf<EditText>(
-
-                        nomeSeguradoraExtra,
-                        numApoliceExtra,
-                        numCaca,
-                        linceca
-                    )
-                    if (verificaCampos(teste2) == true) {
-
-                        pessoa["Licenca Portugal"] = LicencaPortuguesa
-                        pessoa["nome Seguradora Extra"] = NomeSeguradoraExtra
-                        pessoa["numero Apolice Extra"] = NumApoliceExtra
-                        pessoa["Numero Passaporte Europeu"] = NumCaca
-                        mAuth.getReference(uid).setValue(pessoa)
-
-
-                        sendEmailVerification()
-                        Log.d("RegistoUser", "email enviado")
-                        clearInputs()
-                        val intent = Intent(this, LoginActivity::class.java)
-                        intent.flags =
-                            Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        startActivity(intent)
-                        auth.signOut()
-
-
-                        Log.d("RegistoUser", "user firestore registo5")
-                    }
-                } else {
-                    mAuth.getReference(uid).setValue(pessoa)
-
-                    sendEmailVerification()
-                    Log.d("RegistoUser", "email enviado")
-                    clearInputs()
-                    val intent = Intent(this, LoginActivity::class.java)
-                    intent.flags =
-                        Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    startActivity(intent)
-                    auth.signOut()
-
-                    Log.d("RegistoUser", "user firestore registo6")
-                }
-            } else {
-
-                val user = auth.currentUser
-                user?.delete()
-            }
-        } else {
-
-            val Passaporte = passaporte.text.toString()
-            if (!Passaporte.isEmpty()) {
-
-                pessoa["Passaporte"] = Passaporte
-                mAuth.getReference(uid).setValue(pessoa)
-
-                sendEmailVerification()
-                Log.d("RegistoUser", "email enviado")
-                clearInputs()
-                val intent = Intent(this, LoginActivity::class.java)
-                intent.flags =
-                    Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
-                startActivity(intent)
-                auth.signOut()
-
-
-                Log.d("RegistoUser", "user firestore registo7")
-
-            }
-
-        }
-
-
+        sendEmailVerification()
+        Log.d("RegistoUser", "email enviado")
+        clearInputs()
+        val intent = Intent(this, LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
+        auth.signOut()
     }
 
 
@@ -688,7 +150,6 @@ class RegistoUserActivity : AppCompatActivity() {
             val builder = AlertDialog.Builder(this)
             builder.setTitle("Email Verfication")
             builder.setMessage("Please confirm email")
-            //builder.setPositiveButton("OK", DialogInterface.OnClickListener(function = x))
 
             builder.setPositiveButton(android.R.string.yes) { dialog, which ->
                 Toast.makeText(
@@ -728,4 +189,3 @@ class RegistoUserActivity : AppCompatActivity() {
 
 
 }
-
