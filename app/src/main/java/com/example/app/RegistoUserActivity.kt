@@ -133,6 +133,17 @@ class RegistoUserActivity : AppCompatActivity() {
 
         mAuth.getReference("Users").child(uid).setValue(pessoa)
 
+        // PerfisPublicos: cópia mínima (nome + carta de caçador) num nó
+        // legível por qualquer utilizador autenticado — necessário para
+        // ecrãs como a lista de pendentes/sócios de um grupo mostrarem quem
+        // é quem, sem precisarem de acesso ao registo completo (email,
+        // telemóvel) de outra pessoa. Ver docs/PLANO_DESENVOLVIMENTO.md.
+        val perfilPublico = HashMap<String, Any>()
+        perfilPublico["name"] = name
+        perfilPublico["Carta Caçadore"] = cartaCaca
+        perfilPublico["uid"] = uid
+        mAuth.getReference("PerfisPublicos").child(uid).setValue(perfilPublico)
+
         sendEmailVerification()
         Log.d("RegistoUser", "email enviado")
         clearInputs()

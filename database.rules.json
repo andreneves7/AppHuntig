@@ -5,9 +5,9 @@
     ".write": false,
 
     "Users": {
-      ".read": "auth != null",
 
       "$uid": {
+        ".read": "auth != null && (auth.uid === $uid || root.child('Users').child(auth.uid).child('role').val() === 'superadmin')",
         ".write": "auth != null && (auth.uid === $uid || root.child('Users').child(auth.uid).child('role').val() === 'superadmin')",
 
         ".validate": "!newData.hasChild('morada') && !newData.hasChild('localidade') && !newData.hasChild('Codigo Postal') && !newData.hasChild('Licença Arma') && !newData.hasChild('Nome Seguradora') && !newData.hasChild('Numero Apolice') && !newData.hasChild('BI') && !newData.hasChild('Nif') && !newData.hasChild('Licenca Portugal') && !newData.hasChild('Licenca Espanha') && !newData.hasChild('Dni') && !newData.hasChild('Passaporte') && !newData.hasChild('Pais') && !newData.hasChild('nome Seguradora Extra') && !newData.hasChild('numero Apolice Extra') && !newData.hasChild('Numero Passaporte Europeu')",
@@ -21,6 +21,16 @@
             ".write": "auth != null && (auth.uid === $uid || root.child('Users').child(auth.uid).child('role').val() === 'superadmin' || root.child('Grupos').child($numeroGrupo).child('admin').val() === auth.uid)"
           }
         }
+      }
+    },
+
+    "PerfisPublicos": {
+      ".read": "auth != null",
+
+      "$uid": {
+        ".write": "auth != null && (auth.uid === $uid || root.child('Users').child(auth.uid).child('role').val() === 'superadmin')",
+
+        ".validate": "newData.hasChildren(['name', 'Carta Caçadore'])"
       }
     },
 

@@ -158,7 +158,7 @@ class AdmissaoActivity : AppCompatActivity() {
 //                        " ${m}"
 //                    )
 
-                    val t = mAuth.getReference("Users")
+                    val t = mAuth.getReference("PerfisPublicos")
                     if (num == numeroGrupo.toInt()) {
                         if (admin == user) {
 
@@ -239,7 +239,7 @@ class AdmissaoActivity : AppCompatActivity() {
                                             "ffff :$elemnt"
                                         )
 
-                                        mAuth.getReference("Users").child(elemnt.toString())
+                                        mAuth.getReference("PerfisPublicos").child(elemnt.toString())
                                             .addListenerForSingleValueEvent(object :
                                                 ValueEventListener {
                                                 override fun onDataChange(snapshot: DataSnapshot) {

@@ -434,7 +434,7 @@ class DetalhesEventoActivity : AppCompatActivity(), OnMapReadyCallback {
         var pendentes = uids.size
 
         for (uid in uids) {
-            mAuth.getReference("Users").child(uid).child("name")
+            mAuth.getReference("PerfisPublicos").child(uid).child("name")
                 .addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val nome = snapshot.getValue(String::class.java) ?: "(nome desconhecido)"

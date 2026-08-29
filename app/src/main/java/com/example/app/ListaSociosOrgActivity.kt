@@ -43,7 +43,7 @@ class ListaSociosOrgActivity : AppCompatActivity() {
         val num = intent.getStringExtra(AlarmClock.EXTRA_MESSAGE)?.toInt()
         val listaNumeroSocios = ArrayList<String>()
 
-        val t = mAuth.getReference("Users")
+        val t = mAuth.getReference("PerfisPublicos")
 
 
         if (user != null) {
