@@ -56,9 +56,9 @@ Aqui tens de criar uma **segunda chave** (repete os passos acima) restringida co
 
 ---
 
-## 3️⃣ Regenerar a chave do `google-services.json`
+## 3️⃣ Regenerar a chave do `google-services.json` — URGENTE
 
-**Porquê:** este ficheiro esteve no repositório antes de eu o proteger com `.gitignore` — continua no histórico de commits antigos.
+**Porquê:** este ficheiro esteve no repositório **durante toda esta sessão de trabalho**, não só antes — o `.gitignore` foi adicionado logo no início, mas por uma falha minha, o ficheiro que já estava rastreado desde o repositório original nunca foi removido do controlo de versão (só descoberto e corrigido numa auditoria de segurança pedida mais tarde). Isto significa que a chave esteve presente em **todos os ficheiros `.bundle` gerados e partilhados** ao longo da sessão — trata isto com prioridade máxima, não como um "seria bom fazer".
 
 **Passos:**
 1. Google Cloud Console → mesmo projeto → **APIs & Services → Credentials**
