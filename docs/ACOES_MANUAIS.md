@@ -173,9 +173,24 @@ exports.notificarAdmissaoAceite = functions.database
 ```
 
 4. `firebase deploy --only functions` para publicar
-5. Podes replicar o mesmo padrão para outros eventos: evento novo criado num grupo (`onCreate` em `/Eventos/{eventoId}`, notificar todos os membros desse grupo), conta aprovada (`onUpdate` em `/Users/{uid}/Controlo`), etc.
+5. Podes replicar o mesmo padrão para outros eventos: evento novo criado num grupo (`onCreate` em `/EventosPrivados/{numeroGrupo}/{eventoId}`, notificar todos os membros desse grupo), conta aprovada (`onUpdate` em `/Users/{uid}/Controlo`), etc.
 
 Documentação oficial: https://firebase.google.com/docs/functions/database-events
+
+---
+
+## 7️⃣ Ativar o Firebase App Check
+
+**O que é:** uma proteção diferente das Regras de Segurança — confirma que os pedidos ao Firebase vêm mesmo da app genuína a correr num dispositivo real, não de um script ou de uma cópia modificada a usar a mesma chave. O código já está pronto (`VariaveisGlobais.kt`), mas só fica realmente ativo depois destes passos na consola.
+
+**Passos:**
+1. Firebase Console → **App Check** (menu lateral, em "Compilação")
+2. Regista a tua app Android → escolhe **Play Integrity** como fornecedor
+3. Isto precisa que o projeto Firebase esteja ligado a um projeto Google Cloud com a **Play Integrity API ativada** — a consola guia-te por isso, mas se pedir, ativa a API em [console.cloud.google.com](https://console.cloud.google.com) → **APIs & Services** → procura "Play Integrity API" → Ativar
+4. **Testar em debug primeiro:** corre a app no Android Studio em modo debug, procura no Logcat por uma linha a começar com "AppCheck" — mostra um token de depuração. Copia-o e regista-o em Firebase Console → App Check → a tua app → **Gerir tokens de depuração**
+5. **Não ativar "Enforce" (aplicar) já** — a Firebase Console tem um modo de monitorização primeiro, onde vês métricas de quantos pedidos estão a chegar com token válido, sem bloquear nada. Só depois de confirmares que os pedidos reais da app aparecem como válidos é que deves mudar para "Enforced" no Realtime Database — ativar isto cedo demais, antes de confirmares que está tudo a funcionar, arrisca bloquear utilizadores reais por engano
+
+Documentação oficial: https://firebase.google.com/docs/app-check/android/play-integrity-provider
 
 ---
 

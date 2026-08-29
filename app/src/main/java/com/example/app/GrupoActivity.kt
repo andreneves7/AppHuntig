@@ -23,6 +23,25 @@ class VariaveisGlobais : Application() {
     override fun onCreate() {
         super.onCreate()
 
+        // Firebase App Check — TEM de ser inicializado o mais cedo possível,
+        // antes de qualquer outro pedido ao Firebase, para que esses pedidos
+        // já venham com o "bilhete de identidade" da app anexado. Em debug
+        // usa o fornecedor Debug (gera um token aleatório que precisa de ser
+        // registado manualmente na Firebase Console — ver
+        // docs/ACOES_MANUAIS.md); em release usa o Play Integrity API
+        // (verificação real de que o dispositivo/app são genuínos).
+        // Documentação oficial: https://firebase.google.com/docs/app-check/android/play-integrity-provider
+        val appCheck = com.google.firebase.appcheck.FirebaseAppCheck.getInstance()
+        if (BuildConfig.DEBUG) {
+            appCheck.installAppCheckProviderFactory(
+                com.google.firebase.appcheck.debug.DebugAppCheckProviderFactory.getInstance()
+            )
+        } else {
+            appCheck.installAppCheckProviderFactory(
+                com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory.getInstance()
+            )
+        }
+
         // Ativa a persistência offline do Realtime Database — os dados já
         // vistos ficam guardados no dispositivo e continuam disponíveis sem
         // ligação à internet (leitura), e escritas feitas offline ficam em
