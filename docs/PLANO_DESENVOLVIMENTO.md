@@ -320,4 +320,29 @@ Documentação oficial: https://developer.android.com/training/app-links/verify-
 
 ---
 
+## 11. Auditoria de segurança completa (pedida explicitamente)
+
+Revisão sistemática a regras do Firebase, manifesto Android, segredos no código, e configuração de build. Encontrados e corrigidos:
+
+| # | Problema | Gravidade | Estado |
+|---|---|---|---|
+| 1 | `google-services.json` esteve rastreado pelo Git durante **toda a sessão** — o `.gitignore` inicial nunca removeu o ficheiro já rastreado desde antes. Esteve em todos os `.bundle` partilhados | 🔴 Crítico | Removido do controlo de versão. **A chave continua no histórico antigo — só regenerá-la (ponto 3️⃣ de `ACOES_MANUAIS.md`) resolve por completo** |
+| 2 | Qualquer utilizador conseguia escrever `role: "superadmin"` no seu próprio registo — a regra só validava o valor, nunca quem podia escrevê-lo | 🔴 Crítico | Só é possível definir o próprio papel para "cacador" no registo; mudanças depois só por superadmin |
+| 3 | Qualquer conta "organizacao" podia escrever na lista de grupos de qualquer utilizador, mesmo grupos que não administrava | 🟠 Médio | Restringido ao admin desse grupo específico |
+| 4 | `allowBackup="true"` — permitia extrair dados locais via backup do Android sem root, em certos cenários | 🟡 Baixo | Desativado |
+| 5 | `Users` guardava morada, contribuinte, documentos de identificação, seguro, licença de arma — legíveis por qualquer conta autenticada | 🔴 Crítico | **Removidos da app por completo** (pedido explícito) — o registo já não recolhe estes dados |
+| 6 | Mesmo depois do ponto 5, `Users` (agora só com nome/email/telemóvel/carta de caçador) continuava totalmente legível por qualquer conta | 🟠 Médio | `Users` restringido a self+superadmin; novo nó `PerfisPublicos` (só nome+carta de caçador) para o que os outros ecrãs precisam de ver |
+
+**Verificado e confirmado seguro, sem alterações necessárias:**
+- Sem `WebView` em uso (sem risco de XSS)
+- Sem segredos/chaves hardcoded no código Kotlin
+- Mudanças de `role` já eram aplicadas do lado do servidor (a verificação no cliente das 3 telas SuperAdmin não era a única proteção)
+- Componentes exportados no manifesto (`VerificarLoginActivity`, `DetalhesEventoActivity`) são os esperados e necessários
+- `minifyEnabled=false` já era uma decisão deliberada de uma sessão anterior, documentada, não uma falha nova
+- Tráfego não encriptado já bloqueado por omissão (nenhuma configuração insegura encontrada)
+
+**Ação manual necessária:** regenerar a chave do `google-services.json` (ponto 3️⃣ de `ACOES_MANUAIS.md`, agora marcado urgente) e voltar a publicar as regras do Firebase (ponto 2️⃣).
+
+---
+
 *Última atualização: gerado automaticamente pela sessão de trabalho com Claude.*
