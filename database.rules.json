@@ -11,12 +11,12 @@
         ".write": "auth != null && (auth.uid === $uid || root.child('Users').child(auth.uid).child('role').val() === 'superadmin')",
 
         "role": {
-          ".validate": "!newData.exists() || newData.val() === 'cacador' || newData.val() === 'organizacao' || newData.val() === 'superadmin'"
+          ".validate": "root.child('Users').child(auth.uid).child('role').val() === 'superadmin' || (!data.exists() && newData.val() === 'cacador')"
         },
 
         "Grupos": {
           "$numeroGrupo": {
-            ".write": "auth != null && (auth.uid === $uid || root.child('Users').child(auth.uid).child('role').val() === 'superadmin' || root.child('Users').child(auth.uid).child('role').val() === 'organizacao')"
+            ".write": "auth != null && (auth.uid === $uid || root.child('Users').child(auth.uid).child('role').val() === 'superadmin' || root.child('Grupos').child($numeroGrupo).child('admin').val() === auth.uid)"
           }
         }
       }
